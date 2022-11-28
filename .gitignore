@@ -1,6 +1,7 @@
 ### Gradle ###
 
 .gradle
+.idea
 build/
 gradle-app.setting
 !gradle/wrapper/gradle-wrapper.jar
