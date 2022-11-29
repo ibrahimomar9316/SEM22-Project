@@ -18,7 +18,7 @@ Meeting Notes 29.11.2022
         •	Deadline on Friday is about Task 1 from the assignment (mainly the diagram of the architecture and microservices)
 
     •	Suggestions from the TA
-        •	All of us should be familiar with the whole codes
+        •	All of us should be familiar with the whole code.
         •	Try to submit the documents that need review every week by Firday evening.
         •	For the diagram text should not write more than 4 pages but not less than 3 pages.
         •	Explain in the text also why we did what and why we took the decisions like that.
