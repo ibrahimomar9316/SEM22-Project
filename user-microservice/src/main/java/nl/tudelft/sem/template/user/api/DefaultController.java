@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.user.controllers;
+package nl.tudelft.sem.template.user.api;
 
 import nl.tudelft.sem.template.user.authentication.AuthManager;
 import org.springframework.beans.factory.annotation.Autowired;
