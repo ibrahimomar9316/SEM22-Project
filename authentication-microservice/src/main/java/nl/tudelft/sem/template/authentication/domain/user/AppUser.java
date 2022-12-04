@@ -1,13 +1,14 @@
 package nl.tudelft.sem.template.authentication.domain.user;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.authentication.domain.HasEvents;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * A DDD entity representing an application user in our domain.
@@ -21,6 +22,7 @@ public class AppUser extends HasEvents {
      */
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(name = "net_id", nullable = false, unique = true)
@@ -31,12 +33,23 @@ public class AppUser extends HasEvents {
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
+    private List<Role> roles = new ArrayList<Role>();
+
     /**
      * Create new application user.
      *
      * @param netId The NetId for the new user
      * @param password The password for the new user
      */
+    public AppUser(NetId netId, HashedPassword password, List<Role> roles) {
+        this.netId = netId;
+        this.password = password;
+        this.roles = roles;
+        this.recordThat(new UserWasCreatedEvent(netId));
+    }
+
     public AppUser(NetId netId, HashedPassword password) {
         this.netId = netId;
         this.password = password;
@@ -54,6 +67,10 @@ public class AppUser extends HasEvents {
 
     public HashedPassword getPassword() {
         return password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
     }
 
     /**

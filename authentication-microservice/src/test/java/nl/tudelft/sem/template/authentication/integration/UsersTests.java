@@ -10,12 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
-import nl.tudelft.sem.template.authentication.domain.user.AppUser;
-import nl.tudelft.sem.template.authentication.domain.user.HashedPassword;
-import nl.tudelft.sem.template.authentication.domain.user.NetId;
-import nl.tudelft.sem.template.authentication.domain.user.Password;
-import nl.tudelft.sem.template.authentication.domain.user.PasswordHashingService;
-import nl.tudelft.sem.template.authentication.domain.user.UserRepository;
+import nl.tudelft.sem.template.authentication.domain.user.*;
 import nl.tudelft.sem.template.authentication.framework.integration.utils.JsonUtil;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
@@ -35,6 +30,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -90,8 +88,9 @@ public class UsersTests {
         final NetId testUser = new NetId("SomeUser");
         final Password newTestPassword = new Password("password456");
         final HashedPassword existingTestPassword = new HashedPassword("password123");
-
-        AppUser existingAppUser = new AppUser(testUser, existingTestPassword);
+        List<Role> list = new ArrayList<>();
+        list.add(new Role(null,RoleType.ROWER));
+        AppUser existingAppUser = new AppUser(testUser, existingTestPassword,list);
         userRepository.save(existingAppUser);
 
         RegistrationRequestModel model = new RegistrationRequestModel();
@@ -129,8 +128,9 @@ public class UsersTests {
         when(mockJwtTokenGenerator.generateToken(
             argThat(userDetails -> userDetails.getUsername().equals(testUser.toString())))
         ).thenReturn(testToken);
-
-        AppUser appUser = new AppUser(testUser, testHashedPassword);
+        List<Role> list = new ArrayList<>();
+        list.add(new Role(null,RoleType.ROWER));
+        AppUser appUser = new AppUser(testUser, testHashedPassword,list);
         userRepository.save(appUser);
 
         AuthenticationRequestModel model = new AuthenticationRequestModel();
@@ -201,8 +201,9 @@ public class UsersTests {
                 testUser.equals(authentication.getPrincipal())
                     && wrongPassword.equals(authentication.getCredentials())
         ))).thenThrow(new BadCredentialsException("Invalid password"));
-
-        AppUser appUser = new AppUser(new NetId(testUser), testHashedPassword);
+        List<Role> list = new ArrayList<>();
+        list.add(new Role(null,RoleType.ROWER));
+        AppUser appUser = new AppUser(new NetId(testUser), testHashedPassword,list);
         userRepository.save(appUser);
 
         AuthenticationRequestModel model = new AuthenticationRequestModel();
