@@ -39,6 +39,12 @@ public class AppUser {
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany
     private List<Role> roles = new ArrayList<>();
+
+    public AppUser(String netId, String password, List<Role> roles) {
+        this.username = netId;
+        this.password = password;
+        this.roles = roles;
+    }
 }
 
 

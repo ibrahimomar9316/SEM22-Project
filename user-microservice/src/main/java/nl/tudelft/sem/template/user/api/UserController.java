@@ -10,8 +10,11 @@ import nl.tudelft.sem.template.user.domain.entities.Boat;
 import nl.tudelft.sem.template.user.domain.entities.Certificate;
 import nl.tudelft.sem.template.user.domain.entities.Role;
 import nl.tudelft.sem.template.user.service.AppUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -22,6 +25,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final AppUserService appUserService;
+
+    static final String AUTH_URL_MS = "http://localhost:8081/";
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * Endpoint returning all users in the database
