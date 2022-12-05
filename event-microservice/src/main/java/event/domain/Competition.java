@@ -2,12 +2,13 @@ package event.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
- * An implementation of one type of event: Competition
+ * An implementation of one type of event: Competition.
  * A competition may have different rules and selection procedures
  * compared to a training routine. It is also managed differently.
  */
-public class Competition extends Event{
+public class Competition extends Event {
 
     //TODO: Change admin data type to User
     private String admin;
@@ -39,7 +40,10 @@ public class Competition extends Event{
      */
     @Override
     public String toString() {
-        return "This is a competitive event created by: " + admin + "\n" +
-                "Number of participants: " + numberOfParticipants();
+        return "This is a competitive event created by: "
+            + admin
+            + "\n"
+            + "Number of participants: "
+            + numberOfParticipants();
     }
 }

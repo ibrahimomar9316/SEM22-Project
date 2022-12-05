@@ -1,7 +1,9 @@
 package event.domain;
 
+import commons.BoatMembers;
 import java.util.List;
 import java.util.Objects;
+
 /**
  * A abstract class representing the general concept of an Event.
  * It is used to store data regarding the event creator or admin and
@@ -12,6 +14,21 @@ public abstract class Event {
     //TODO: Change admin data type to User
     private String admin;
     private List<String> participants;
+    private List<BoatMembers> allBoatMembersList;
+
+    /**
+     * A getter returning the list of all boats and their member configuration.
+     */
+    public List<BoatMembers> getAllBoatMembersList() {
+        return allBoatMembersList;
+    }
+
+    /**
+     * A setter for the list of all boats with their corresponding members.
+     */
+    public void setAllBoatMembersList(List<BoatMembers> allBoatMembersList) {
+        this.allBoatMembersList = allBoatMembersList;
+    }
 
     /**
      * A getter returning the private attribute "admin".
@@ -61,10 +78,16 @@ public abstract class Event {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Event)) {
+            return false;
+        }
         Event event = (Event) o;
-        return Objects.equals(admin, event.admin) && Objects.equals(participants, event.participants);
+        return Objects.equals(admin, event.admin)
+            && Objects.equals(participants, event.participants)
+            && Objects.equals(allBoatMembersList, event.allBoatMembersList);
     }
 
     @Override

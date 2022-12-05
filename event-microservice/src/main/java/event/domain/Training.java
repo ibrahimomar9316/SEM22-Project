@@ -2,12 +2,14 @@ package event.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * An implementation of one type of event: Training Session
  * A training session is more informal than a competition,
  * and it is also administered differently.
  */
 public class Training extends Event {
+
     //TODO: Change admin data type to User
     private String admin;
     private List<String> participants;
@@ -38,7 +40,10 @@ public class Training extends Event {
      */
     @Override
     public String toString() {
-        return "This is a training session created by: " + admin + "\n" +
-                "Number of participants: " + numberOfParticipants();
+        return "This is a training session created by: "
+            + admin
+            + "\n"
+            + "Number of participants: "
+            + numberOfParticipants();
     }
 }

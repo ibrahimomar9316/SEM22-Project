@@ -13,6 +13,7 @@ public class BoatMembers {
 
     /**
      * Constructor for boat members class.
+     *
      * @param cox The cox of the boat
      * @param coach The coach of the boat
      * @param portSideRower The Port Side Rower of the boat
@@ -28,7 +29,8 @@ public class BoatMembers {
     }
 
     /**
-     * Getter for the cox of the boat
+     * Getter for the cox of the boat.
+     *
      * @return the cox of the boat
      */
     public String getCox() {
@@ -36,7 +38,8 @@ public class BoatMembers {
     }
 
     /**
-     * Setter for the cox of the boat
+     * Setter for the cox of the boat.
+     *
      * @param cox the cox that we want to assign
      */
     public void setCox(String cox) {
@@ -44,7 +47,8 @@ public class BoatMembers {
     }
 
     /**
-     * Getter for the coach of the boat
+     * Getter for the coach of the boat.
+     *
      * @return the coach of the boat
      */
     public String getCoach() {
@@ -52,7 +56,8 @@ public class BoatMembers {
     }
 
     /**
-     * Setter for the coach of the boat
+     * Setter for the coach of the boat.
+     *
      * @param coach the coach that we want to assign
      */
     public void setCoach(String coach) {
@@ -60,7 +65,8 @@ public class BoatMembers {
     }
 
     /**
-     * Getter for the port side rower of the boat
+     * Getter for the port side rower of the boat.
+     *
      * @return the port side rower of the boat
      */
     public String getPortSideRower() {
@@ -68,7 +74,8 @@ public class BoatMembers {
     }
 
     /**
-     * Setter for the port side rower of the boat
+     * Setter for the port side rower of the boat.
+     *
      * @param portSideRower the port side rower that we want to assign
      */
     public void setPortSideRower(String portSideRower) {
@@ -76,7 +83,8 @@ public class BoatMembers {
     }
 
     /**
-     * Getter for the starboard rower of the boat
+     * Getter for the starboard rower of the boat.
+     *
      * @return the starboard rower of the boat
      */
     public String getStarboardRower() {
@@ -84,7 +92,8 @@ public class BoatMembers {
     }
 
     /**
-     * Setter for the starboard rower of the boat
+     * Setter for the starboard rower of the boat.
+     *
      * @param starboardRower the starboard rower that we want to assign
      */
     public void setStarboardRower(String starboardRower) {
@@ -92,7 +101,8 @@ public class BoatMembers {
     }
 
     /**
-     * Getter for the sculling rower of the boat
+     * Getter for the sculling rower of the boat.
+     *
      * @return the sculling rower of the boat
      */
     public String getScullingRower() {
@@ -100,7 +110,8 @@ public class BoatMembers {
     }
 
     /**
-     * Setter for the sculling rower of the boat
+     * Setter for the sculling rower of the boat.
+     *
      * @param scullingRower the sculling rower that we want to assign
      */
     public void setScullingRower(String scullingRower) {
@@ -108,7 +119,8 @@ public class BoatMembers {
     }
 
     /**
-     * Method to check equality between two boats' members
+     * Method to check equality between two boats' members.
+     *
      * @param o the boat we want to compare with
      * @return a boolean depending on the equality
      */
@@ -121,11 +133,16 @@ public class BoatMembers {
             return false;
         }
         BoatMembers that = (BoatMembers) o;
-        return Objects.equals(cox, that.cox) && Objects.equals(coach, that.coach) && Objects.equals(portSideRower, that.portSideRower) && Objects.equals(starboardRower, that.starboardRower) && Objects.equals(scullingRower, that.scullingRower);
+        return Objects.equals(cox, that.cox)
+            && Objects.equals(coach, that.coach)
+            && Objects.equals(portSideRower, that.portSideRower)
+            && Objects.equals(starboardRower, that.starboardRower)
+            && Objects.equals(scullingRower, that.scullingRower);
     }
 
     /**
-     * Basic hash generator for a boat
+     * Basic hash generator for a boat.
+     *
      * @return the int hash of the boat
      */
     @Override
