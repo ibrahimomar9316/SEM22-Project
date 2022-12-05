@@ -38,6 +38,7 @@ public class UserController {
 
     /**
      * Endpoint returning all users in the database
+     *
      * @return - List of all users in the database
      */
     @GetMapping("/user/all")
@@ -47,17 +48,19 @@ public class UserController {
 
     /**
      * Endpoint saving a user in the database
+     *
      * @param appUser - user body to be saved
      * @return - saved user
      */
     @PostMapping("/user/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
+    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) throws NotFoundException {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(appUserService.saveAppUser(appUser));
     }
 
     /**
      * Endpoint saving a boat in the database
+     *
      * @param boat - boat body to be saved
      * @return - saved boat
      */
@@ -69,6 +72,7 @@ public class UserController {
 
     /**
      * Endpoint saving a certificate in the database
+     *
      * @param certificate - certificate body to be saved
      * @return - saved certificate
      */
@@ -80,6 +84,7 @@ public class UserController {
 
     /**
      * Endpoint saving a role in the database
+     *
      * @param role - role body to be saved
      * @return - saved role
      */
@@ -91,6 +96,7 @@ public class UserController {
 
     /**
      * Endpoint adding boat to the specific user in the database
+     *
      * @param boatToUserForm - form containing userId and boatId
      * @return - returns confirmation response
      * @throws NotFoundException - throws an exception when user with ID is not found
@@ -103,6 +109,7 @@ public class UserController {
 
     /**
      * Endpoint adding certificate to the specific user in the database
+     *
      * @param certificateToUserForm - form containing userId and boatId
      * @return - returns confirmation response
      * @throws NotFoundException - throws an exception when user with ID is not found
@@ -115,6 +122,7 @@ public class UserController {
 
     /**
      * Endpoint adding role to the specific user in the database
+     *
      * @param roleToUserForm - form containing userId and boatId
      * @return - returns confirmation response
      * @throws NotFoundException - throws an exception when user with ID is not found
@@ -127,6 +135,7 @@ public class UserController {
 
     /**
      * Endpoint returning all roles in the database
+     *
      * @return - List of all roles in the database
      */
     @GetMapping("/role/all")
