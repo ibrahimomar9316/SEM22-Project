@@ -18,6 +18,9 @@ public class Competition extends Event {
      * Constructor for creating a competition-type event.
      * Sets the admin and the list of participants to the ones
      * specified in the method.
+     *
+     * @param admin the admin of the competition;
+     * @param participants the list of participants to the competition;
      */
     public Competition(String admin, List<String> participants) {
         this.admin = admin;
@@ -28,6 +31,9 @@ public class Competition extends Event {
      * Constructor for creating a competition-type event.
      * Sets the admin to the one specified in method signature
      * Creates a new list of participants.
+     *
+     * @param admin the admin of the competition;
+     *
      */
     public Competition(String admin) {
         this.admin = admin;
@@ -37,6 +43,8 @@ public class Competition extends Event {
     /**
      * A simple to string method to show the user the competition.
      * (Implementation might be changed later)
+     *
+     * @return a string implementation of a competition event;
      */
     @Override
     public String toString() {

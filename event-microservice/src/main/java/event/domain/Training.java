@@ -18,6 +18,9 @@ public class Training extends Event {
      * Constructor for creating a training-type event.
      * Sets the admin and the list of participants to the ones
      * specified in the method.
+     *
+     * @param admin the admin of the training session;
+     * @param participants the list of participants to the competition;
      */
     public Training(String admin, List<String> participants) {
         this.admin = admin;
@@ -28,6 +31,8 @@ public class Training extends Event {
      * Constructor for creating a training-type event.
      * Sets the admin to the one specified in method signature
      * Creates a new list of participants.
+     *
+     * @param admin the admin of the training session;
      */
     public Training(String admin) {
         this.admin = admin;
@@ -37,6 +42,8 @@ public class Training extends Event {
     /**
      * A simple to string method to show the user the training session.
      * (Implementation might be changed later)
+     *
+     * @return a string implementation of a training session;
      */
     @Override
     public String toString() {

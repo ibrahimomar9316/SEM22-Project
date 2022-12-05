@@ -18,6 +18,8 @@ public abstract class Event {
 
     /**
      * A getter returning the list of all boats and their member configuration.
+     *
+     * @return the list of all boats;
      */
     public List<BoatMembers> getAllBoatMembersList() {
         return allBoatMembersList;
@@ -25,6 +27,8 @@ public abstract class Event {
 
     /**
      * A setter for the list of all boats with their corresponding members.
+     *
+     * @param allBoatMembersList the list of all boats;
      */
     public void setAllBoatMembersList(List<BoatMembers> allBoatMembersList) {
         this.allBoatMembersList = allBoatMembersList;
@@ -32,6 +36,8 @@ public abstract class Event {
 
     /**
      * A getter returning the private attribute "admin".
+     *
+     * @return the admin of the event;
      */
     public String getAdmin() {
         return admin;
@@ -39,6 +45,8 @@ public abstract class Event {
 
     /**
      * A getter returning the list of participants.
+     *
+     * @return the participants of the event;
      */
     public List<String> getParticipants() {
         return participants;
@@ -46,6 +54,8 @@ public abstract class Event {
 
     /**
      * A setter that changes the current admin of the event.
+     *
+     * @param admin the admin of the event;
      */
     public void setAdmin(String admin) {
         this.admin = admin;
@@ -53,6 +63,8 @@ public abstract class Event {
 
     /**
      * A setter that changes the list of participants to that event.
+     *
+     * @param participants the participants of the event;
      */
     public void setParticipants(List<String> participants) {
         this.participants = participants;
@@ -60,6 +72,8 @@ public abstract class Event {
 
     /**
      * This adds a new participant to the event list.
+     *
+     * @param participant the participant to be added to the event
      */
     public void addParticipant(String participant) {
         this.participants.add(participant);
@@ -67,6 +81,8 @@ public abstract class Event {
 
     /**
      * This returns the number of participants currently attending the event.
+     *
+     * @return the number of participants;
      */
     public int numberOfParticipants() {
         return this.participants.size();
@@ -75,6 +91,9 @@ public abstract class Event {
     /**
      * Overwritten equals method. It checks if two events are equal by
      * comparing their admin and the list of their participants.
+     *
+     * @param o object to be compared to;
+     * @return true or false if the two event are equal or not;
      */
     @Override
     public boolean equals(Object o) {
