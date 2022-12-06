@@ -16,7 +16,7 @@ public abstract class Event {
     private List<String> participants;
     private List<BoatMembers> allBoatMembersList;
     //TODO: Change admin data type to Certificate
-    private String rules;
+    private transient String rules;
 
     /**
      * A getter returning the list of all boats and their member configuration.

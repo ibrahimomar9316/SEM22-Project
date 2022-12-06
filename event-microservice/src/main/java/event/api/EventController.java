@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping({"/api"})
 public class EventController {
-    private EventList eventList;
+    private transient EventList eventList;
     @Autowired
     private RestTemplate restTemplate;
 

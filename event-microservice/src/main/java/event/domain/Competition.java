@@ -11,8 +11,8 @@ import java.util.List;
 public class Competition extends Event {
 
     //TODO: Change admin data type to User
-    private String admin;
-    private List<String> participants;
+    private transient String admin;
+    private transient List<String> participants;
 
     /**
      * Constructor for creating a competition-type event.

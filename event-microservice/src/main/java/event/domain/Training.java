@@ -11,8 +11,8 @@ import java.util.List;
 public class Training extends Event {
 
     //TODO: Change admin data type to User
-    private String admin;
-    private List<String> participants;
+    private transient String admin;
+    private transient List<String> participants;
 
     /**
      * Constructor for creating a training-type event.
