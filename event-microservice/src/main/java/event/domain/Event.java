@@ -15,6 +15,8 @@ public abstract class Event {
     private String admin;
     private List<String> participants;
     private List<BoatMembers> allBoatMembersList;
+    //TODO: Change admin data type to Certificate
+    private String rules;
 
     /**
      * A getter returning the list of all boats and their member configuration.
@@ -86,6 +88,16 @@ public abstract class Event {
      */
     public int numberOfParticipants() {
         return this.participants.size();
+    }
+
+
+    /**
+     * Sets the rules of the event.
+     *
+     * @param rules the rules of the event
+     */
+    public void setRules(String rules) {
+        this.rules = rules;
     }
 
     /**
