@@ -4,13 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
-import nl.tudelft.sem.template.authentication.dataTransferObjects.UserDTO;
-import nl.tudelft.sem.template.authentication.domain.user.*;
+import nl.tudelft.sem.template.authentication.datatransferobjects.UserDto;
+import nl.tudelft.sem.template.authentication.domain.user.NetId;
+import nl.tudelft.sem.template.authentication.domain.user.Password;
+import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -21,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 public class AuthenticationController {
@@ -106,7 +110,7 @@ public class AuthenticationController {
         ResponseEntity<AuthenticationResponseModel> token = ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
 
         //DONE
-        UserDTO requestBody = new UserDTO(
+        UserDto requestBody = new UserDto(
                 netId.toString(),
                 password.toString()
         );
@@ -120,11 +124,13 @@ public class AuthenticationController {
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         System.out.println(entity.getHeaders().toString());
 
-        ResponseEntity<UserDTO> obj = new RestTemplate()
-                .postForEntity("http://localhost:8082/api/user/save", entity, UserDTO.class);
-        if (obj.getStatusCode().is2xxSuccessful())
+        ResponseEntity<UserDto> obj = new RestTemplate()
+                .postForEntity("http://localhost:8082/api/user/save", entity, UserDto.class);
+        if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok().build();
-        else throw new NotFoundException("Incorrectly saved in user microservice");
+        } else {
+            throw new NotFoundException("Incorrectly saved in user microservice");
+        }
         //return ResponseEntity.ok().build();
     }
 }
