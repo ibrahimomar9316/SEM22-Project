@@ -13,9 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 // activate profiles to have spring use mocks during auto-injection of certain beans.

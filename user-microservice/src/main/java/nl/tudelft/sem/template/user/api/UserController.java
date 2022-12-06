@@ -90,6 +90,12 @@ public class UserController {
         return ResponseEntity.created(uri).body(appUserService.saveCertificate(certificate));
     }
 
+    /**
+     * Using this endpoint user can set his gender.
+     *
+     * @param gender - new gender to be set
+     * @return saved gender
+     */
     @PutMapping("/user/gender/save/{gender}")
     public ResponseEntity<Gender> saveGender(@PathVariable("gender") Gender gender) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/gender/save")
@@ -97,6 +103,15 @@ public class UserController {
         return ResponseEntity.created(uri).body(appUserService.saveGender(gender));
     }
 
+    /**
+     * Endpoint for updating fields such as gender, boatPreferences
+     * and certification list of the given using. The method has restriction on changing user's netId
+     * and password.
+     * While the netId is unchangeable, the user can change his password in another endpoint.
+     *
+     * @param appUser new user body with updates
+     * @return saved user
+     */
     @PutMapping("/user/update")
     public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());

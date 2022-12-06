@@ -125,6 +125,12 @@ public class UserServiceImplementation {
         return appUserRepository.getAppUserById(netId);
     }
 
+    /**
+     * * Service layer method for changing a gender of the user.
+     *
+     * @param gender gender to be set
+     * @return saved gender
+     */
     public Gender saveGender(Gender gender) {
         AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
         appUser.setGender(gender);
@@ -132,11 +138,19 @@ public class UserServiceImplementation {
         return gender;
     }
 
+    /**
+     * Service layer method for updating user information.
+     * The method has restriction on changing user's netId and password.
+     * While the netId is unchangeable, the user can change his password in another endpoint.
+     *
+     * @param appUser user update information body
+     * @return updated user
+     */
     public AppUser updateUser(AppUser appUser) {
         AppUser currentUser = appUserRepository.getAppUserById(authManager.getNetId());
         if (!currentUser.getNetId().equals(appUser.getNetId())
                 || !currentUser.getPassword().equals(appUser.getPassword())) {
-            throw new IllegalArgumentException("netId or password have been changed");
+            throw new IllegalArgumentException("netId or password can not be update in this method");
         }
         currentUser.setGender(appUser.getGender());
         currentUser.setBoatTypePreferences(appUser.getBoatTypePreferences());
