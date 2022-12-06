@@ -33,6 +33,8 @@ public class AppUser extends HasEvents {
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
+    @Column(name = "list", nullable = false)
+    @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany
     private List<Role> roles = new ArrayList<Role>();
@@ -87,6 +89,8 @@ public class AppUser extends HasEvents {
         AppUser appUser = (AppUser) o;
         return id == (appUser.id);
     }
+
+
 
     @Override
     public int hashCode() {

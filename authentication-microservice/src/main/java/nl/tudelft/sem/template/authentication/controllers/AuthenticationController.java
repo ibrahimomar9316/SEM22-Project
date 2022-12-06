@@ -95,6 +95,7 @@ public class AuthenticationController {
             NetId netId = new NetId(request.getNetId());
             Password password = new Password(request.getPassword());
             List<Role> list = request.getList();
+
             registrationService.registerUser(netId, password,list);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

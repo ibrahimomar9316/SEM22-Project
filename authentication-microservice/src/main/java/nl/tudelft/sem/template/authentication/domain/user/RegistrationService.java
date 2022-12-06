@@ -10,16 +10,18 @@ import java.util.List;
 @Service
 public class RegistrationService {
     private final transient UserRepository userRepository;
+    private final transient RoleRepository roleRepository;
     private final transient PasswordHashingService passwordHashingService;
 
     /**
      * Instantiates a new UserService.
-     *
-     * @param userRepository  the user repository
+     *  @param userRepository  the user repository
+     * @param roleRepository
      * @param passwordHashingService the password encoder
      */
-    public RegistrationService(UserRepository userRepository, PasswordHashingService passwordHashingService) {
+    public RegistrationService(UserRepository userRepository, RoleRepository roleRepository, PasswordHashingService passwordHashingService) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordHashingService = passwordHashingService;
     }
 
@@ -38,6 +40,7 @@ public class RegistrationService {
 
             // Create new account
             AppUser user = new AppUser(netId, hashedPassword,list);
+            roleRepository.saveAll(list);
             userRepository.save(user);
 
             return user;

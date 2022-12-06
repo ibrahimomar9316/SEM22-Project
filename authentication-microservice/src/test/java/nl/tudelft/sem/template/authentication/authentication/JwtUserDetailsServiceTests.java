@@ -30,6 +30,8 @@ public class JwtUserDetailsServiceTests {
 
     @Autowired
     private transient UserRepository userRepository;
+    @Autowired
+    private transient RoleRepository repository;
 
     @Test
     public void loadUserByUsername_withValidUser_returnsCorrectUser() {
@@ -37,7 +39,9 @@ public class JwtUserDetailsServiceTests {
         final NetId testUser = new NetId("SomeUser");
         final HashedPassword testHashedPassword = new HashedPassword("password123Hash");
         List<Role> list = new ArrayList<>();
-        list.add(new Role(null,RoleType.ROWER));
+        Role role = new Role(RoleType.ROWER);
+        repository.save(role);
+        list.add(role);
         AppUser appUser = new AppUser(testUser, testHashedPassword,list);
         userRepository.save(appUser);
 
@@ -57,7 +61,9 @@ public class JwtUserDetailsServiceTests {
         final NetId testUser = new NetId("AnotherUser");
         final String testPasswordHash = "password123Hash";
         List<Role> list = new ArrayList<>();
-        list.add(new Role(null,RoleType.ROWER));
+        Role role = new Role(RoleType.ROWER);
+        repository.save(role);
+        list.add(role);
         AppUser appUser = new AppUser(testUser, new HashedPassword(testPasswordHash),list);
         userRepository.save(appUser);
 

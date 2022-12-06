@@ -34,7 +34,7 @@ public class Application {
             appUserService.saveAppUser(new AppUser(null, Gender.MALE, "user1", "password1", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
             appUserService.saveAppUser(new AppUser(null, Gender.FEMALE, "user2", "password2", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
 
-            appUserService.saveRole(new Role(null, RoleType.ROWER));
+            appUserService.saveRole(new Role(RoleType.ROWER));
 
             appUserService.addRoleToAppUser(1L, 3L);
         };
