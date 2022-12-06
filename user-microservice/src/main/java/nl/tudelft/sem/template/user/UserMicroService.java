@@ -1,10 +1,8 @@
 package nl.tudelft.sem.template.user;
 
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
-import nl.tudelft.sem.template.user.domain.entities.Role;
 import nl.tudelft.sem.template.user.domain.enums.Gender;
-import nl.tudelft.sem.template.user.domain.enums.RoleType;
-import nl.tudelft.sem.template.user.service.AppUserService;
+import nl.tudelft.sem.template.user.service.UserServiceImplementation;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,15 +26,11 @@ public class UserMicroService {
     }
 
     @Bean
-    CommandLineRunner run(AppUserService appUserService) {
+    CommandLineRunner run(UserServiceImplementation appUserService) {
         return args -> {
             //An example of adding data to the database
-            appUserService.saveAppUser(new AppUser(null, Gender.MALE, "user1", "password1", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-            appUserService.saveAppUser(new AppUser(null, Gender.FEMALE, "user2", "password2", new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-
-            appUserService.saveRole(new Role(RoleType.ROWER));
-
-            appUserService.addRoleToAppUser(1L, 3L);
+            appUserService.saveAppUser(new AppUser(null, Gender.MALE, "user1", "password1", new ArrayList<>(), new ArrayList<>()));
+            appUserService.saveAppUser(new AppUser(null, Gender.FEMALE, "user2", "password2", new ArrayList<>(), new ArrayList<>()));
         };
     }
 }

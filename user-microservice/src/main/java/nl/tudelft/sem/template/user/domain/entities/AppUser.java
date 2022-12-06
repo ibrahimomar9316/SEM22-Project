@@ -36,14 +36,9 @@ public class AppUser {
     @ManyToMany
     private List<Certificate> certificateCollection = new ArrayList<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany
-    private List<Role> roles = new ArrayList<>();
-
-    public AppUser(String netId, String password, List<Role> roles) {
+    public AppUser(String netId, String password) {
         this.username = netId;
         this.password = password;
-        this.roles = roles;
     }
 }
 

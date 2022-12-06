@@ -88,9 +88,7 @@ public class UsersTests {
         final NetId testUser = new NetId("SomeUser");
         final Password newTestPassword = new Password("password456");
         final HashedPassword existingTestPassword = new HashedPassword("password123");
-        List<Role> list = new ArrayList<>();
-        list.add(new Role(null,RoleType.ROWER));
-        AppUser existingAppUser = new AppUser(testUser, existingTestPassword,list);
+        AppUser existingAppUser = new AppUser(testUser, existingTestPassword);
         userRepository.save(existingAppUser);
 
         RegistrationRequestModel model = new RegistrationRequestModel();
@@ -128,9 +126,7 @@ public class UsersTests {
         when(mockJwtTokenGenerator.generateToken(
             argThat(userDetails -> userDetails.getUsername().equals(testUser.toString())))
         ).thenReturn(testToken);
-        List<Role> list = new ArrayList<>();
-        list.add(new Role(null,RoleType.ROWER));
-        AppUser appUser = new AppUser(testUser, testHashedPassword,list);
+        AppUser appUser = new AppUser(testUser, testHashedPassword);
         userRepository.save(appUser);
 
         AuthenticationRequestModel model = new AuthenticationRequestModel();
@@ -201,9 +197,7 @@ public class UsersTests {
                 testUser.equals(authentication.getPrincipal())
                     && wrongPassword.equals(authentication.getCredentials())
         ))).thenThrow(new BadCredentialsException("Invalid password"));
-        List<Role> list = new ArrayList<>();
-        list.add(new Role(null,RoleType.ROWER));
-        AppUser appUser = new AppUser(new NetId(testUser), testHashedPassword,list);
+        AppUser appUser = new AppUser(new NetId(testUser), testHashedPassword);
         userRepository.save(appUser);
 
         AuthenticationRequestModel model = new AuthenticationRequestModel();

@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import nl.tudelft.sem.template.user.api.forms.BoatToUserForm;
 import nl.tudelft.sem.template.user.api.forms.CertificateToUserForm;
 import nl.tudelft.sem.template.user.api.forms.RoleToUserForm;
+import nl.tudelft.sem.template.user.dataTransferObjects.UserDTO;
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
 import nl.tudelft.sem.template.user.domain.entities.Boat;
 import nl.tudelft.sem.template.user.domain.entities.Certificate;
-import nl.tudelft.sem.template.user.domain.entities.Role;
-import nl.tudelft.sem.template.user.service.AppUserService;
+import nl.tudelft.sem.template.user.service.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
-    private final AppUserService appUserService;
+    private final UserServiceImplementation appUserService;
 
     static final String AUTH_URL_MS = "http://localhost:8081/";
 
@@ -49,13 +49,14 @@ public class UserController {
     /**
      * Endpoint saving a user in the database
      *
-     * @param appUser - user body to be saved
+     * @param gotUser - user body to be saved
      * @return - saved user
      */
     @PostMapping("/user/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) throws NotFoundException {
+    public ResponseEntity<AppUser> saveUser(@RequestBody UserDTO gotUser) throws NotFoundException {
+        AppUser savedUser = new AppUser(gotUser.getUsername(), gotUser.getPassword());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-        return ResponseEntity.created(uri).body(appUserService.saveAppUser(appUser));
+        return ResponseEntity.created(uri).body(appUserService.saveAppUser(savedUser));
     }
 
     /**
@@ -83,18 +84,6 @@ public class UserController {
     }
 
     /**
-     * Endpoint saving a role in the database
-     *
-     * @param role - role body to be saved
-     * @return - saved role
-     */
-    @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(appUserService.saveRole(role));
-    }
-
-    /**
      * Endpoint adding boat to the specific user in the database
      *
      * @param boatToUserForm - form containing userId and boatId
@@ -118,28 +107,5 @@ public class UserController {
     public ResponseEntity<?> addCertificateToAppUser(@RequestBody CertificateToUserForm certificateToUserForm) throws NotFoundException {
         appUserService.addCertificateToAppUser(certificateToUserForm.getAppUserId(), certificateToUserForm.getCertificateId());
         return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Endpoint adding role to the specific user in the database
-     *
-     * @param roleToUserForm - form containing userId and boatId
-     * @return - returns confirmation response
-     * @throws NotFoundException - throws an exception when user with ID is not found
-     */
-    @PostMapping("/role/add_to_user")
-    public ResponseEntity<?> addRoleToAppUser(@RequestBody RoleToUserForm roleToUserForm) throws NotFoundException {
-        appUserService.addRoleToAppUser(roleToUserForm.getAppUserId(), roleToUserForm.getRoleId());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Endpoint returning all roles in the database
-     *
-     * @return - List of all roles in the database
-     */
-    @GetMapping("/role/all")
-    public ResponseEntity<List<Role>> getRoles() {
-        return ResponseEntity.ok().body(appUserService.getRoles());
     }
 }

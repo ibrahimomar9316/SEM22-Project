@@ -1,17 +1,16 @@
 package nl.tudelft.sem.template.authentication.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javassist.NotFoundException;
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
-import nl.tudelft.sem.template.authentication.domain.user.NetId;
-import nl.tudelft.sem.template.authentication.domain.user.Password;
-import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
-import nl.tudelft.sem.template.authentication.domain.user.Role;
+import nl.tudelft.sem.template.authentication.dataTransferObjects.UserDTO;
+import nl.tudelft.sem.template.authentication.domain.user.*;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -20,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -90,17 +90,40 @@ public class AuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
-
+        NetId netId;
+        Password password;
         try {
-            NetId netId = new NetId(request.getNetId());
-            Password password = new Password(request.getPassword());
-            List<Role> list = request.getList();
-
-            registrationService.registerUser(netId, password,list);
+            netId = new NetId(request.getNetId());
+            password = new Password(request.getPassword());
+            registrationService.registerUser(netId, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
-        return ResponseEntity.ok().build();
+        //TOKEN
+        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getNetId());
+        final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
+        ResponseEntity<AuthenticationResponseModel> token = ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
+
+        //DONE
+        UserDTO requestBody = new UserDTO(
+                netId.toString(),
+                password.toString()
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.toString());
+
+        String json = new ObjectMapper().writeValueAsString(requestBody);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        System.out.println(entity.getHeaders().toString());
+
+        ResponseEntity<UserDTO> obj = new RestTemplate()
+                .postForEntity("http://localhost:8082/api/user/save", entity, UserDTO.class);
+        if (obj.getStatusCode().is2xxSuccessful())
+            return ResponseEntity.ok().build();
+        else throw new NotFoundException("Incorrectly saved in user microservice");
+        //return ResponseEntity.ok().build();
     }
 }

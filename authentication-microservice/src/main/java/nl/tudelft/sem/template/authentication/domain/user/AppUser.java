@@ -33,25 +33,12 @@ public class AppUser extends HasEvents {
     @Convert(converter = HashedPasswordAttributeConverter.class)
     private HashedPassword password;
 
-    @Column(name = "list", nullable = false)
-    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany
-    private List<Role> roles = new ArrayList<Role>();
-
     /**
      * Create new application user.
      *
      * @param netId The NetId for the new user
      * @param password The password for the new user
      */
-    public AppUser(NetId netId, HashedPassword password, List<Role> roles) {
-        this.netId = netId;
-        this.password = password;
-        this.roles = roles;
-        this.recordThat(new UserWasCreatedEvent(netId));
-    }
-
     public AppUser(NetId netId, HashedPassword password) {
         this.netId = netId;
         this.password = password;
@@ -69,10 +56,6 @@ public class AppUser extends HasEvents {
 
     public HashedPassword getPassword() {
         return password;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
     }
 
     /**
