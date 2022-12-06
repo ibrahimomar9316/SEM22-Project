@@ -3,14 +3,15 @@ package nl.tudelft.sem.template.user.service;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.tudelft.sem.template.user.authentication.AuthManager;
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
 import nl.tudelft.sem.template.user.domain.entities.Boat;
 import nl.tudelft.sem.template.user.domain.entities.Certificate;
+import nl.tudelft.sem.template.user.domain.enums.Gender;
 import nl.tudelft.sem.template.user.repositories.AppUserRepository;
 import nl.tudelft.sem.template.user.repositories.BoatRepository;
 import nl.tudelft.sem.template.user.repositories.CertificateRepository;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +25,14 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImplementation {
     private final AppUserRepository appUserRepository;
+    private final transient AuthManager authManager;
     private final BoatRepository boatRepository;
     private final CertificateRepository certificateRepository;
 
     /**
-     * Service layer method for getting the specific user by their ID
+     * Service layer method for getting the specific user by their ID.
      * @param appUserId - user ID
-     * @return - returns a found user
+     * @return - returns a found user.
      * @throws NotFoundException - thrown when user not found
      */
     public AppUser getAppUser(Long appUserId) throws NotFoundException {
@@ -112,4 +114,27 @@ public class UserServiceImplementation {
         return appUserRepository.findAll();
     }
 
+    public AppUser getAppUserByID(String netId) {
+        return appUserRepository.getAppUserByID(netId);
+    }
+
+    public Gender saveGender(Gender gender) {
+        AppUser appUser = appUserRepository.getAppUserByID(authManager.getNetId());
+        appUser.setGender(gender);
+        appUserRepository.save(appUser);
+        return gender;
+    }
+
+    public AppUser updateUser(AppUser appUser) {
+        AppUser currentUser = appUserRepository.getAppUserByID(authManager.getNetId());
+        if (!currentUser.getNetId().equals(appUser.getNetId())
+                || !currentUser.getPassword().equals(appUser.getPassword())) {
+            throw new IllegalArgumentException("netId or password have been changed");
+        }
+        currentUser.setGender(appUser.getGender());
+        currentUser.setBoatTypePreferences(appUser.getBoatTypePreferences());
+        currentUser.setCertificateCollection(appUser.getCertificateCollection());
+        appUserRepository.save(currentUser);
+        return appUser;
+    }
 }

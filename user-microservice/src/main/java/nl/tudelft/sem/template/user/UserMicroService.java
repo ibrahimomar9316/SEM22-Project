@@ -29,8 +29,8 @@ public class UserMicroService {
     CommandLineRunner run(UserServiceImplementation appUserService) {
         return args -> {
             //An example of adding data to the database
-            appUserService.saveAppUser(new AppUser(null, Gender.MALE, "user1", "password1", new ArrayList<>(), new ArrayList<>()));
-            appUserService.saveAppUser(new AppUser(null, Gender.FEMALE, "user2", "password2", new ArrayList<>(), new ArrayList<>()));
+            appUserService.saveAppUser(new AppUser(Gender.MALE, "user1", "password1", new ArrayList<>(), new ArrayList<>()));
+            appUserService.saveAppUser(new AppUser(Gender.FEMALE, "user2", "password2", new ArrayList<>(), new ArrayList<>()));
         };
     }
 }

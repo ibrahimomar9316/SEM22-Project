@@ -4,11 +4,11 @@ import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import nl.tudelft.sem.template.user.api.forms.BoatToUserForm;
 import nl.tudelft.sem.template.user.api.forms.CertificateToUserForm;
-import nl.tudelft.sem.template.user.api.forms.RoleToUserForm;
 import nl.tudelft.sem.template.user.dataTransferObjects.UserDTO;
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
 import nl.tudelft.sem.template.user.domain.entities.Boat;
 import nl.tudelft.sem.template.user.domain.entities.Certificate;
+import nl.tudelft.sem.template.user.domain.enums.Gender;
 import nl.tudelft.sem.template.user.service.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +70,18 @@ public class UserController {
     public ResponseEntity<Boat> saveBoat(@RequestBody Boat boat) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/boat/save").toUriString());
         return ResponseEntity.created(uri).body(appUserService.saveBoat(boat));
+    }
+
+    @PutMapping("/user/gender/save/{gender}")
+    public ResponseEntity<Gender> saveGender(@PathVariable("gender") Gender gender) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/gender/save").toUriString());
+        return ResponseEntity.created(uri).body(appUserService.saveGender(gender));
+    }
+
+    @PutMapping("/user/update")
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());
+        return ResponseEntity.created(uri).body(appUserService.updateUser(appUser));
     }
 
     /**

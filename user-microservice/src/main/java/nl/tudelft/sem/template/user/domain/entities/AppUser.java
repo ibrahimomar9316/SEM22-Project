@@ -19,13 +19,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long appUserId;
+
     private Gender gender;
 
+    @Id
     @Column(unique = true)
-    private String username;
+    private String netId;
     private String password;
 
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -36,8 +35,10 @@ public class AppUser {
     @ManyToMany
     private List<Certificate> certificateCollection = new ArrayList<>();
 
+
+
     public AppUser(String netId, String password) {
-        this.username = netId;
+        this.netId = netId;
         this.password = password;
     }
 }
