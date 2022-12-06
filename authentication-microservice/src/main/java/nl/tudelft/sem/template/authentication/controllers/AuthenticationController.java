@@ -1,6 +1,7 @@
 package nl.tudelft.sem.template.authentication.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import javassist.NotFoundException;
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
@@ -13,7 +14,11 @@ import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -24,10 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 public class AuthenticationController {
@@ -126,9 +127,11 @@ public class AuthenticationController {
 
         ResponseEntity<UserAppUser> obj = new RestTemplate()
                 .postForEntity("http://localhost:8082/api/user/save", entity, UserAppUser.class);
-        if (obj.getStatusCode().is2xxSuccessful())
+        if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok().build();
-        else throw new NotFoundException("Incorrectly saved in user microservice");
+        } else {
+            throw new NotFoundException("Incorrectly saved in user microservice");
+        }
         //return ResponseEntity.ok().build();
     }
 }

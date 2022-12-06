@@ -1,8 +1,8 @@
 package nl.tudelft.sem.template.authentication.domain.user;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 /**
  * A DDD service for registering a new user.
@@ -37,7 +37,7 @@ public class RegistrationService {
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
             // Create new account
-            AppUser user = new AppUser(netId, hashedPassword,list);
+            AppUser user = new AppUser(netId, hashedPassword, list);
             userRepository.save(user);
 
             return user;

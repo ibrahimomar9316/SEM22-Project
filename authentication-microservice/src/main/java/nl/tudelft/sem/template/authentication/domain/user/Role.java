@@ -1,17 +1,16 @@
 package nl.tudelft.sem.template.authentication.domain.user;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 /**
- * Role entity consisting of an ID, role type
+ * Role entity consisting of an ID, role type.
  */
 @Entity
 @Data

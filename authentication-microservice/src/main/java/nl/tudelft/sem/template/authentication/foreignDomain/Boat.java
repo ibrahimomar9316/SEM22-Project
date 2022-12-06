@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Boat entity consisting of an ID, boat type
+ * Boat entity consisting of an ID, boat type.
  */
 @Entity
 @Data
