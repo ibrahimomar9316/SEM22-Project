@@ -113,7 +113,8 @@ public class AuthenticationController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(token.toString());
+        //System.out.println(token.getBody().getToken().toString());
+        headers.setBearerAuth(token.getBody().getToken().toString());
 
         String json = new ObjectMapper().writeValueAsString(requestBody);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
