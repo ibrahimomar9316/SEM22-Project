@@ -1,15 +1,13 @@
 package nl.tudelft.sem.template.authentication.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import javassist.NotFoundException;
 import nl.tudelft.sem.template.authentication.authentication.JwtTokenGenerator;
 import nl.tudelft.sem.template.authentication.authentication.JwtUserDetailsService;
+import nl.tudelft.sem.template.authentication.datatransferobjects.UserDto;
 import nl.tudelft.sem.template.authentication.domain.user.NetId;
 import nl.tudelft.sem.template.authentication.domain.user.Password;
 import nl.tudelft.sem.template.authentication.domain.user.RegistrationService;
-import nl.tudelft.sem.template.authentication.domain.user.Role;
-import nl.tudelft.sem.template.authentication.foreignDomain.UserAppUser;
 import nl.tudelft.sem.template.authentication.models.AuthenticationRequestModel;
 import nl.tudelft.sem.template.authentication.models.AuthenticationResponseModel;
 import nl.tudelft.sem.template.authentication.models.RegistrationRequestModel;
@@ -96,12 +94,12 @@ public class AuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
-
+        NetId netId;
+        Password password;
         try {
-            NetId netId = new NetId(request.getNetId());
-            Password password = new Password(request.getPassword());
-            List<Role> list = request.getList();
-            registrationService.registerUser(netId, password, list);
+            netId = new NetId(request.getNetId());
+            password = new Password(request.getPassword());
+            registrationService.registerUser(netId, password);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -112,21 +110,22 @@ public class AuthenticationController {
         ResponseEntity<AuthenticationResponseModel> token = ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
 
         //DONE
-        UserAppUser requestBody = new UserAppUser(
-                request.getNetId(),
-                request.getPassword(),
-                request.getList()
+        UserDto requestBody = new UserDto(
+                netId.toString(),
+                password.toString()
         );
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(token.toString());
+        //System.out.println(token.getBody().getToken().toString());
+        headers.setBearerAuth(token.getBody().getToken().toString());
 
         String json = new ObjectMapper().writeValueAsString(requestBody);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        System.out.println(entity.getHeaders().toString());
 
-        ResponseEntity<UserAppUser> obj = new RestTemplate()
-                .postForEntity("http://localhost:8082/api/user/save", entity, UserAppUser.class);
+        ResponseEntity<UserDto> obj = new RestTemplate()
+                .postForEntity("http://localhost:8082/api/user/save", entity, UserDto.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok().build();
         } else {

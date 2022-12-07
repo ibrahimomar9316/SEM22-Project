@@ -1,1 +1,0 @@
-I just copied these to try to work it out. After all could be deleted, as we need only id, username, and password.

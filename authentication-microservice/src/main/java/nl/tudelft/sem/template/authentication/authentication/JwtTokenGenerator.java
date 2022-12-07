@@ -39,13 +39,11 @@ public class JwtTokenGenerator {
      * @return the JWT token
      */
     public String generateToken(UserDetails userDetails) {
-        //Map<String, Object> claims = userDetails.getAuthorities()
-        // .stream().map(GrantedAuthority::getAuthority).toString()
-        return Jwts.builder().claim(userDetails.getUsername(),
-                userDetails.getAuthorities()).setSubject(userDetails.getUsername())
+        //Map<String, Object> claims = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toString()
+        return Jwts.builder().claim(userDetails.getUsername(), userDetails.getAuthorities())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(timeProvider.getCurrentTime().toEpochMilli()))
-                .setExpiration(new Date(timeProvider.getCurrentTime().toEpochMilli()
-                        + JWT_TOKEN_VALIDITY))
+                .setExpiration(new Date(timeProvider.getCurrentTime().toEpochMilli() + JWT_TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }
 }
