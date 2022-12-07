@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.user.repositories;
+package nl.tudelft.sem.template.user.domain;
 
 import nl.tudelft.sem.template.user.domain.entities.Boat;
 import org.springframework.data.jpa.repository.JpaRepository;

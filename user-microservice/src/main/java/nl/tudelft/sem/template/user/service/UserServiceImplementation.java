@@ -7,13 +7,13 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.sem.template.user.authentication.AuthManager;
+import nl.tudelft.sem.template.user.domain.AppUserRepository;
+import nl.tudelft.sem.template.user.domain.BoatRepository;
+import nl.tudelft.sem.template.user.domain.CertificateRepository;
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
 import nl.tudelft.sem.template.user.domain.entities.Boat;
 import nl.tudelft.sem.template.user.domain.entities.Certificate;
 import nl.tudelft.sem.template.user.domain.enums.Gender;
-import nl.tudelft.sem.template.user.repositories.AppUserRepository;
-import nl.tudelft.sem.template.user.repositories.BoatRepository;
-import nl.tudelft.sem.template.user.repositories.CertificateRepository;
 import org.springframework.stereotype.Service;
 
 /**
