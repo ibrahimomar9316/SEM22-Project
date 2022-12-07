@@ -16,13 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * App User microservice application.
  */
 @SpringBootApplication
-@ComponentScan({"nl.tudelft.sem.template.user.api",
-        "nl.tudelft.sem.template.user.api.forms",
-        "nl.tudelft.sem.template.user.authentication",
-        "nl.tudelft.sem.template.user.service",
-        "nl.tudelft.sem.template.user.config"})
-@EntityScan({"nl.tudelft.sem.template.user.domain.entities", "nl.tudelft.sem.template.user.domain.enums"})
-@EnableJpaRepositories("nl.tudelft.sem.template.user.repositories")
 public class UserMicroService {
     public static void main(String[] args) {
         SpringApplication.run(UserMicroService.class, args);
