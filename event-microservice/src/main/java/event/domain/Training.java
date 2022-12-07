@@ -1,6 +1,8 @@
 package event.domain;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,13 +15,17 @@ public class Training extends Event {
     //TODO: Change admin data type to User
     private transient String admin;
     private transient List<String> participants;
+    private transient Date date;
+    private transient Time time;
+    //TODO: Change admin data type to Certificate
+    private transient String rules;
 
     /**
      * Constructor for creating a training-type event.
      * Sets the admin and the list of participants to the ones
      * specified in the method.
      *
-     * @param admin the admin of the training session;
+     * @param admin        the admin of the training session;
      * @param participants the list of participants to the competition;
      */
     public Training(String admin, List<String> participants) {
@@ -36,6 +42,23 @@ public class Training extends Event {
      */
     public Training(String admin) {
         this.admin = admin;
+        this.participants = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for creating a training-session event.
+     * Sets the admin to the one specified in method signature.
+     * Sets the date and time of the event.
+     * Creates a new list of participants.
+     *
+     * @param admin the admin
+     * @param date  the date
+     * @param time  the time
+     */
+    public Training(String admin, Date date, Time time) {
+        this.admin = admin;
+        this.date = date;
+        this.time = time;
         this.participants = new ArrayList<>();
     }
 

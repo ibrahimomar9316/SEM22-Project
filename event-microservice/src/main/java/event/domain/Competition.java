@@ -1,11 +1,13 @@
 package event.domain;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * An implementation of one type of event: Competition.
- * A competition may have different rules and selection procedures
+ * A competition may have different rules and selection procedures.
  * compared to a training routine. It is also managed differently.
  */
 public class Competition extends Event {
@@ -13,13 +15,17 @@ public class Competition extends Event {
     //TODO: Change admin data type to User
     private transient String admin;
     private transient List<String> participants;
+    private transient Date date;
+    private transient Time time;
+    //TODO: Change admin data type to Certificate
+    private transient String rules;
 
     /**
      * Constructor for creating a competition-type event.
-     * Sets the admin and the list of participants to the ones
+     * Sets the admin and the list of participants to the ones.
      * specified in the method.
      *
-     * @param admin the admin of the competition;
+     * @param admin        the admin of the competition;
      * @param participants the list of participants to the competition;
      */
     public Competition(String admin, List<String> participants) {
@@ -29,14 +35,31 @@ public class Competition extends Event {
 
     /**
      * Constructor for creating a competition-type event.
-     * Sets the admin to the one specified in method signature
+     * Sets the admin to the one specified in method signature.
      * Creates a new list of participants.
      *
      * @param admin the admin of the competition;
-     *
      */
     public Competition(String admin) {
         this.admin = admin;
+        this.participants = new ArrayList<>();
+    }
+
+
+    /**
+     * Constructor for creating a competition-type event.
+     * Sets the admin to the one specified in method signature.
+     * Sets the date and time of the event.
+     * Creates a new list of participants.
+     *
+     * @param admin the admin
+     * @param date  the date
+     * @param time  the time
+     */
+    public Competition(String admin, Date date, Time time) {
+        this.admin = admin;
+        this.date = date;
+        this.time = time;
         this.participants = new ArrayList<>();
     }
 

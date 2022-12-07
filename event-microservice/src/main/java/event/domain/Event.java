@@ -1,6 +1,8 @@
 package event.domain;
 
 import commons.BoatMembers;
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +16,8 @@ public abstract class Event {
     //TODO: Change admin data type to User
     private String admin;
     private List<String> participants;
+    private Date date;
+    private Time time;
     private List<BoatMembers> allBoatMembersList;
     //TODO: Change admin data type to Certificate
     private transient String rules;
@@ -91,6 +95,17 @@ public abstract class Event {
     }
 
 
+    //TODO
+
+    /**
+     * A getter returning the rules of the event.
+     *
+     * @return the rules
+     */
+    public String getRules() {
+        return rules;
+    }
+
     /**
      * Sets the rules of the event.
      *
@@ -98,6 +113,42 @@ public abstract class Event {
      */
     public void setRules(String rules) {
         this.rules = rules;
+    }
+
+    /**
+     * A getter returning the date of the event.
+     *
+     * @return the date of the event
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * A getter returning the time of the event.
+     *
+     * @return the time of the event
+     */
+    public Time getTime() {
+        return time;
+    }
+
+    /**
+     * Sets the date of the event.
+     *
+     * @param date the date of the event
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * Sets the time of the event.
+     *
+     * @param time the time of the event
+     */
+    public void setTime(Time time) {
+        this.time = time;
     }
 
     /**
