@@ -81,6 +81,7 @@ public class UserServiceImplementation {
      * @param boatId - boat ID
      * @throws NotFoundException - either user or boat is not found in the database
      */
+    @SuppressWarnings("PMD")
     public void addBoatToAppUser(Long appUserId, Long boatId) throws NotFoundException {
         AppUser appUser = getAppUser(appUserId);
 
@@ -100,6 +101,7 @@ public class UserServiceImplementation {
      * @param certificateId - certificate ID
      * @throws NotFoundException - either user or certificate is not found in the database
      */
+    @SuppressWarnings("PMD")
     public void addCertificateToAppUser(Long appUserId, Long certificateId) throws NotFoundException {
         AppUser appUser = getAppUser(appUserId);
 
