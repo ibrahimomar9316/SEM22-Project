@@ -40,7 +40,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         var user = optionalUser.get();
 
-        return new User(user.getNetId().toString(), user.getPassword().toString(),
-                new ArrayList<>()); // no authorities/roles
+        return new User(user.getNetId().toString(), user.getPassword().toString(), new ArrayList<>());
+        // no authorities/roles
     }
 }
