@@ -4,19 +4,13 @@ import java.net.URI;
 import java.util.List;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import nl.tudelft.sem.template.user.api.forms.BoatToUserForm;
-import nl.tudelft.sem.template.user.api.forms.CertificateToUserForm;
 import nl.tudelft.sem.template.user.datatransferobjects.UserDto;
 import nl.tudelft.sem.template.user.domain.entities.AppUser;
-import nl.tudelft.sem.template.user.domain.entities.Boat;
-import nl.tudelft.sem.template.user.domain.entities.Certificate;
-import nl.tudelft.sem.template.user.domain.enums.Gender;
-import nl.tudelft.sem.template.user.service.UserServiceImplementation;
+import nl.tudelft.sem.template.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserServiceImplementation appUserService;
+    private final UserService appUserService;
 
     static final String AUTH_URL_MS = "http://localhost:8081/";
 
@@ -59,48 +53,10 @@ public class UserController {
      */
     @PostMapping("/user/save")
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto gotUser) throws NotFoundException {
-        AppUser savedUser = new AppUser(gotUser.getUsername(), gotUser.getPassword());
+        AppUser savedUser = new AppUser(gotUser.getUsername());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         appUserService.saveAppUser(savedUser);
         return ResponseEntity.created(uri).body(gotUser);
-    }
-
-    /**
-     * Endpoint saving a boat in the database.
-     *
-     * @param boat - boat body to be saved
-     * @return - saved boat
-     */
-    @PostMapping("/boat/save")
-    public ResponseEntity<Boat> saveBoat(@RequestBody Boat boat) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/boat/save").toUriString());
-        return ResponseEntity.created(uri).body(appUserService.saveBoat(boat));
-    }
-
-    /**
-     * Endpoint saving a certificate in the database.
-     *
-     * @param certificate - certificate body to be saved
-     * @return - saved certificate
-     */
-    @PostMapping("/certificate/save")
-    public ResponseEntity<Certificate> saveBoat(@RequestBody Certificate certificate) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/certificate/save")
-                .toUriString());
-        return ResponseEntity.created(uri).body(appUserService.saveCertificate(certificate));
-    }
-
-    /**
-     * Using this endpoint user can set his gender.
-     *
-     * @param gender - new gender to be set
-     * @return saved gender
-     */
-    @PutMapping("/user/gender/save/{gender}")
-    public ResponseEntity<Gender> saveGender(@PathVariable("gender") Gender gender) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/gender/save")
-                .toUriString());
-        return ResponseEntity.created(uri).body(appUserService.saveGender(gender));
     }
 
     /**
@@ -116,33 +72,5 @@ public class UserController {
     public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());
         return ResponseEntity.created(uri).body(appUserService.updateUser(appUser));
-    }
-
-    /**
-     * Endpoint adding boat to the specific user in the database.
-     *
-     * @param boatToUserForm - form containing userId and boatId
-     * @return - returns confirmation response
-     * @throws NotFoundException - throws an exception when user with ID is not found
-     */
-    @PostMapping("/boat/add_to_user")
-    public ResponseEntity<?> addBoatToAppUser(@RequestBody BoatToUserForm boatToUserForm) throws NotFoundException {
-        appUserService.addBoatToAppUser(boatToUserForm.getAppUserId(), boatToUserForm.getBoatId());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Endpoint adding certificate to the specific user in the database.
-     *
-     * @param certificateToUserForm - form containing userId and boatId
-     * @return - returns confirmation response
-     * @throws NotFoundException - throws an exception when user with ID is not found
-     */
-    @PostMapping("/certificate/add_to_user")
-    public ResponseEntity<?> addCertificateToAppUser(@RequestBody CertificateToUserForm certificateToUserForm)
-            throws NotFoundException {
-        appUserService.addCertificateToAppUser(certificateToUserForm.getAppUserId(),
-                certificateToUserForm.getCertificateId());
-        return ResponseEntity.ok().build();
     }
 }

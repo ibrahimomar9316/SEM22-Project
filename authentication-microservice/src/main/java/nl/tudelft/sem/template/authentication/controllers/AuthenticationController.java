@@ -111,8 +111,7 @@ public class AuthenticationController {
 
         //DONE
         UserDto requestBody = new UserDto(
-                netId.toString(),
-                password.toString()
+                netId.toString()
         );
 
         HttpHeaders headers = new HttpHeaders();
