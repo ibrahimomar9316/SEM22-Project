@@ -1,6 +1,7 @@
 package event.service;
 
-import event.domain.Event;
+import event.domain.entities.Event;
+
 import java.util.List;
 
 /**

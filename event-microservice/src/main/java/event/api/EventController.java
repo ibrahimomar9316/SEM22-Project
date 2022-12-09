@@ -1,7 +1,6 @@
 package event.api;
 
-import event.domain.Competition;
-import event.domain.Event;
+import event.domain.entities.Event;
 import event.service.EventList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +40,7 @@ public class EventController {
      */
     @PostMapping({"/create"})
     public ResponseEntity<EventList> saveRole(@RequestBody String user) {
-        Event event = new Competition(user);
+        Event event = new Event(user);
         eventList.addEvent(event);
         return new ResponseEntity<>(HttpStatus.OK);
     }
