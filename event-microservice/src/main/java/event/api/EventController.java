@@ -55,7 +55,7 @@ public class EventController {
      * @param createModel the create model
      * @return the response entity
      */
-    @PostMapping({"/create"})
+    @PostMapping({"/event/create"})
     public ResponseEntity<EventResponseModel> saveRole(
             @RequestBody EventCreationModel createModel) {
         Event savedEvent = new Event(createModel.getEventType(), new AppUser(auth.getNetId()));
