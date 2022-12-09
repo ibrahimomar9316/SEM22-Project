@@ -1,4 +1,4 @@
-package event.foreignDomain.enums;
+package event.foreigndomain.enums;
 
 public enum Gender {
     MALE, FEMALE

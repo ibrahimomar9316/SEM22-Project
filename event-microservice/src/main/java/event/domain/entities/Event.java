@@ -1,7 +1,7 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
-import event.foreignDomain.entitites.AppUser;
+import event.foreigndomain.entitites.AppUser;
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
