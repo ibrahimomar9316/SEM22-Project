@@ -79,9 +79,10 @@ public class Event {
     }
 
     public String toStringNewEvent() {
-        return "You created a new event! \nAdministrator: " + admin +
-                "\nNumber of participants:" + numberOfParticipants();
+        return "You created a new event! \nAdministrator: " + admin
+                + "\nNumber of participants:" + numberOfParticipants();
     }
+
     @Override
     public String toString() {
         return eventType.toString() + " made by " + admin;
