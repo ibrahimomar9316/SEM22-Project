@@ -55,6 +55,8 @@ public class Event {
     @Column
     private transient String rules;
 
+    public Event() {}
+
     /**
      * Instantiates a new Event.
      *
@@ -67,7 +69,6 @@ public class Event {
         participants = new ArrayList<>();
     }
 
-
     /**
      * Number of participants int.
      *
@@ -77,4 +78,16 @@ public class Event {
         return this.participants.size();
     }
 
+    public String toStringNewEvent() {
+        return "You created a new event! \nAdministrator: " + admin +
+                "\nNumber of participants:" + numberOfParticipants();
+    }
+    @Override
+    public String toString() {
+        return eventType.toString() + " made by " + admin;
+    }
+
+    public String toStringJoin() {
+        return "You have joined event " + eventId + " made by " + admin;
+    }
 }
