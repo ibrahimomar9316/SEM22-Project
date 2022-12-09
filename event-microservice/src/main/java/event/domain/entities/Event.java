@@ -1,7 +1,7 @@
 package event.domain.entities;
 
-import commons.BoatMembers;
 import event.domain.enums.EventType;
+import event.foreignDomain.entitites.AppUser;
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +35,10 @@ public class Event {
     private EventType eventType;
 
     @Column
-    private String admin;
+    private AppUser admin;
 
     @Column
-    private List<String> participants;
+    private List<AppUser> participants;
 
     @Column
     private Date date;
@@ -47,12 +47,9 @@ public class Event {
     private Time time;
 
     @Column
-    private List<BoatMembers> allBoatMembersList;
-
-    @Column
     private transient String rules;
 
-    public Event(String admin) {
+    public Event(EventType eventType, AppUser admin) {
         this.admin = admin;
     }
 

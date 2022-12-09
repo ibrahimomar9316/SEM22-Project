@@ -1,7 +1,8 @@
 package event.api;
 
 import event.domain.entities.Event;
-import event.service.EventList;
+import event.models.EventCreationModel;
+import event.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping({"/api"})
 public class EventController {
-    private transient EventList eventList;
+    private transient EventService eventService;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -35,13 +36,13 @@ public class EventController {
     /**
      * Api endpoint that creates a new event (boilerplate).
      *
-     * @param user the event owner
+     * @param createModel
      * @return the response entity
      */
     @PostMapping({"/create"})
-    public ResponseEntity<EventList> saveRole(@RequestBody String user) {
-        Event event = new Event(user);
-        eventList.addEvent(event);
+    public ResponseEntity<EventService> saveRole(@RequestBody EventCreationModel createModel) {
+        Event savedEvent = new Event(createModel.getEventType(), createModel.getUser());
+        eventService.saveEvent(savedEvent);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
