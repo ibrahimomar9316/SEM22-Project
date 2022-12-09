@@ -25,18 +25,18 @@ public class EventController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final transient AuthManager authManager;
+    private final transient AuthManager auth;
 
     /**
      * Instantiates a new controller.
      *
      * @param eventService the event service
-     * @param authManager  the auth manager
+     * @param auth       the auth manager
      */
     @Autowired
-    public EventController(EventService eventService, AuthManager authManager) {
+    public EventController(EventService eventService, AuthManager auth) {
         this.eventService = eventService;
-        this.authManager = authManager;
+        this.auth = auth;
     }
 
     /**
@@ -56,8 +56,9 @@ public class EventController {
      * @return the response entity
      */
     @PostMapping({"/create"})
-    public ResponseEntity<EventResponseModel> saveRole(@RequestBody EventCreationModel createModel) {
-        Event savedEvent = new Event(createModel.getEventType(), new AppUser(authManager.getNetId()));
+    public ResponseEntity<EventResponseModel> saveRole(
+            @RequestBody EventCreationModel createModel) {
+        Event savedEvent = new Event(createModel.getEventType(), new AppUser(auth.getNetId()));
         eventService.saveEvent(savedEvent);
         return ResponseEntity.ok(new EventResponseModel(savedEvent));
     }

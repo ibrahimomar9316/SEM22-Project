@@ -3,9 +3,11 @@ package event.domain.entities;
 import event.domain.enums.EventType;
 import event.foreigndomain.entitites.AppUser;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The type Event.
+ */
 @Entity
 @Data
 @Getter
@@ -35,10 +40,11 @@ public class Event {
     private EventType eventType;
 
     @Column
-    private AppUser admin;
+    private String admin;
 
     @Column
-    private List<AppUser> participants;
+    @ElementCollection(targetClass = String.class)
+    private List<String> participants;
 
     @Column
     private Date date;
@@ -49,10 +55,24 @@ public class Event {
     @Column
     private transient String rules;
 
+    /**
+     * Instantiates a new Event.
+     *
+     * @param eventType the event type
+     * @param admin     the admin
+     */
     public Event(EventType eventType, AppUser admin) {
-        this.admin = admin;
+        this.eventType = eventType;
+        this.admin = admin.getNetId();
+        participants = new ArrayList<>();
     }
 
+
+    /**
+     * Number of participants int.
+     *
+     * @return the int
+     */
     public int numberOfParticipants() {
         return this.participants.size();
     }

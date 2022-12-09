@@ -29,4 +29,8 @@ public class AppUser {
     public AppUser(String netId) {
         this.netId = netId;
     }
+
+    public String getNetId() {
+        return netId;
+    }
 }
