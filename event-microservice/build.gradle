@@ -51,6 +51,8 @@ dependencies {
 
 	// Local test database (in-memory)
 	implementation 'com.h2database:h2'
+	developmentOnly 'javax.xml.bind:jaxb-api'
+	developmentOnly 'org.hibernate:hibernate-core'
 	developmentOnly 'org.hibernate:hibernate-entitymanager'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
