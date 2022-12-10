@@ -89,7 +89,7 @@ public class Event {
      * Function that creates a string that will be printed after a new event is created by a user.
      *
      * @return a string representing an announcement that a new event was created, stating how many participants are
-     * and who is the owner of the event
+     *          and who is the owner of the event
      */
     public String toStringNewEvent() {
         return "You created a new event! \nAdministrator: " + admin

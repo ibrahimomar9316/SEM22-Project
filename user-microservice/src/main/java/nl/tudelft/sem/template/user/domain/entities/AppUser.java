@@ -25,6 +25,7 @@ public class AppUser {
 
     /**
      * Basic constructor for a new AppUser.
+     *
      * @param netId a string containing the netId of the user so that we can differentiate them
      */
     public AppUser(String netId) {
