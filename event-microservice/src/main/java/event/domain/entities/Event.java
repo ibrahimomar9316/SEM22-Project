@@ -31,6 +31,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Event {
 
+    /**
+     * Values that are stored in the event as an object but also for the DataBase.
+     */
     @Id
     @Column(name = "eventId", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -83,12 +86,17 @@ public class Event {
                 + "\nNumber of participants:" + numberOfParticipants();
     }
 
+    /**
+     * Method that converts and event into a string showing what type of event was created and who created it.
+     *
+     * @return A string representing who created an event
+     */
     @Override
     public String toString() {
         return eventType.toString() + " made by " + admin;
     }
 
-    public String toStringJoin() {
+    /*public String toStringJoin() {
         return "You have joined event " + eventId + " made by " + admin;
-    }
+    }*/
 }

@@ -18,12 +18,18 @@ public class RequestAuthenticationConfig extends WebSecurityConfigurerAdapter {
     private final transient JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final transient JwtRequestFilter jwtRequestFilter;
 
+    /**
+     * Constructor for the request authentication.
+     */
     public RequestAuthenticationConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                                        JwtRequestFilter jwtRequestFilter) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
+    /**
+     * Override of the request auth configuration.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()

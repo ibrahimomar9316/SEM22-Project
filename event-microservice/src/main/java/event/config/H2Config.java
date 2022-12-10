@@ -23,6 +23,9 @@ public class H2Config {
     @Getter
     private final Environment environment;
 
+    /**
+     * Constructor for the config of the H2 DataBase.
+     */
     public H2Config(Environment environment) {
         this.environment = environment;
     }

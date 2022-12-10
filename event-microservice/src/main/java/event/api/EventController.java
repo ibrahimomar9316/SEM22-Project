@@ -81,13 +81,7 @@ public class EventController {
 
     }
 
-    /**
-     * Join response entity.
-     *
-     * @param request the request
-     * @return the response entity
-     */
-    @PostMapping({"/event/join"})
+    /*@PostMapping({"/event/join"})
     public ResponseEntity<String> join(EventJoinModel request) {
         try {
             Event event = eventService.getevent(request.getId());
@@ -97,5 +91,6 @@ public class EventController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
+    }*/
+
 }
