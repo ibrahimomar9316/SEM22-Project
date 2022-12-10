@@ -23,6 +23,10 @@ public class AppUser {
     @Column(unique = true)
     private String netId;
 
+    /**
+     * Basic constructor for a new AppUser.
+     * @param netId a string containing the netId of the user so that we can differentiate them
+     */
     public AppUser(String netId) {
         this.netId = netId;
     }

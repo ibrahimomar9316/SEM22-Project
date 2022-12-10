@@ -58,13 +58,17 @@ public class Event {
     @Column
     private transient String rules;
 
+    /**
+     * Empty constructor for the Event class.
+     */
     public Event() {}
 
     /**
-     * Instantiates a new Event.
+     * Constructor for a new Event.
      *
-     * @param eventType the event type
-     * @param admin     the admin
+     * @param eventType an enum containing the event type (competition/training)
+     * @param admin     an AppUser representing who is the admin/owner of an event, being the one that can manage or
+     *                  modify the whole event
      */
     public Event(EventType eventType, AppUser admin) {
         this.eventType = eventType;
@@ -73,14 +77,20 @@ public class Event {
     }
 
     /**
-     * Number of participants int.
+     * Function that returns the number of participants enrolled for an event.
      *
-     * @return the int
+     * @return an int containing the number of participants
      */
     public int numberOfParticipants() {
         return this.participants.size();
     }
 
+    /**
+     * Function that creates a string that will be printed after a new event is created by a user.
+     *
+     * @return a string representing an announcement that a new event was created, stating how many participants are
+     * and who is the owner of the event
+     */
     public String toStringNewEvent() {
         return "You created a new event! \nAdministrator: " + admin
                 + "\nNumber of participants:" + numberOfParticipants();

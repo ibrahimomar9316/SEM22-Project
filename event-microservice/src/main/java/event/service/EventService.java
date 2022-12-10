@@ -21,11 +21,11 @@ public class EventService {
     private final EventRepository eventRepository;
 
     /**
-     * Service layer method for getting the specific event by their ID.
+     * Service layer method for getting the specific event by their ID from the repository.
      *
-     * @param eventId - event ID
-     * @return - returns a found event.
-     * @throws NotFoundException - thrown when event not found
+     * @param eventId event ID that we want to get
+     * @return the event that we wanted to get
+     * @throws NotFoundException exception that is thrown when the event is not found
      */
     public Event getevent(Long eventId) throws NotFoundException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
@@ -36,19 +36,21 @@ public class EventService {
     }
 
     /**
-     * Save event event.
+     * Service layer method used for saving an event into the repository (Used when new events are created or when we
+     * want to update a new one.
      *
-     * @param event the event
-     * @return the event
+     * @param event the event that we want to save into the repository
+     * @return the same event that we saved
      */
     public Event saveEvent(Event event) {
         return eventRepository.save(event);
     }
 
     /**
-     * Gets all events.
+     * Service layer method used to get all of the events, mainly used for debugging or when an user wants to seek
+     * an event that is interested in.
      *
-     * @return the all events
+     * @return a list of all events
      */
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
