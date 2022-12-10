@@ -11,7 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * The type Event service.
+ * The Service class for managing the events in the H2 DB.
+ *
+ * <p>It is used by the network controller to manage the
+ * database (add, get, edit, remove events). it uses the
+ * EventRepository, which is a JpaRepository.</p>
  */
 @Service
 @RequiredArgsConstructor
@@ -36,8 +40,8 @@ public class EventService {
     }
 
     /**
-     * Service layer method used for saving an event into the repository (Used when new events are created or when we
-     * want to update a new one.
+     * Service layer method used for saving an event into the repository.
+     * Used when new events are created or when we want to update a new one.
      *
      * @param event the event that we want to save into the repository
      * @return the same event that we saved
@@ -47,10 +51,10 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events, mainly used for debugging or when an user wants to seek
-     * an event that is interested in.
+     * Service layer method used to get all of the events, mainly used for
+     * debugging or when an user wants to seek an event that they are interested in.
      *
-     * @return a list of all events
+     * @return a list of events
      */
     public List<Event> getAllEvents() {
         return eventRepository.findAll();

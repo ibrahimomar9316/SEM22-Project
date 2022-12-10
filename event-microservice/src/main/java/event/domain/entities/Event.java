@@ -67,8 +67,8 @@ public class Event {
      * Constructor for a new Event.
      *
      * @param eventType an enum containing the event type (competition/training)
-     * @param admin     an AppUser representing who is the admin/owner of an event, being the one that can manage or
-     *                  modify the whole event
+     * @param admin     an AppUser representing who is the admin/owner of an event,
+     *                  being the one that can manage or modify the whole event
      */
     public Event(EventType eventType, AppUser admin) {
         this.eventType = eventType;
@@ -86,10 +86,11 @@ public class Event {
     }
 
     /**
-     * Function that creates a string that will be printed after a new event is created by a user.
+     * Function that creates a string that will be printed after a new event is
+     * created by a user.
      *
-     * @return a string representing an announcement that a new event was created, stating how many participants are
-     *          and who is the owner of the event
+     * @return a string representing an announcement that a new event was created,
+     *          stating the number of participants and who the owner of the event is
      */
     public String toStringNewEvent() {
         return "You created a new event! \nAdministrator: " + admin
@@ -97,7 +98,8 @@ public class Event {
     }
 
     /**
-     * Method that converts and event into a string showing what type of event was created and who created it.
+     * Method that converts and event into a string showing what type of event
+     * was created and who created it.
      *
      * @return A string representing who created an event
      */
