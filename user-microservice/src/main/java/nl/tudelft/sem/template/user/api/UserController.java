@@ -25,8 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserController {
     private final UserService appUserService;
 
-    static final String AUTH_URL_MS = "http://localhost:8081/";
-
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
