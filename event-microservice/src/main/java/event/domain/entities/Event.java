@@ -110,8 +110,4 @@ public class Event {
         string = Character.toUpperCase(string.charAt(0)) + string.substring(1);
         return string + " Event made by " + admin + ", number of participants: " + numberOfParticipants();
     }
-
-    public String toStringJoin() {
-        return "You have joined event " + eventId + " made by " + admin;
-    }
 }

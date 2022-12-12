@@ -64,4 +64,24 @@ public class EventService {
         return eventRepository.findAll();
     }
 
+    /**
+     * Service layer method used to get all of the events, mainly used for
+     * debugging or when an user wants to seek an event that they are interested in.
+     *
+     * @return a list of events
+     */
+    public List<Event> getEventsByAdmin(String netId) {
+        return eventRepository.getEventsByAdmin(netId);
+    }
+
+    /**
+     * Service layer method used to get all of the events, mainly used for
+     * debugging or when an user wants to seek an event that they are interested in.
+     *
+     * @return a list of events
+     */
+    public List<Event> getEventsByParticipant(String netId) {
+        return eventRepository.getEventsByParticipant(netId);
+    }
+
 }

@@ -36,7 +36,7 @@ public class EventController {
 
     // This is used to set, get and check for events in
     // the H2 repo
-    private transient final EventService eventService;
+    private transient EventService eventService;
 
     // This is used and initiated to check if the token is
     // valid and to get the netID
@@ -118,7 +118,6 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("There are no events for you to join!");
         }
-
     }
 
     /**
@@ -137,11 +136,69 @@ public class EventController {
             }
             event.getParticipants().add(auth.getNetId());
             eventService.updateEvent(event);
-            return ResponseEntity.ok(event.toStringJoin());
+            return ResponseEntity.ok("You have joined event " + event.getEventId()
+                    + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("There is no event that has that ID!");
         }
     }
 
+    /**
+     * Endpoint for leaving an event.
+     *
+     * @param request the request
+     * @return the response entity
+     */
+    @PostMapping({"/event/leave"})
+    public ResponseEntity<String> leave(@RequestBody EventJoinModel request) {
+        try {
+            Event event = eventService.getevent(request.getEventId());
+            if (!event.getParticipants().contains(auth.getNetId())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("You are not participating in this event!");
+            }
+            event.getParticipants().remove(auth.getNetId());
+            eventService.updateEvent(event);
+            return ResponseEntity.ok("You have left event " + event.getEventId()
+                    + " made by " + event.getAdmin());
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("There is no event that has that ID!");
+        }
+    }
+
+    /**
+     * Endpoint for showing my created events.
+     *
+     * @return the response entity
+     */
+    @GetMapping({"/event/myCreatedEvents"})
+    public ResponseEntity<String> myCreatedEvents() {
+        // checks if the database is not empty
+        if (eventService.getEventsByAdmin(auth.getNetId()).size() != 0) {
+            return ResponseEntity.ok(eventService.getEventsByAdmin(auth.getNetId()).toString());
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("You have not created an event!");
+        }
+    }
+
+    /**
+     * Endpoint for showing my created events.
+     *
+     * @return the response entity
+     */
+    @GetMapping({"/event/myJoinedEvents"})
+    public ResponseEntity<String> myJoinedEvents() {
+        // checks if the database is not empty
+        if (eventService.getEventsByParticipant(auth.getNetId()).size() != 0) {
+            return ResponseEntity.ok(eventService.getEventsByParticipant(auth.getNetId()).toString());
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("You have not joined any event!");
+        }
+    }
 }
