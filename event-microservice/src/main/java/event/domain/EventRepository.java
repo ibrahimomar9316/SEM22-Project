@@ -16,7 +16,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
      List<Event> getEventsByAdmin(String admin);
 
     //TODO: Modify this query
-
-    @Query(value = "SELECT e FROM Event e WHERE e.participants LIKE ?1")
+    @Query(value = "SELECT e FROM Event e JOIN e.participants p WHERE p = ?1")
      List<Event> getEventsByParticipant(String participant);
 }
