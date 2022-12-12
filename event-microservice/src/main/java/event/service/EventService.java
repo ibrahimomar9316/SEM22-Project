@@ -50,6 +50,10 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    public Event updateEvent(Event event) {
+        return eventRepository.saveAndFlush(event);
+    }
+
     /**
      * Service layer method used to get all of the events, mainly used for
      * debugging or when an user wants to seek an event that they are interested in.

@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -94,7 +95,7 @@ public class Event {
      */
     public String toStringNewEvent() {
         return "You created a new event! \nAdministrator: " + admin
-                + "\nNumber of participants:" + numberOfParticipants();
+                + "\nNumber of participants: " + numberOfParticipants();
     }
 
     /**
@@ -105,10 +106,12 @@ public class Event {
      */
     @Override
     public String toString() {
-        return eventType.toString() + " made by " + admin;
+        String string = eventType.toString().toLowerCase(Locale.ROOT);
+        string = Character.toUpperCase(string.charAt(0)) + string.substring(1);
+        return string + " Event made by " + admin + ", number of participants: " + numberOfParticipants();
     }
 
-    /*public String toStringJoin() {
+    public String toStringJoin() {
         return "You have joined event " + eventId + " made by " + admin;
-    }*/
+    }
 }

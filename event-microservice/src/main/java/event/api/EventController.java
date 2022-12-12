@@ -4,7 +4,9 @@ import event.authentication.AuthManager;
 import event.domain.entities.Event;
 import event.foreigndomain.entitites.AppUser;
 import event.models.EventCreationModel;
+import event.models.EventJoinModel;
 import event.service.EventService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,7 @@ public class EventController {
 
     // This is used to set, get and check for events in
     // the H2 repo
-    private transient EventService eventService;
+    private transient final EventService eventService;
 
     // This is used and initiated to check if the token is
     // valid and to get the netID
@@ -113,21 +115,33 @@ public class EventController {
             return ResponseEntity.ok(eventService.getAllEvents().toString());
         } else {
             // else returns BAD_REQUEST
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("There are no events for you to join!");
         }
 
     }
 
-    /*@PostMapping({"/event/join"})
-    public ResponseEntity<String> join(EventJoinModel request) {
+    /**
+     * Endpoint for joining an event in the database.
+     *
+     * @param request the request
+     * @return the response entity
+     */
+    @PostMapping({"/event/join"})
+    public ResponseEntity<String> join(@RequestBody EventJoinModel request) {
         try {
-            Event event = eventService.getevent(request.getId());
+            Event event = eventService.getevent(request.getEventId());
+            if (event.getParticipants().contains(auth.getNetId())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("You are already participating in this event!");
+            }
             event.getParticipants().add(auth.getNetId());
-            eventService.saveEvent(event);
+            eventService.updateEvent(event);
             return ResponseEntity.ok(event.toStringJoin());
         } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("There is no event that has that ID!");
         }
-    }*/
+    }
 
 }
