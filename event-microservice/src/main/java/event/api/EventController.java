@@ -122,9 +122,19 @@ public class EventController {
 
     /**
      * Endpoint for joining an event in the database.
+     * <p>It takes the id of the event and searches
+     * for it in the database. When it finds the
+     * corresponding event, it adds the user to
+     * the participants if and only if the user
+     * is not already in the list.</p>
      *
-     * @param request the request
-     * @return the response entity
+     * <p>It returns a string message reporting
+     * if the user has successfully joined the event.
+     * If some error occurs, it returns 400 and a
+     * message conveying the error.</p>
+     *
+     * @param request a model containing the id of the event as a long
+     * @return one of three messages and either 200 or 400
      */
     @PostMapping({"/event/join"})
     public ResponseEntity<String> join(@RequestBody EventJoinModel request) {
@@ -146,9 +156,18 @@ public class EventController {
 
     /**
      * Endpoint for leaving an event.
+     * <p>It takes the id of the event and searches
+     * for it in the database. When it finds the
+     * corresponding event, if the user is already
+     * in the list, it removes them from the database</p>
      *
-     * @param request the request
-     * @return the response entity
+     * <p>It returns a string message reporting
+     * if the user has successfully removed from the event.
+     * If some error occurs, it returns 400 and a
+     * message conveying the error.</p>
+     *
+     * @param request a model containing the id of the event as a long
+     * @return one of three messages and either 200 or 400
      */
     @PostMapping({"/event/leave"})
     public ResponseEntity<String> leave(@RequestBody EventJoinModel request) {
@@ -169,9 +188,12 @@ public class EventController {
     }
 
     /**
-     * Endpoint for showing my created events.
+     * This endpoint is used my an admin of the event to see
+     * the list of events they created.
+     * TODO: show notifications for each event.
      *
-     * @return the response entity
+     * @return the list of events the admin created or 400 if
+     *         they did not create any event.
      */
     @GetMapping({"/event/myCreatedEvents"})
     public ResponseEntity<String> myCreatedEvents() {
@@ -186,9 +208,12 @@ public class EventController {
     }
 
     /**
-     * Endpoint for showing my created events.
+     * This endpoint is used my a rower to see the list
+     * of events they joined.
+     * TODO: show notifications for each event.
      *
-     * @return the response entity
+     * @return the list of events the user has joined or 400
+     *         if they did not join any event.
      */
     @GetMapping({"/event/myJoinedEvents"})
     public ResponseEntity<String> myJoinedEvents() {
