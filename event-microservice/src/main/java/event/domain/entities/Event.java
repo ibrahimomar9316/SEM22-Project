@@ -96,7 +96,8 @@ public class Event {
      *          stating the number of participants and who the owner of the event is
      */
     public String toStringNewEvent() {
-        return "You created a new event! \nAdministrator: " + admin
+        return "You created a new event! \nID: " + eventId
+                + "\nAdministrator: " + admin
                 + "\nNumber of participants: " + numberOfParticipants();
     }
 
