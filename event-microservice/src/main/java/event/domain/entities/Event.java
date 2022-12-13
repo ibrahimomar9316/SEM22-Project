@@ -5,6 +5,7 @@ import event.domain.enums.Rules;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -96,8 +97,9 @@ public class Event {
      *          stating the number of participants and who the owner of the event is
      */
     public String toStringNewEvent() {
-        return "You created a new event! \nAdministrator: " + admin
-                + "\nNumber of participants:" + numberOfParticipants();
+        return "You created a new event! \nID: " + eventId
+                + "\nAdministrator: " + admin
+                + "\nNumber of participants: " + numberOfParticipants();
     }
 
     /**
@@ -107,7 +109,9 @@ public class Event {
      */
     @Override
     public String toString() {
-        return eventType.toString() + " made by " + admin + "at: " + time + "\n" + participants + "\n" + rules;
+        String type = eventType.toString().toLowerCase(Locale.ROOT);
+        type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
+        return type + " made by " + admin + "at: " + time + "\n" + participants + "\n" + rules;
     }
 
     public String toStringJoin() {
