@@ -6,12 +6,15 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,8 +48,8 @@ public class Event {
     @Column
     private String admin;
 
-    @Column
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection()
+    @CollectionTable(name = "participants_netIds", joinColumns = @JoinColumn(name = "eventId"))
     private List<String> participants;
 
     @Column
@@ -93,8 +96,9 @@ public class Event {
      *          stating the number of participants and who the owner of the event is
      */
     public String toStringNewEvent() {
-        return "You created a new event! \nAdministrator: " + admin
-                + "\nNumber of participants:" + numberOfParticipants();
+        return "You created a new event! \nID: " + eventId
+                + "\nAdministrator: " + admin
+                + "\nNumber of participants: " + numberOfParticipants();
     }
 
     /**
@@ -105,10 +109,8 @@ public class Event {
      */
     @Override
     public String toString() {
-        return eventType.toString() + " made by " + admin;
+        String string = eventType.toString().toLowerCase(Locale.ROOT);
+        string = Character.toUpperCase(string.charAt(0)) + string.substring(1);
+        return string + " Event made by " + admin + ", number of participants: " + numberOfParticipants();
     }
-
-    /*public String toStringJoin() {
-        return "You have joined event " + eventId + " made by " + admin;
-    }*/
 }

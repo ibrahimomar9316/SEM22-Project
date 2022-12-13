@@ -51,6 +51,16 @@ public class EventService {
     }
 
     /**
+     * Update event in the database.
+     *
+     * @param event the event to be updated
+     * @return the same event
+     */
+    public Event updateEvent(Event event) {
+        return eventRepository.saveAndFlush(event);
+    }
+
+    /**
      * Service layer method used to get all of the events, mainly used for
      * debugging or when an user wants to seek an event that they are interested in.
      *
@@ -58,6 +68,28 @@ public class EventService {
      */
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
+    }
+
+    /**
+     * Service layer method used to get all of the events by the admin
+     * that created them.
+     *
+     * @param netId the net id of the admin
+     * @return a list of events
+     */
+    public List<Event> getEventsByAdmin(String netId) {
+        return eventRepository.getEventsByAdmin(netId);
+    }
+
+    /**
+     * Service layer method used to get all of the events if a user
+     * is participating in them.
+     *
+     * @param netId the net id of the user
+     * @return a list of events
+     */
+    public List<Event> getEventsByParticipant(String netId) {
+        return eventRepository.getEventsByParticipant(netId);
     }
 
 }
