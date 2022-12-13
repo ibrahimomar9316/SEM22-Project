@@ -10,7 +10,7 @@ public class Participant {
 
     private Position position;
 
-    private transient String netId;
+    private String netId;
 
 
     /**
@@ -60,15 +60,15 @@ public class Participant {
     /**
      * Getter for the netId of a participant.
      */
-    public void setParticipant(String netId) {
-        this.netId = netId;
+    public String getNetId() {
+        return netId;
     }
 
     /**
      * Setter for the netId of a participant.
      */
-    public String getParticipant() {
-        return netId;
+    public void setNetId(String netId) {
+        this.netId = netId;
     }
 
     /**

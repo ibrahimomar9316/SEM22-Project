@@ -6,13 +6,8 @@ import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,11 +41,11 @@ public class Event {
     private String admin;
 
     @Column
-    @ElementCollection(targetClass = Participant.class)
-    private List<Participant> participants;
+    private LocalDateTime time;
 
     @Column
-    private LocalDateTime time;
+    @ElementCollection(targetClass = Participant.class)
+    private List<Participant> participants;
 
     @Column
     @ElementCollection(targetClass = Rules.class)

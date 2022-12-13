@@ -71,7 +71,7 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events by the admin
+     * Service layer method used to get all the events by the admin
      * that created them.
      *
      * @param netId the net id of the admin
@@ -82,14 +82,14 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events if a user
+     * Service layer method used to get all the events if a user
      * is participating in them.
      *
      * @param netId the net id of the user
      * @return a list of events
      */
-    public List<Event> getEventsByParticipant(String netId) {
-        return eventRepository.getEventsByParticipant(netId);
-    }
+//    public List<Event> getEventsByParticipant(String netId) {
+//        return eventRepository.getEventsByParticipant(netId);
+//    }
 
 }

@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the controller for the Event api.
@@ -106,7 +105,7 @@ public class EventController {
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
         // returns OK and a string implemented in Event
-        return ResponseEntity.ok(savedEvent.toStringNewEvent());
+        return ResponseEntity.ok(savedEvent.toString());
     }
 
     /**
@@ -148,12 +147,26 @@ public class EventController {
     @PostMapping({"/event/join"})
     public ResponseEntity<String> join(@RequestBody EventJoinModel request) {
         try {
-            Event event = eventService.getevent(request.getEventId());
-            if (event.getParticipants().contains(auth.getNetId())) {
+            Event event = eventService.getEvent(request.getEventId());
+            String netId = auth.getNetId();
+            if (event.getParticipants()
+                    .stream()
+                    .map(Participant::getNetId)
+                    .collect(Collectors.toList())
+                    .contains(netId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are already participating in this event!");
             }
-            event.getParticipants().add(auth.getNetId());
+            List<Participant> participants = event.getParticipants()
+                    .stream()
+                    .filter(x -> x.getPosition() == request.getPosition() && x.getNetId() == null)
+                    .collect(Collectors.toList());
+            if (participants.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("This position is already filled");
+            }
+            participants.get(0).setNetId(netId);
+
             eventService.updateEvent(event);
             return ResponseEntity.ok("You have joined event " + event.getEventId()
                     + " made by " + event.getAdmin());
@@ -181,12 +194,16 @@ public class EventController {
     @PostMapping({"/event/leave"})
     public ResponseEntity<String> leave(@RequestBody EventJoinModel request) {
         try {
-            Event event = eventService.getevent(request.getEventId());
-            if (!event.getParticipants().contains(auth.getNetId())) {
+            Event event = eventService.getEvent(request.getEventId());
+            List<Participant> participant = event.getParticipants()
+                    .stream()
+                    .filter(x -> auth.getNetId().equals(x.getNetId()))
+                    .collect(Collectors.toList());
+            if (participant.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are not participating in this event!");
             }
-            event.getParticipants().remove(auth.getNetId());
+            participant.get(0).setNetId(null);
             eventService.updateEvent(event);
             return ResponseEntity.ok("You have left event " + event.getEventId()
                     + " made by " + event.getAdmin());
@@ -224,17 +241,17 @@ public class EventController {
      * @return the list of events the user has joined or 400
      *         if they did not join any event.
      */
-    @GetMapping({"/event/myJoinedEvents"})
-    public ResponseEntity<String> myJoinedEvents() {
-        // checks if the database is not empty
-        if (eventService.getEventsByParticipant(auth.getNetId()).size() != 0) {
-            return ResponseEntity.ok(eventService.getEventsByParticipant(auth.getNetId()).toString());
-        } else {
-            // else returns BAD_REQUEST
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("You have not joined any event!");
-        }
-    }
+//    @GetMapping({"/event/myJoinedEvents"})
+//    public ResponseEntity<String> myJoinedEvents() {
+//        // checks if the database is not empty
+//        if (eventService.getEventsByParticipant(auth.getNetId()).size() != 0) {
+//            return ResponseEntity.ok(eventService.getEventsByParticipant(auth.getNetId()).toString());
+//        } else {
+//            // else returns BAD_REQUEST
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body("You have not joined any event!");
+//        }
+//    }
 
     /**
      * Endpoint for updating events. Only admins of their own events are able to update their events
