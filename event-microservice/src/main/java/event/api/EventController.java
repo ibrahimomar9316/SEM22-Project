@@ -93,6 +93,10 @@ public class EventController {
             @RequestBody EventCreationModel request) {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
+        if (request.getEventType() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid JSON or event type!");
+        }
         Event savedEvent = new Event(request.getEventType(), new AppUser(auth.getNetId()));
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
