@@ -10,7 +10,7 @@ public class Participant {
 
     private Position position;
 
-    private String netId;
+    private transient String netId;
 
 
     /**
