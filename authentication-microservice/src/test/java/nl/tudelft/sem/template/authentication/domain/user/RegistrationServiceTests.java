@@ -53,7 +53,6 @@ public class RegistrationServiceTests {
         final NetId testUser = new NetId("SomeUser");
         final HashedPassword existingTestPassword = new HashedPassword("password123");
         final Password newTestPassword = new Password("password456");
-
         AppUser existingAppUser = new AppUser(testUser, existingTestPassword);
         userRepository.save(existingAppUser);
 

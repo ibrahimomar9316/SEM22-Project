@@ -3,8 +3,6 @@ package nl.tudelft.sem.template.authentication.authentication;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import nl.tudelft.sem.template.authentication.domain.providers.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +39,9 @@ public class JwtTokenGenerator {
      * @return the JWT token
      */
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername())
+        //Map<String, Object> claims = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toString()
+        return Jwts.builder().claim(userDetails.getUsername(), userDetails.getAuthorities())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(timeProvider.getCurrentTime().toEpochMilli()))
                 .setExpiration(new Date(timeProvider.getCurrentTime().toEpochMilli() + JWT_TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();

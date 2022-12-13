@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 // activate profiles to have spring use mocks during auto-injection of certain beans.
@@ -36,7 +37,6 @@ public class JwtUserDetailsServiceTests {
         // Arrange
         final NetId testUser = new NetId("SomeUser");
         final HashedPassword testHashedPassword = new HashedPassword("password123Hash");
-
         AppUser appUser = new AppUser(testUser, testHashedPassword);
         userRepository.save(appUser);
 
@@ -55,7 +55,6 @@ public class JwtUserDetailsServiceTests {
 
         final NetId testUser = new NetId("AnotherUser");
         final String testPasswordHash = "password123Hash";
-
         AppUser appUser = new AppUser(testUser, new HashedPassword(testPasswordHash));
         userRepository.save(appUser);
 
