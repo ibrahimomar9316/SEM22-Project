@@ -61,7 +61,8 @@ public class EventService {
     }
 
     /**
-     * Service layer method used for updating the fields of an event by its admin
+     * Service layer method used for updating the fields of an event by its admin.
+     *
      * @param event The event to update
      */
     public void updateEvent(Event event) {

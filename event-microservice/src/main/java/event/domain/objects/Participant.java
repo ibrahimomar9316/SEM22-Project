@@ -1,9 +1,9 @@
 package event.domain.objects;
 
 import event.domain.enums.Position;
-
-import javax.persistence.Embeddable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+
 
 @Embeddable
 public class Participant {
@@ -14,13 +14,14 @@ public class Participant {
 
 
     /**
-     * Empty constructor for h2 database
+     * Empty constructor for h2 database.
      */
     public Participant() {}
 
 
     /**
-     * Constructor for a participant which is not yet filled in
+     * Constructor for a participant which is not yet filled in.
+     *
      * @param position The position the participant fills in the event
      */
     public Participant(Position position) {
@@ -29,7 +30,8 @@ public class Participant {
 
 
     /**
-     * Constructor for a participant which is filled in
+     * Constructor for a participant which is filled in.
+     *
      * @param position The position the participant fills in the event
      * @param netId The netId of the participant
      */
@@ -40,7 +42,8 @@ public class Participant {
 
 
     /**
-     * Getter for the position of a participant
+     * Getter for the position of a participant.
+     *
      * @return The position of the participant
      */
     public Position getPosition() {
@@ -48,28 +51,29 @@ public class Participant {
     }
 
     /**
-     * Setter for the position of a participant
+     * Setter for the position of a participant.
      */
     public void setPosition(Position position) {
         this.position = position;
     }
 
     /**
-     * Getter for the netId of a participant
+     * Getter for the netId of a participant.
      */
     public void setParticipant(String netId) {
         this.netId = netId;
     }
 
     /**
-     * Setter for the netId of a participant
+     * Setter for the netId of a participant.
      */
     public String getParticipant() {
         return netId;
     }
 
     /**
-     * Equals method for testing equality
+     * Equals method for testing equality.
+     *
      * @param o The object to compare with
      * @return True if equal, false otherwise
      */
@@ -91,7 +95,8 @@ public class Participant {
     }
 
     /**
-     * Hash-method for participants
+     * Hash-method for participants.
+     *
      * @return Hash of the participant object
      */
     @Override
@@ -102,7 +107,8 @@ public class Participant {
     }
 
     /**
-     * Default toString method
+     * Default toString method.
+     *
      * @return A string representing the participant
      */
     @Override

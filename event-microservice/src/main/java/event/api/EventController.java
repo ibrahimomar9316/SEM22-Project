@@ -1,18 +1,21 @@
 package event.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
 import event.domain.entities.Event;
-import event.foreigndomain.entitites.AppUser;
+import event.domain.objects.Participant;
 import event.models.EventCreationModel;
+import event.models.EventJoinModel;
 import event.service.EventService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -90,7 +93,11 @@ public class EventController {
             @RequestBody EventCreationModel request) {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
-        Event savedEvent = new Event(request.getEventType(), auth.getNetId(), request.getTime(), request.getParticipants(), request.getRules());
+        Event savedEvent = new Event(request.getEventType(),
+                auth.getNetId(),
+                request.getTime(),
+                request.getParticipants(),
+                request.getRules());
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
@@ -117,17 +124,23 @@ public class EventController {
         }
     }
 
-//    @PostMapping({"/event/join"})
-//    public ResponseEntity<String> join(EventJoinModel request) {
-//        try {
-//            Event event = eventService.getEvent(request.getId());
-//            event.getParticipants().add(auth.getNetId());
-//            eventService.saveEvent(event);
-//            return ResponseEntity.ok(event.toStringJoin());
-//        } catch (NotFoundException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    /**
+     * why this checkstyle.
+     *
+     * @param request why
+     * @return why
+     */
+    @PostMapping({"/event/join"})
+    public ResponseEntity<String> join(EventJoinModel request) {
+        try {
+            Event event = eventService.getEvent(request.getId());
+            event.getParticipants().add(new Participant());
+            eventService.saveEvent(event);
+            return ResponseEntity.ok(event.toStringJoin());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     /**
      * Endpoint for updating events. Only admins of their own events are able to update their events

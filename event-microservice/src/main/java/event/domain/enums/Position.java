@@ -1,7 +1,7 @@
 package event.domain.enums;
 
 /**
- * Enum value representing the position for a participant in an event
+ * Enum value representing the position for a participant in an event.
  */
 public enum Position {
     COX,

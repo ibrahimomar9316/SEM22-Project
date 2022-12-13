@@ -3,10 +3,9 @@ package event.models;
 import event.domain.enums.EventType;
 import event.domain.enums.Rules;
 import event.domain.objects.Participant;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
 
 /**
  * A model used to transmit:

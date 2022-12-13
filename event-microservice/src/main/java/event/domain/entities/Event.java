@@ -1,6 +1,8 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
+import event.domain.enums.Rules;
+import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -10,9 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import event.domain.enums.Rules;
-import event.domain.objects.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -102,7 +101,7 @@ public class Event {
     }
 
     /**
-     * Default toString method for an event
+     * Default toString method for an event.
      *
      * @return A string representing an event
      */
@@ -116,7 +115,7 @@ public class Event {
     }
 
     /**
-     * ToString method for when an event has been updated
+     * ToString method for when an event has been updated.
      *
      * @return A message indicating what has been updated
      */

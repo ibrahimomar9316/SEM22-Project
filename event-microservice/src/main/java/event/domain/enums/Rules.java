@@ -1,7 +1,7 @@
 package event.domain.enums;
 
 /**
- * Enum type for the rules of an event
+ * Enum type for the rules of an event.
  */
 public enum Rules {
 
