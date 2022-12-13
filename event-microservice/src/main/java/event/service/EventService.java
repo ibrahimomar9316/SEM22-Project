@@ -88,8 +88,17 @@ public class EventService {
      * @param netId the net id of the user
      * @return a list of events
      */
-//    public List<Event> getEventsByParticipant(String netId) {
-//        return eventRepository.getEventsByParticipant(netId);
-//    }
+    public List<Event> getEventsByParticipant(String netId) {
+        return eventRepository.getEventsByParticipant(netId);
+    }
+
+    /**
+     * Service layer method used to delete events from the database.
+     *
+     * @param id The internal id of the event in the database that has to be deleted
+     */
+    public void deleteEvent(long id) {
+        eventRepository.deleteById(id);
+    }
 
 }

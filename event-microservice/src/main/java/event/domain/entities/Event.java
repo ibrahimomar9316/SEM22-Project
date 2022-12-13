@@ -6,8 +6,13 @@ import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

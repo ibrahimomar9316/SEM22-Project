@@ -6,16 +6,20 @@ import event.domain.objects.Participant;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.service.EventService;
+import java.util.List;
+import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This is the controller for the Event api.
@@ -171,8 +175,7 @@ public class EventController {
             return ResponseEntity.ok("You have joined event " + event.getEventId()
                     + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("There is no event that has that ID!");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -184,12 +187,11 @@ public class EventController {
      * in the list, it removes them from the database</p>
      *
      * <p>It returns a string message reporting
-     * if the user has successfully removed from the event.
-     * If some error occurs, it returns 400 and a
-     * message conveying the error.</p>
+     * if the user has successfully removed from the event.</p>
      *
      * @param request a model containing the id of the event as a long
-     * @return one of three messages and either 200 or 400
+     * @return 200 OK if successfull. 400 BAD_REQUEST if the user is not in the specified event
+     *         404 NOT_FOUND if the event id ws not found in the database
      */
     @PostMapping({"/event/leave"})
     public ResponseEntity<String> leave(@RequestBody EventJoinModel request) {
@@ -208,8 +210,7 @@ public class EventController {
             return ResponseEntity.ok("You have left event " + event.getEventId()
                     + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("There is no event that has that ID!");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -218,19 +219,11 @@ public class EventController {
      * the list of events they created.
      * TODO: show notifications for each event.
      *
-     * @return the list of events the admin created or 400 if
-     *         they did not create any event.
+     * @return the list of events the admin created
      */
     @GetMapping({"/event/myCreatedEvents"})
     public ResponseEntity<String> myCreatedEvents() {
-        // checks if the database is not empty
-        if (eventService.getEventsByAdmin(auth.getNetId()).size() != 0) {
-            return ResponseEntity.ok(eventService.getEventsByAdmin(auth.getNetId()).toString());
-        } else {
-            // else returns BAD_REQUEST
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("You have not created an event!");
-        }
+        return ResponseEntity.ok(eventService.getEventsByAdmin(auth.getNetId()).toString());
     }
 
     /**
@@ -238,20 +231,12 @@ public class EventController {
      * of events they joined.
      * TODO: show notifications for each event.
      *
-     * @return the list of events the user has joined or 400
-     *         if they did not join any event.
+     * @return the list of events the user has joined
      */
-//    @GetMapping({"/event/myJoinedEvents"})
-//    public ResponseEntity<String> myJoinedEvents() {
-//        // checks if the database is not empty
-//        if (eventService.getEventsByParticipant(auth.getNetId()).size() != 0) {
-//            return ResponseEntity.ok(eventService.getEventsByParticipant(auth.getNetId()).toString());
-//        } else {
-//            // else returns BAD_REQUEST
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body("You have not joined any event!");
-//        }
-//    }
+    @GetMapping({"/event/myJoinedEvents"})
+    public ResponseEntity<String> myJoinedEvents() {
+        return ResponseEntity.ok(eventService.getEventsByParticipant(auth.getNetId()).toString());
+    }
 
     /**
      * Endpoint for updating events. Only admins of their own events are able to update their events
@@ -261,7 +246,7 @@ public class EventController {
      * @return A responseEntity with a 200 OK message if the event was indeed updated
      *         A responseEntity with a 401 UNAUTHORIZED message if the user who sent request
      *         is not the admin of the un-updated event
-     *         A responseEntity with a 400 BAD_REQUEST message if the event was not found
+     *         A responseEntity with a 404 NOT_FOUND message if the event was not found
      */
     @PostMapping({"/event/update"})
     public ResponseEntity<String> update(@RequestBody Event event) {
@@ -273,7 +258,30 @@ public class EventController {
             eventService.updateEvent(event);
             return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Endpoint for deleting events from the database.
+     *
+     * @param eventId The id of the event that has to be deleted
+     * @return A responseEntity with a 200 OK message if the event was deleted successfully
+     *         A responseEntity with a 401 UNAUTHORIZED message if the user who sent request
+     *         is not the admin of the event
+     *         A responseEntity with a 404 NOT_FOUND message if the event was not found
+     */
+    @DeleteMapping({"/event/delete"})
+    public ResponseEntity<String> delete(@RequestBody Long eventId) {
+        try {
+            Event old = eventService.getEvent(eventId);
+            if (!old.getAdmin().equals(auth.getNetId())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            eventService.deleteEvent(eventId);
+            return ResponseEntity.ok("successfully deleted event");
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
