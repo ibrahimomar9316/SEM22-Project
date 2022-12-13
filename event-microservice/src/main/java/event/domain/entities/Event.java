@@ -1,10 +1,7 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
-import event.foreigndomain.entitites.AppUser;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -13,6 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import event.domain.enums.Rules;
+import event.domain.objects.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,17 +46,15 @@ public class Event {
     private String admin;
 
     @Column
-    @ElementCollection(targetClass = String.class)
-    private List<String> participants;
+    @ElementCollection(targetClass = Participant.class)
+    private List<Participant> participants;
 
     @Column
-    private Date date;
+    private LocalDateTime time;
 
     @Column
-    private Time time;
-
-    @Column
-    private transient String rules;
+    @ElementCollection(targetClass = Rules.class)
+    private List<Rules> rules;
 
     /**
      * Empty constructor for the Event class.
@@ -66,14 +64,20 @@ public class Event {
     /**
      * Constructor for a new Event.
      *
-     * @param eventType an enum containing the event type (competition/training)
-     * @param admin     an AppUser representing who is the admin/owner of an event,
-     *                  being the one that can manage or modify the whole event
+     * @param eventType    an enum containing the event type (competition/training)
+     * @param admin        the netId of the user who is the owner/admin of the event
+     *                     being the only person who can edit or remove the event
+     * @param time         the date and time of the start of the event
+     * @param participants a list containing the participants in the event
+     * @param rules        a list containing the requirements the participants need
+     *                     to participate in the event
      */
-    public Event(EventType eventType, AppUser admin) {
+    public Event(EventType eventType, String admin, LocalDateTime time, List<Participant> participants, List<Rules> rules) {
         this.eventType = eventType;
-        this.admin = admin.getNetId();
-        participants = new ArrayList<>();
+        this.admin = admin;
+        this.time = time;
+        this.participants = participants;
+        this.rules = rules;
     }
 
     /**
@@ -105,10 +109,14 @@ public class Event {
      */
     @Override
     public String toString() {
-        return eventType.toString() + " made by " + admin;
+        return eventType.toString() + " made by " + admin + "at: " + time + "\n" + participants + "\n" + rules;
     }
 
-    /*public String toStringJoin() {
+    public String toStringJoin() {
         return "You have joined event " + eventId + " made by " + admin;
-    }*/
+    }
+
+    public String toStringUpdate() {
+        return "You have updated event " + eventId;
+    }
 }

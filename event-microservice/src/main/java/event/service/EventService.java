@@ -31,7 +31,7 @@ public class EventService {
      * @return the event that we wanted to get
      * @throws NotFoundException exception that is thrown when the event is not found
      */
-    public Event getevent(Long eventId) throws NotFoundException {
+    public Event getEvent(Long eventId) throws NotFoundException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new NotFoundException("Event not found in the database.");
@@ -51,13 +51,21 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events, mainly used for
-     * debugging or when an user wants to seek an event that they are interested in.
+     * Service layer method used to get all the events, mainly used for
+     * debugging or when a user wants to seek an event that they are interested in.
      *
      * @return a list of events
      */
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
+    }
+
+    /**
+     * Service layer method used for updating the fields of an event by its admin
+     * @param event The event to update
+     */
+    public void updateEvent(Event event) {
+        eventRepository.saveAndFlush(event);
     }
 
 }

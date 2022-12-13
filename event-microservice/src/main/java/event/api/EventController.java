@@ -1,19 +1,18 @@
 package event.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
 import event.domain.entities.Event;
 import event.foreigndomain.entitites.AppUser;
 import event.models.EventCreationModel;
 import event.service.EventService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -75,7 +74,7 @@ public class EventController {
      * that takes the JSON and specifies the event type (Competition or
      * Training).</p>
      *
-     * <p>It creates an empty event of that type and it attributes the admin
+     * <p>It creates an event with the given attributes and it attributes the admin
      * of the event to the netID in the token.</p>
      *
      * <p>It returns a message conveying the new event, with HTTP.ok response.</p>
@@ -91,7 +90,8 @@ public class EventController {
             @RequestBody EventCreationModel request) {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
-        Event savedEvent = new Event(request.getEventType(), new AppUser(auth.getNetId()));
+        Event savedEvent = new Event(request.getEventType(), auth.getNetId(), request.getTime(), request.getParticipants(), request.getRules());
+
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
         // returns OK and a string implemented in Event
@@ -102,7 +102,7 @@ public class EventController {
      * Endpoint for getting all the events in the database.
      *
      * <p>This does not implement any filtering of events</p>
-     * TODO: Implement filtering according to Certificate
+     * TODO: Implement filtering according to Certificate and rules/requirements
      *
      * @return The Events as a list of strings
      */
@@ -115,19 +115,32 @@ public class EventController {
             // else returns BAD_REQUEST
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
-    /*@PostMapping({"/event/join"})
-    public ResponseEntity<String> join(EventJoinModel request) {
+//    @PostMapping({"/event/join"})
+//    public ResponseEntity<String> join(EventJoinModel request) {
+//        try {
+//            Event event = eventService.getEvent(request.getId());
+//            event.getParticipants().add(auth.getNetId());
+//            eventService.saveEvent(event);
+//            return ResponseEntity.ok(event.toStringJoin());
+//        } catch (NotFoundException e) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
+    @PostMapping({"/event/update"})
+    public ResponseEntity<String> update(@RequestBody Event event) {
         try {
-            Event event = eventService.getevent(request.getId());
-            event.getParticipants().add(auth.getNetId());
-            eventService.saveEvent(event);
-            return ResponseEntity.ok(event.toStringJoin());
+            Event old = eventService.getEvent(event.getEventId());
+            if (!old.getAdmin().equals(auth.getNetId())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            eventService.updateEvent(event);
+            return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
 }

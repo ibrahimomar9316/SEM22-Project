@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
  * Interface for the EventRepository.
  */
 public interface EventRepository extends JpaRepository<Event, Long> {
+
     @Query(value = "SELECT e FROM Event e WHERE e.eventId=?1")
-     Event getEventById(Long eventId);
+    Event getEventById(Long eventId);
+
 }
