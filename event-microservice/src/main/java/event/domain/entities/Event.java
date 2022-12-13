@@ -102,10 +102,9 @@ public class Event {
     }
 
     /**
-     * Method that converts and event into a string showing what type of event
-     * was created and who created it.
+     * Default toString method for an event
      *
-     * @return A string representing who created an event
+     * @return A string representing an event
      */
     @Override
     public String toString() {
@@ -116,6 +115,11 @@ public class Event {
         return "You have joined event " + eventId + " made by " + admin;
     }
 
+    /**
+     * ToString method for when an event has been updated
+     *
+     * @return A message indicating what has been updated
+     */
     public String toStringUpdate() {
         return "You have updated event " + eventId;
     }

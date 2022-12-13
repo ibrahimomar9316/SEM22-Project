@@ -129,6 +129,16 @@ public class EventController {
 //        }
 //    }
 
+    /**
+     * Endpoint for updating events. Only admins of their own events are able to update their events
+     * no one else can. All fields except the id can be updated / changed.
+     *
+     * @param event The new updated event that has to be stored in the database
+     * @return A responseEntity with a 200 OK message if the event was indeed updated
+     *         A responseEntity with a 401 UNAUTHORIZED message if the user who sent request
+     *         is not the admin of the un-updated event
+     *         A responseEntity with a 400 BAD_REQUEST message if the event was not found
+     */
     @PostMapping({"/event/update"})
     public ResponseEntity<String> update(@RequestBody Event event) {
         try {
