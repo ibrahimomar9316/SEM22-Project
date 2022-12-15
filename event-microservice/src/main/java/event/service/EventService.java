@@ -31,7 +31,7 @@ public class EventService {
      * @return the event that we wanted to get
      * @throws NotFoundException exception that is thrown when the event is not found
      */
-    public Event getevent(Long eventId) throws NotFoundException {
+    public Event getEvent(Long eventId) throws NotFoundException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new NotFoundException("Event not found in the database.");
@@ -61,8 +61,8 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events, mainly used for
-     * debugging or when an user wants to seek an event that they are interested in.
+     * Service layer method used to get all the events, mainly used for
+     * debugging or when a user wants to seek an event that they are interested in.
      *
      * @return a list of events
      */
@@ -71,7 +71,7 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events by the admin
+     * Service layer method used to get all the events by the admin
      * that created them.
      *
      * @param netId the net id of the admin
@@ -82,7 +82,7 @@ public class EventService {
     }
 
     /**
-     * Service layer method used to get all of the events if a user
+     * Service layer method used to get all the events if a user
      * is participating in them.
      *
      * @param netId the net id of the user
@@ -90,6 +90,15 @@ public class EventService {
      */
     public List<Event> getEventsByParticipant(String netId) {
         return eventRepository.getEventsByParticipant(netId);
+    }
+
+    /**
+     * Service layer method used to delete events from the database.
+     *
+     * @param id The internal id of the event in the database that has to be deleted
+     */
+    public void deleteEvent(long id) {
+        eventRepository.deleteById(id);
     }
 
 }
