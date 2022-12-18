@@ -5,6 +5,7 @@ package user.domain.enums;
  */
 public enum Certificate {
     C4,
-    fourPlus,
-    eightPlus
+    FOURPLUS,
+    EIGHTPLUS,
+    NONE
 }

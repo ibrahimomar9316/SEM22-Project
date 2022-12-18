@@ -69,6 +69,10 @@ public class UserController {
     @PutMapping("/user/update")
     public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());
-        return ResponseEntity.created(uri).body(appUserService.updateUser(appUser));
+
+        AppUser currentUser = appUserService.updateUser(appUser);
+
+        
+        return ResponseEntity.created(uri).body(currentUser);
     }
 }
