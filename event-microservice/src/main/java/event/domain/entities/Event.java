@@ -111,7 +111,8 @@ public class Event {
     public String toString() {
         String type = eventType.toString().toLowerCase(Locale.ROOT);
         type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
-        return type + " made by " + admin + "at: " + time + "\n" + participants + "\n" + rules;
+        return type + " made by " + admin + ", event ID: "
+                + eventId + ", time " + time + "\n" + participants + "\n" + rules;
     }
 
     public String toStringJoin() {

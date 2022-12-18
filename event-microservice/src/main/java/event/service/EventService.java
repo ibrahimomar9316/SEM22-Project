@@ -2,8 +2,12 @@ package event.service;
 
 import event.domain.EventRepository;
 import event.domain.entities.Event;
+import event.domain.enums.EventType;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -99,6 +103,35 @@ public class EventService {
      */
     public void deleteEvent(long id) {
         eventRepository.deleteById(id);
+    }
+
+    /**
+     * Service layer method used to get all the matching events.
+     * Right now only checks  time constrains but can be developed to check all others restrictions.
+     *
+     * @return a list of events
+     */
+    public List<Event> getMatchingEvents() {
+        List<Event> list = eventRepository.findAll();
+        return list.stream().filter(this::checkTimeConstraints).collect(Collectors.toList());
+    }
+
+    /**
+     * Helper method for checking if event meets out event time constrains:
+     * we cannot join a Training if it starts within half an hour.
+     * we cannot join a Competition competitions that start within that day.
+     */
+    private boolean checkTimeConstraints(Event event) {
+        LocalDateTime now = LocalDateTime.now();
+        if (event.getEventType().equals(EventType.TRAINING)) {
+            Duration difference = Duration.between(now, event.getTime());
+            long minutes = difference.toMinutes();
+            return minutes >= 30;
+        } else {
+            Duration difference = Duration.between(now, event.getTime());
+            long minutes = difference.toHours();
+            return minutes >= 24;
+        }
     }
 
 }
