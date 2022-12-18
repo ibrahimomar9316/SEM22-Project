@@ -116,7 +116,6 @@ public class EventController {
      * Endpoint for getting all the events in the database.
      *
      * <p>This does not implement any filtering of events</p>
-     * TODO: Implement filtering according to Certificate and rules/requirements
      *
      * @return The Events as a list of strings
      */
@@ -282,6 +281,32 @@ public class EventController {
             return ResponseEntity.ok("successfully deleted event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Endpoint for getting all valid the events in the database.
+     * We create another Endpoint than getAll activities
+     * so we can check if our filtering actually works by comparing two outputs
+     * TODO: Implement filtering according to Certificate and rules/requirements
+     *
+     * @return The Events as a list of strings
+     */
+    @GetMapping({"/event/getMatching"})
+    public ResponseEntity<String> getMatchingEvents() {
+        // checks if the database is not empty
+        if (eventService.getAllEvents().size() != 0) {
+            List<Event> list = eventService.getMatchingEvents();
+            // checks if the there are some available activities to join
+            if (list.isEmpty())  {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("There are no events for you to join!");
+            }
+            return ResponseEntity.ok(list.toString());
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("There are no events for you to join!");
         }
     }
 }
