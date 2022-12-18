@@ -4,6 +4,9 @@ import certificate.domain.CertificateRepository;
 import certificate.domain.entities.Certificate;
 import java.util.List;
 import javax.transaction.Transactional;
+
+import certificate.foreigndomain.Gender;
+import certificate.foreigndomain.Position;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,9 +22,7 @@ public class CertificateService {
         this.certificateRepository = certificateRepository;
     }
 
-    private int generateId(boolean professional, boolean cox, boolean male,
-                           String certificate) {
-
+    private int generateId(String netId, boolean isMale, boolean isCompetitive, String position, String certificate) {
         return 0;
     }
 
