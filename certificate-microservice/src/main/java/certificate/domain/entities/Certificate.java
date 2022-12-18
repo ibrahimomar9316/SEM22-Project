@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Certificate {
+public class Certificate {
 
     @Id
     @Column(name = "netId", nullable = false, unique = true)
