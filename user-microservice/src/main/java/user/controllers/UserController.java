@@ -27,6 +27,7 @@ import user.datatransferobjects.UserCertificateDto;
 import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
+import user.models.UserDetailsModel;
 import user.service.UserService;
 
 @RestController
@@ -78,22 +79,22 @@ public class UserController {
      * and password.
      * While the netId is unchangeable, the user can change his password in another endpoint.
      *
-     * @param appUser new user body with updates
+     * @param request new user body with updates
      * @return saved user
      */
-    @PutMapping("/user/update")
-    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) throws Exception {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());
+    @PutMapping("/user/edit")
+    public ResponseEntity<AppUser> updateUser(@RequestBody UserDetailsModel request) throws Exception {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/edit").toUriString());
 
-        AppUser currentUser = appUserService.updateUser(appUser);
+        AppUser currentUser = new AppUser(auth.getNetId());
+        //TODO Update user in DB
+        String netId = currentUser.getNetId();
+        boolean isMale = request.getGender() == Gender.MALE;
+        boolean isCompetitive = request.getCompetitive().equals("PROFESSIONAL");
+        String position = request.getPrefPosition().toString();
+        String certificate = request.getCertificate().toString();
 
-        String netId = appUser.getNetId();
-        boolean isMale = appUser.getGender() == Gender.MALE;
-        boolean isCompetitive = appUser.isCompetitive();
-        String position = appUser.getPrefPosition().toString();
-        String certificate = appUser.getCertificate().toString();
-
-        UserCertificateDto ucd = new UserCertificateDto(netId,isMale, isCompetitive, position, certificate);
+        UserCertificateDto ucd = new UserCertificateDto(netId, isMale, isCompetitive, position, certificate);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

@@ -8,6 +8,7 @@ public enum Position {
     COACH,
     PORT_SIDE_ROWER,
     STARBOARD_SIDE_ROWER,
-    SCULLING_ROWER
+    SCULLING_ROWER,
+    ANY
 }
 
