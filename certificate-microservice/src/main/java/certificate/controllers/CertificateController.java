@@ -37,6 +37,7 @@ public class CertificateController {
 
     @PostMapping("/certificate/filter")
     public void filter(@RequestBody String s) {
-
+        System.out.println("BUNBUN");
+        System.out.println(s);
     }
 }

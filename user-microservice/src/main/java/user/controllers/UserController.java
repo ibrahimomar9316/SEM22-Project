@@ -2,11 +2,18 @@ package user.controllers;
 
 import java.net.URI;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,15 +22,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import user.authentication.AuthManager;
+import user.datatransferobjects.UserCertificateDto;
 import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
+import user.domain.enums.Gender;
 import user.service.UserService;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService appUserService;
+
+    // This is used and initiated to check if the token is
+    // valid and to get the netID
+    private final transient AuthManager auth;
 
     @Bean
     public RestTemplate getRestTemplate() {
@@ -67,12 +82,31 @@ public class UserController {
      * @return saved user
      */
     @PutMapping("/user/update")
-    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) {
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser appUser) throws Exception {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/update").toUriString());
 
         AppUser currentUser = appUserService.updateUser(appUser);
 
-        
-        return ResponseEntity.created(uri).body(currentUser);
+        String netId = appUser.getNetId();
+        boolean isMale = appUser.getGender() == Gender.MALE;
+        boolean isCompetitive = appUser.isCompetitive();
+        String position = appUser.getPrefPosition().toString();
+        String certificate = appUser.getCertificate().toString();
+
+        UserCertificateDto ucd = new UserCertificateDto(netId,isMale, isCompetitive, position, certificate);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String json = new ObjectMapper().writeValueAsString(ucd);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+
+        ResponseEntity<UserCertificateDto> obj = new RestTemplate()
+            .postForEntity("http://localhost:8084/api/certificate/filter", entity, UserCertificateDto.class);
+        if (obj.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.created(uri).body(currentUser);
+        } else {
+            throw new NotFoundException("Incorrectly saved in user microservice");
+        }
+
     }
 }
