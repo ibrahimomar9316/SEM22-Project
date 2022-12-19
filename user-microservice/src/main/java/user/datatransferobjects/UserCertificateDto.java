@@ -4,37 +4,25 @@ package user.datatransferobjects;
  * Class used to pass data from a microservice to another.
  */
 public class UserCertificateDto {
-    private String netId;
-    private boolean male;
-    private boolean competitive;
-    private String position;
-    private String certificate;
+    private transient boolean male;
+    private transient boolean competitive;
+    private transient String position;
+    private transient String certificate;
 
     /**
      * Constructor for the data transfer object used to be passed to certificate microservice
      * to generate the hash for the user.
      *
-     * @param netId a string containing the distinctive netId of the user we want to pass along
      * @param male boolean representing if it is a male (true) or a female (false)
      * @param competitive boolean representing if the user is competitive or not
      * @param position string representing the preferred position of the user
      * @param certificate string representing the certificate that the user has
      */
-    public UserCertificateDto(String netId, boolean male, boolean competitive, String position, String certificate) {
-        this.netId = netId;
+    public UserCertificateDto(boolean male, boolean competitive, String position, String certificate) {
         this.male = male;
         this.competitive = competitive;
         this.position = position;
         this.certificate = certificate;
-    }
-
-    /**
-     * Getter function for the netId.
-     *
-     * @return a string containing the netId of the corresponding user
-     */
-    public String getNetId() {
-        return netId;
     }
 
     /**

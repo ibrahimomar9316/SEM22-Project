@@ -1,19 +1,18 @@
 package user.controllers;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +25,6 @@ import user.authentication.AuthManager;
 import user.datatransferobjects.UserCertificateDto;
 import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
-import user.domain.enums.Gender;
 import user.models.UserDetailsModel;
 import user.service.UserService;
 
@@ -83,18 +81,19 @@ public class UserController {
      * @return saved user
      */
     @PutMapping("/user/edit")
-    public ResponseEntity<AppUser> updateUser(@RequestBody UserDetailsModel request) throws Exception {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/user/edit").toUriString());
-
+    public ResponseEntity<String> updateUser(@RequestBody UserDetailsModel request) throws Exception {
         AppUser currentUser = new AppUser(auth.getNetId());
-        //TODO Update user in DB
-        String netId = currentUser.getNetId();
-        boolean isMale = request.getGender() == Gender.MALE;
-        boolean isCompetitive = request.getCompetitive().equals("PROFESSIONAL");
-        String position = request.getPrefPosition().toString();
-        String certificate = request.getCertificate().toString();
+        currentUser.setGender(request.getGender());
+        currentUser.setPrefPosition(request.getPrefPosition());
+        currentUser.setCertificate(request.getCertificate());
+        currentUser.setCompetitive(request.getCompetitive().equals("PROFESSIONAL"));
+        appUserService.updateUser(currentUser);
 
-        UserCertificateDto ucd = new UserCertificateDto(netId, isMale, isCompetitive, position, certificate);
+        UserCertificateDto ucd = new UserCertificateDto(
+                true,
+                currentUser.isCompetitive(),
+                currentUser.getPrefPosition().toString(),
+                currentUser.getCertificate().toString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -104,7 +103,8 @@ public class UserController {
         ResponseEntity<UserCertificateDto> obj = new RestTemplate()
             .postForEntity("http://localhost:8084/api/certificate/filter", entity, UserCertificateDto.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.created(uri).body(currentUser);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Successfully updated user:\n" + currentUser);
         } else {
             throw new NotFoundException("Incorrectly saved in user microservice");
         }
