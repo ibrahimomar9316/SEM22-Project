@@ -1,8 +1,11 @@
 package user.datatransferobjects;
 
+import lombok.Data;
+
 /**
  * Class used to pass data from a microservice to another.
  */
+@Data
 public class UserCertificateDto {
     private transient boolean male;
     private transient boolean competitive;

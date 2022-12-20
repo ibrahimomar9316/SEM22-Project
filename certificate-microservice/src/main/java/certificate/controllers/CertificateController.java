@@ -1,6 +1,7 @@
 package certificate.controllers;
 
 import certificate.authentication.AuthManager;
+import certificate.datatransferobjects.UserCertificateDto;
 import certificate.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class CertificateController {
     }
 
     @PostMapping("/certificate/filter")
-    public void filter(@RequestBody String s) {
+    public void filter(@RequestBody UserCertificateDto ucd) {
         System.out.println("BUNBUN");
-        System.out.println(s);
+        System.out.println(ucd.getPosition());
     }
 }

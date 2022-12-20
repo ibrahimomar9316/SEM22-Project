@@ -9,6 +9,6 @@ import user.domain.enums.Position;
 public class UserDetailsModel {
     private Gender gender;
     private Position prefPosition;
-    private String competitive;
+    private boolean competitive;
     private Certificate certificate;
 }
