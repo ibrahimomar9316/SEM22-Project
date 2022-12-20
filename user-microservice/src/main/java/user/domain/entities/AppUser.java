@@ -1,6 +1,9 @@
 package user.domain.entities;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -34,6 +37,12 @@ public class AppUser {
 
     @Column
     private Certificate certificate;
+
+    @Column
+    private Certificate prefBoat;
+
+    @ElementCollection
+    private List<LocalDateTime> avDates;
 
     /**
      * Basic constructor for a new AppUser.
