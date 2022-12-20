@@ -79,7 +79,8 @@ public class UserController {
      * @return saved user
      */
     @PutMapping("/user/edit")
-    public ResponseEntity<String> updateUser(@RequestBody UserDetailsModel request) throws Exception {
+    public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
+        @RequestBody UserDetailsModel request) throws Exception {
         AppUser currentUser = new AppUser(auth.getNetId());
         currentUser.setGender(request.getGender());
         currentUser.setPrefPosition(request.getPrefPosition());
@@ -95,7 +96,7 @@ public class UserController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth();
+        headers.setBearerAuth(token.split(" ")[1]);
         String json = new ObjectMapper().writeValueAsString(ucd);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
 

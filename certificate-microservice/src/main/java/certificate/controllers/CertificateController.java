@@ -38,7 +38,6 @@ public class CertificateController {
 
     @PostMapping("/certificate/filter")
     public void filter(@RequestBody UserCertificateDto ucd) {
-        System.out.println("BUNBUN");
-        System.out.println(ucd.getPosition());
+        //TODO: do the hashing, now the connection is done okay!
     }
 }
