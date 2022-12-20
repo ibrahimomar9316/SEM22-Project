@@ -49,4 +49,14 @@ public class MessageService {
         return this.repo.save(message);
     }
 
+    /**
+     * Getter for all the messages sent by a user.
+     *
+     * @param netId The netId of the user
+     * @return A list of messages sent by the user
+     */
+    public List<Message> getSentMessages(String netId) {
+        return repo.getMessagesBySender(netId);
+    }
+
 }

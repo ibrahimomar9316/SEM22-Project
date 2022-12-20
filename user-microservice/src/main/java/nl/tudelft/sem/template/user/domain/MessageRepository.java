@@ -12,4 +12,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query(value = "SELECT m FROM Message m WHERE m.recipient = ?1")
     List<Message> getMessagesByRecipient(String netId);
+
+    @Query(value = "SELECT m FROM Message m WHERE m.sender = ?1")
+    List<Message> getMessagesBySender(String netId);
 }

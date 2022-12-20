@@ -52,5 +52,16 @@ public class MessageController {
         return ResponseEntity.ok().body(messageService.save(message));
     }
 
+    /**
+     * API endpoint for getting all sent message by a user.
+     *
+     * @param netId The netId of the user
+     * @return A list of messages sent by the specified user
+     */
+    @GetMapping({"/sent"})
+    public ResponseEntity<List<Message>> getSentMessages(@RequestBody String netId) {
+        return ResponseEntity.ok().body(messageService.getSentMessages(netId));
+    }
+
 }
 
