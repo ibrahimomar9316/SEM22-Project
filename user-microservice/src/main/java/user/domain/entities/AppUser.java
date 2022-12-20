@@ -38,9 +38,6 @@ public class AppUser {
     @Column
     private Certificate certificate;
 
-    @Column
-    private Certificate prefBoat;
-
     @ElementCollection
     private List<LocalDateTime> avDates;
 

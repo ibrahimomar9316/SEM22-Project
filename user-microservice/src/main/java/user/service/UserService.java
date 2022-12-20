@@ -78,7 +78,6 @@ public class UserService {
         currentUser.setCompetitive(appUser.isCompetitive());
         currentUser.setPrefPosition(appUser.getPrefPosition());
         currentUser.setAvDates(appUser.getAvDates());
-        currentUser.setPrefBoat(appUser.getPrefBoat());
         appUserRepository.save(currentUser);
         return appUser;
     }

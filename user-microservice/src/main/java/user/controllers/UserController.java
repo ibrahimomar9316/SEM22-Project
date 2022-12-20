@@ -87,6 +87,7 @@ public class UserController {
         currentUser.setPrefPosition(request.getPrefPosition());
         currentUser.setCertificate(request.getCertificate());
         currentUser.setCompetitive(request.isCompetitive());
+        currentUser.setAvDates(request.getAvDates());
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(

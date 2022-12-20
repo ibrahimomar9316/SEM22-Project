@@ -1,9 +1,6 @@
 package event.domain.objects;
 
 import event.domain.enums.Position;
-import event.foreigndomain.enums.Certificate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
@@ -14,10 +11,6 @@ public class Participant {
     private Position position;
 
     private String netId;
-
-    private Certificate prefBoat;
-
-    private List<LocalDateTime> avDates;
 
 
     /**
