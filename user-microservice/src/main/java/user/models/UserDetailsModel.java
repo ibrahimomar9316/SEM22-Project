@@ -7,8 +7,8 @@ import user.domain.enums.Position;
 
 @Data
 public class UserDetailsModel {
-    private Gender gender;
-    private Position prefPosition;
-    private boolean competitive;
-    private Certificate certificate;
+    private transient Gender gender;
+    private transient Position prefPosition;
+    private transient boolean competitive;
+    private transient Certificate certificate;
 }
