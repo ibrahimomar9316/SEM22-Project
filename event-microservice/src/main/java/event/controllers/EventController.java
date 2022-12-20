@@ -1,22 +1,30 @@
 package event.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
+import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
 import event.domain.objects.Participant;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
+import event.models.EventRulesModel;
 import event.service.EventService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -96,15 +104,15 @@ public class EventController {
             @RequestBody EventCreationModel request) {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
-        if (request.getEventType() == null) {
+        if (request.getEventType() == null || request.getTime() == null
+                || request.getParticipants() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid JSON or event type!");
         }
         Event savedEvent = new Event(request.getEventType(),
                 auth.getNetId(),
                 request.getTime(),
-                request.getParticipants(),
-                request.getRules());
+                request.getParticipants());
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
@@ -162,7 +170,8 @@ public class EventController {
             }
             List<Participant> participants = event.getParticipants()
                     .stream()
-                    .filter(x -> x.getPosition() == request.getPosition() && x.getNetId() == null)
+                    .filter(x -> x.getPosition() == request.getPosition()
+                            && x.getNetId() == null)
                     .collect(Collectors.toList());
             if (participants.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -258,6 +267,42 @@ public class EventController {
             return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * Sets rules.
+     *
+     * @param token the token
+     * @param rules the rules
+     * @return the rules
+     * @throws NotFoundException       the not found exception
+     * @throws JsonProcessingException the json processing exception
+     */
+    @PostMapping({"/event/setRules"})
+    public ResponseEntity<String> setRules(@RequestHeader("Authorization") String token,
+                                           @RequestBody EventRulesModel rules)
+                                            throws NotFoundException, JsonProcessingException {
+        RuleDto dto = new RuleDto(rules.getEventId(), rules.isSameGender(),
+                rules.isProfessional(), rules.getCertificate().toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.split(" ")[1]);
+        String json = new ObjectMapper().writeValueAsString(dto);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+                .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
+        if (hashedIndex.getStatusCode().is2xxSuccessful()) {
+            Event event = eventService.getEvent(rules.getEventId());
+            event.setRuleIndex(hashedIndex.getBody());
+            HttpHeaders headers2 = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(token.split(" ")[1]);
+            String json2 = new ObjectMapper().writeValueAsString(event);
+            HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+            return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
+        } else {
+            throw new NotFoundException("Incorrectly uptdatet rules!");
         }
     }
 

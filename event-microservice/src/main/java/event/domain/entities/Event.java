@@ -1,7 +1,6 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
-import event.domain.enums.Rules;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,8 +52,7 @@ public class Event {
     private List<Participant> participants;
 
     @Column
-    @ElementCollection(targetClass = Rules.class)
-    private List<Rules> rules;
+    private int ruleIndex;
 
     /**
      * Empty constructor for the Event class.
@@ -69,15 +67,12 @@ public class Event {
      *                     being the only person who can edit or remove the event
      * @param time         the date and time of the start of the event
      * @param participants a list containing the participants in the event
-     * @param rules        a list containing the requirements the participants need
-     *                     to participate in the event
      */
-    public Event(EventType eventType, String admin, LocalDateTime time, List<Participant> participants, List<Rules> rules) {
+    public Event(EventType eventType, String admin, LocalDateTime time, List<Participant> participants) {
         this.eventType = eventType;
         this.admin = admin;
         this.time = time;
         this.participants = participants;
-        this.rules = rules;
     }
 
     /**
@@ -112,7 +107,7 @@ public class Event {
         String type = eventType.toString().toLowerCase(Locale.ROOT);
         type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
         return type + " made by " + admin + ", event ID: "
-                + eventId + ", time " + time + "\n" + participants + "\n" + rules;
+                + eventId + ", time " + time + "\n" + participants + "\n";
     }
 
     public String toStringJoin() {

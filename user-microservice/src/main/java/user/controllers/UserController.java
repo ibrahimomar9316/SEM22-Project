@@ -84,7 +84,7 @@ public class UserController {
      */
     @PutMapping("/user/edit")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
-        @RequestBody UserDetailsModel request) throws Exception {
+                                             @RequestBody UserDetailsModel request) throws Exception {
         AppUser currentUser = new AppUser(auth.getNetId());
         currentUser.setGender(request.getGender());
         currentUser.setPrefPosition(request.getPrefPosition());

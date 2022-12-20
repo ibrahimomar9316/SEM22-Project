@@ -1,6 +1,7 @@
 package certificate.controllers;
 
 import certificate.authentication.AuthManager;
+import certificate.datatransferobjects.RuleDto;
 import certificate.datatransferobjects.UserCertificateDto;
 import certificate.domain.entities.Certificate;
 import certificate.service.CertificateService;
@@ -65,6 +66,22 @@ public class CertificateController {
                 ucd.isCompetitive(), ucd.getPosition(), ucd.getCertificate());
         Certificate certificate = new Certificate(auth.getNetId(), id);
         certificateService.saveCertificate(certificate);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
+    }
+
+    /**
+     * Gets rule index.
+     *
+     * @param rules the rules
+     * @return the rule index
+     */
+    @PostMapping("/certificate/getRuleIndex")
+    public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
+        int id = certificateService.generateId(rules.isGendered(),
+                rules.isPro(),
+                "COX",
+                rules.getCertificate());
+        //TODO: create a second db that stores event id and rule index
         return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 }
