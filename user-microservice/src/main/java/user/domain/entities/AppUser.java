@@ -19,8 +19,6 @@ import user.domain.enums.Position;
 @AllArgsConstructor
 public class AppUser {
 
-    private Gender gender;
-
     @Id
     @Column(unique = true)
     private String netId;

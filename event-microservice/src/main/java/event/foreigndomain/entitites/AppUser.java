@@ -1,54 +1,49 @@
 package event.foreigndomain.entitites;
 
+import event.foreigndomain.enums.Certificate;
 import event.foreigndomain.enums.Gender;
+import event.foreigndomain.enums.Position;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-import java.util.Date;
 
 /**
- * The type App user.
+ * User entity consisting of an ID, gender, username, password, list of boats, list of certificates, list of roles.
  */
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppUser {
 
-    private transient Gender gender;
-    private transient String netId;
-    private transient String boat;
-    private transient Date avDate;
-    private transient Time avTime;
+    @Id
+    @Column(unique = true)
+    private String netId;
 
+    @Column
+    private Gender gender;
 
-    /**
-     * Instantiates a new App user.
-     *
-     * @param netId  the net id
-     * @param gender the gender
-     */
-    public AppUser(String netId, Gender gender) {
-        this.netId = netId;
-        this.gender = gender;
-    }
+    @Column
+    private Position prefPosition;
+
+    @Column
+    private boolean competitive;
+
+    @Column
+    private Certificate certificate;
 
     /**
-     * Instantiates a new App user.
+     * Basic constructor for a new AppUser.
      *
-     * @param netId the net id
+     * @param netId a string containing the netId of the user so that we can differentiate them
      */
-    public AppUser(String netId ) {
+    public AppUser(String netId) {
         this.netId = netId;
-
     }
-    public void UserPref( String boat, Date date, Time time) {
-        this.avDate = date;
-        this.avTime = time;
-        this.boat = boat;
-    }
-
-    public String getNetId() {
-        return netId;
-    }
-    public String getBoat() { return boat;}
-    public Date getAvDate() {
-        return avDate;
-    }
-    public Time getAvTime() { return avTime;}
 }
+
+

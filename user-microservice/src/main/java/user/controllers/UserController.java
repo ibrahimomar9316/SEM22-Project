@@ -1,6 +1,5 @@
 package user.controllers;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.util.List;
@@ -13,16 +12,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import user.authentication.AuthManager;
-import user.authentication.JwtRequestFilter;
 import user.datatransferobjects.UserCertificateDto;
 import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
-import user.models.AuthTokenHolder;
 import user.models.UserDetailsModel;
 import user.service.UserService;
 
@@ -88,14 +90,13 @@ public class UserController {
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(
-            currentUser.getGender()== Gender.MALE,
+            currentUser.getGender() == Gender.MALE,
                 currentUser.isCompetitive(),
                 currentUser.getPrefPosition().toString(),
                 currentUser.getCertificate().toString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth();
         String json = new ObjectMapper().writeValueAsString(ucd);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
