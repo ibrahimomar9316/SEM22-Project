@@ -1,20 +1,17 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
-import event.foreigndomain.entitites.AppUser;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
+import event.domain.enums.Rules;
+import event.domain.objects.Participant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,18 +45,16 @@ public class Event {
     @Column
     private String admin;
 
-    @ElementCollection()
-    @CollectionTable(name = "participants_netIds", joinColumns = @JoinColumn(name = "eventId"))
-    private List<String> participants;
+    @Column
+    private LocalDateTime time;
 
     @Column
-    private Date date;
+    @ElementCollection(targetClass = Participant.class)
+    private List<Participant> participants;
 
     @Column
-    private Time time;
-
-    @Column
-    private transient String rules;
+    @ElementCollection(targetClass = Rules.class)
+    private List<Rules> rules;
 
     /**
      * Empty constructor for the Event class.
@@ -69,14 +64,20 @@ public class Event {
     /**
      * Constructor for a new Event.
      *
-     * @param eventType an enum containing the event type (competition/training)
-     * @param admin     an AppUser representing who is the admin/owner of an event,
-     *                  being the one that can manage or modify the whole event
+     * @param eventType    an enum containing the event type (competition/training)
+     * @param admin        the netId of the user who is the owner/admin of the event
+     *                     being the only person who can edit or remove the event
+     * @param time         the date and time of the start of the event
+     * @param participants a list containing the participants in the event
+     * @param rules        a list containing the requirements the participants need
+     *                     to participate in the event
      */
-    public Event(EventType eventType, AppUser admin) {
+    public Event(EventType eventType, String admin, LocalDateTime time, List<Participant> participants, List<Rules> rules) {
         this.eventType = eventType;
-        this.admin = admin.getNetId();
-        participants = new ArrayList<>();
+        this.admin = admin;
+        this.time = time;
+        this.participants = participants;
+        this.rules = rules;
     }
 
     /**
@@ -102,15 +103,28 @@ public class Event {
     }
 
     /**
-     * Method that converts and event into a string showing what type of event
-     * was created and who created it.
+     * Default toString method for an event.
      *
-     * @return A string representing who created an event
+     * @return A string representing an event
      */
     @Override
     public String toString() {
-        String string = eventType.toString().toLowerCase(Locale.ROOT);
-        string = Character.toUpperCase(string.charAt(0)) + string.substring(1);
-        return string + " Event made by " + admin + ", number of participants: " + numberOfParticipants();
+        String type = eventType.toString().toLowerCase(Locale.ROOT);
+        type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
+        return type + " made by " + admin + ", event ID: "
+                + eventId + ", time " + time + "\n" + participants + "\n" + rules;
+    }
+
+    public String toStringJoin() {
+        return "You have joined event " + eventId + " made by " + admin;
+    }
+
+    /**
+     * ToString method for when an event has been updated.
+     *
+     * @return A message indicating what has been updated
+     */
+    public String toStringUpdate() {
+        return "You have updated event " + eventId;
     }
 }
