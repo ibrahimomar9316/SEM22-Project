@@ -104,12 +104,12 @@ public class UserController {
         String json = new ObjectMapper().writeValueAsString(ucd);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
-        ResponseEntity<UserCertificateDto> obj = new RestTemplate()
-            .postForEntity("http://localhost:8084/api/certificate/filter", entity, UserCertificateDto.class);
-        if (obj.getStatusCode().is2xxSuccessful()) {
-            System.out.println(obj.getBody());
+        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+            .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
+        if (hashedIndex.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("Successfully updated user:\n" + currentUser);
+                    .body("Successfully updated user:\n" + currentUser
+                            + ", hashedIndex: " + hashedIndex.getBody());
         } else {
             throw new NotFoundException("Incorrectly saved in user microservice");
         }

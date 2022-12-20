@@ -16,16 +16,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Slf4j
 public class CertificateService {
-    private CertificateRepository certificateRepository;
-
-    /**
-     * Instantiates a new Certificate service.
-     *
-     * @param certificateRepository the certificate repository
-     */
-    public CertificateService(CertificateRepository certificateRepository) {
-        this.certificateRepository = certificateRepository;
-    }
+    private final CertificateRepository certificateRepository;
 
     /**
      * Generate id int.
@@ -71,10 +62,9 @@ public class CertificateService {
      * Save certificate certificate.
      *
      * @param certificate the certificate
-     * @return the certificate
      */
-    public Certificate saveCertificate(Certificate certificate) {
-        return certificateRepository.save(certificate);
+    public void saveCertificate(Certificate certificate) {
+        certificateRepository.save(certificate);
     }
 
     /**

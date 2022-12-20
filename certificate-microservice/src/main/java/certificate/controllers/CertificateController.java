@@ -64,7 +64,6 @@ public class CertificateController {
         int id = certificateService.generateId(ucd.isMale(),
                 ucd.isCompetitive(), ucd.getPosition(), ucd.getCertificate());
         Certificate certificate = new Certificate(auth.getNetId(), id);
-        // mai jos da null, help?
         certificateService.saveCertificate(certificate);
         return ResponseEntity.status(HttpStatus.OK).body(id);
     }

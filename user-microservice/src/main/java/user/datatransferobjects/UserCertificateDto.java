@@ -12,6 +12,11 @@ public class UserCertificateDto {
     private transient String position;
     private transient String certificate;
 
+
+    public UserCertificateDto() {
+
+    }
+
     /**
      * Constructor for the data transfer object used to be passed to certificate microservice
      * to generate the hash for the user.
