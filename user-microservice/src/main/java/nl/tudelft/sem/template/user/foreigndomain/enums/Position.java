@@ -1,7 +1,7 @@
 package nl.tudelft.sem.template.user.foreigndomain.enums;
 
 /**
- * ENUM types that describe the position used in a message
+ * ENUM types that describe the position used in a message.
  */
 public enum Position {
     COX,

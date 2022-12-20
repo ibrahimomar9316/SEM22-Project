@@ -1,11 +1,16 @@
 package nl.tudelft.sem.template.user.domain.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.tudelft.sem.template.user.domain.enums.MessageType;
 import nl.tudelft.sem.template.user.foreigndomain.enums.Position;
-import javax.persistence.*;
+
 
 @Entity
 @Data
@@ -35,7 +40,7 @@ public class Message {
 
 
     /**
-     * Constructor for a message
+     * Constructor for a message.
      *
      * @param eventId The id of the event, the message is used for to communicate
      * @param type The type specifying the goal of the message
@@ -135,7 +140,7 @@ public class Message {
     /**
      * Setter for the netId of the sender.
      *
-     * @param sender, the netId of the sender to set
+     * @param sender the netId of the sender to set
      */
     public void setSender(String sender) {
         this.sender = sender;

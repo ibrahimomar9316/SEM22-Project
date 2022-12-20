@@ -1,13 +1,14 @@
 package nl.tudelft.sem.template.user.service;
 
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.sem.template.user.authentication.AuthManager;
 import nl.tudelft.sem.template.user.domain.MessageRepository;
 import nl.tudelft.sem.template.user.domain.entities.Message;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
-import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
