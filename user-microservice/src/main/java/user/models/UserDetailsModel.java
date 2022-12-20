@@ -1,7 +1,7 @@
 package user.models;
 
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
