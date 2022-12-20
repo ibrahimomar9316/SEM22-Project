@@ -70,6 +70,8 @@ public class UserService {
             throw new IllegalArgumentException("netId or password can not be update in this method");
         }
         currentUser.setGender(appUser.getGender());
+        currentUser.setAvDateTimes(appUser.getAvDateTimes());
+        currentUser.setBoat(appUser.getBoat());
         appUserRepository.save(currentUser);
         return appUser;
     }
