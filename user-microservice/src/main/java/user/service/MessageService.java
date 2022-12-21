@@ -4,9 +4,10 @@ import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import user.domain.MessageRepository;
 import user.domain.entities.Message;
-import org.springframework.stereotype.Service;
+
 
 
 @Service

@@ -1,9 +1,9 @@
 package user.domain;
 
 import java.util.List;
-import user.domain.entities.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import user.domain.entities.Message;
 
 /**
  * Repository for the messages.

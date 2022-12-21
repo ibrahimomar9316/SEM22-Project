@@ -3,11 +3,6 @@ package user.controllers;
 import java.net.ConnectException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import user.authentication.AuthManager;
-import user.domain.entities.Message;
-import user.domain.enums.MessageType;
-import user.service.EventService;
-import user.service.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import user.authentication.AuthManager;
+import user.domain.entities.Message;
+import user.domain.enums.MessageType;
+import user.service.EventService;
+import user.service.MessageService;
+
+
 
 
 @RestController
