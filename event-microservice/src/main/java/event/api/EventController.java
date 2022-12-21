@@ -185,12 +185,7 @@ public class EventController {
                         .body("This position is already filled");
             }
 
-            HttpStatus status;
-            try {
-                status = messageService.sendJoinMessage(token, request, netId, event.getAdmin());
-            } catch (ConnectException e) {
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
-            }
+            HttpStatus status = messageService.sendJoinMessage(token, request, netId, event.getAdmin());
             if (status.value() != OK) {
                 return new ResponseEntity<>(status);
             }
@@ -199,6 +194,8 @@ public class EventController {
                     + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ConnectException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
         }
     }
 
@@ -261,22 +258,16 @@ public class EventController {
     public ResponseEntity<String> leave(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
-            String netId = auth.getNetId();
             List<Participant> participant = event.getParticipants()
                     .stream()
-                    .filter(x -> netId.equals(x.getNetId()))
+                    .filter(x -> auth.getNetId().equals(x.getNetId()))
                     .collect(Collectors.toList());
             if (participant.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are not participating in this event!");
             }
 
-            HttpStatus status;
-            try {
-                status = messageService.sendLeaveMessage(token, request, netId, event.getAdmin());
-            } catch (ConnectException e) {
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
-            }
+            HttpStatus status = messageService.sendLeaveMessage(token, request, auth.getNetId(), event.getAdmin());
             if (status.value() != OK) {
                 return new ResponseEntity<>(status);
             }
@@ -287,6 +278,8 @@ public class EventController {
                     + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ConnectException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
         }
     }
 

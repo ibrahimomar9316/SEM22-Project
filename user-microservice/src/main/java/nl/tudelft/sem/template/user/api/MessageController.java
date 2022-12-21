@@ -30,6 +30,8 @@ public class MessageController {
 
     private final transient AuthManager auth;
 
+    private static final int OK = 200;
+
     /**
      * API endpoint for getting all messages in the database.
      *
@@ -86,33 +88,32 @@ public class MessageController {
      */
     @PostMapping({"/accept"})
     public ResponseEntity<String> acceptRequest(@RequestHeader("Authorization") String token, @RequestBody long messageId) {
-        Message message = messageService.getMessage(messageId);
-        if (message == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (!message.getRecipient().equals(auth.getNetId())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        if (message.getType() != MessageType.JOIN) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        HttpStatus status;
         try {
-            status = eventService.acceptJoin(token, message);
+            Message message = messageService.getMessage(messageId);
+            if (message == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (!message.getRecipient().equals(auth.getNetId())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (message.getType() != MessageType.JOIN) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            HttpStatus status = eventService.acceptJoin(token, message);
+            if (status.value() != OK) {
+                return new ResponseEntity<>(status);
+            }
+
+            messageService.deleteMessage(messageId);
+            Message ack = new Message(message.getEventId(), MessageType.ACCEPTED,
+                    message.getPosition(), message.getRecipient(), message.getSender());
+            messageService.save(ack);
+
+            return ResponseEntity.ok().body("Successfully accepted request");
         } catch (ConnectException e) {
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
-        if (status.value() != 200) {
-            return new ResponseEntity<>(status);
-        }
-
-        messageService.deleteMessage(messageId);
-        Message ack = new Message(message.getEventId(), MessageType.ACCEPTED,
-                message.getPosition(), message.getRecipient(), message.getSender());
-        messageService.save(ack);
-
-        return ResponseEntity.ok().body("Successfully accepted request");
     }
 
     /**

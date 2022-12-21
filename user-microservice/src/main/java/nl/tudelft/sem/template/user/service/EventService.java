@@ -15,7 +15,7 @@ public class EventService {
 
     private static final String URL = "http://localhost:8083/api/event";
 
-    RestTemplate restTemplate = new RestTemplate();
+    private static RestTemplate restTemplate = new RestTemplate();
 
     public EventService() {}
 
