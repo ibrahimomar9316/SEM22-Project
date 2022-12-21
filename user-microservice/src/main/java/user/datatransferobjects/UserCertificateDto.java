@@ -3,7 +3,8 @@ package user.datatransferobjects;
 import lombok.Data;
 
 /**
- * Class used to pass data from a microservice to another.
+ * Class used for data transfer, being a dataTransferObject.
+ * It is used to pass data from user-microservice to certificate-microservice, passing data that we want to hash.
  */
 @Data
 public class UserCertificateDto {
@@ -13,13 +14,9 @@ public class UserCertificateDto {
     private transient String certificate;
 
 
-    public UserCertificateDto() {
-
-    }
-
     /**
-     * Constructor for the data transfer object used to be passed to certificate microservice
-     * to generate the hash for the user.
+     * Constructor for the DTO used to send information to certificate-microservie
+     * to generate the hash (for the preferences) for a specific user.
      *
      * @param male boolean representing if it is a male (true) or a female (false)
      * @param competitive boolean representing if the user is competitive or not
