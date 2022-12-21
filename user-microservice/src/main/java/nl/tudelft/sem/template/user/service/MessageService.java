@@ -18,8 +18,6 @@ public class MessageService {
 
     private final MessageRepository repo;
 
-    private final transient AuthManager auth;
-
     /**
      * Getter for all messages in the database.
      *
@@ -46,7 +44,7 @@ public class MessageService {
      * @return The message that was saved
      */
     public Message save(Message message) {
-        return this.repo.save(message);
+        return this.repo.saveAndFlush(message);
     }
 
     /**
@@ -57,6 +55,28 @@ public class MessageService {
      */
     public List<Message> getSentMessages(String netId) {
         return repo.getMessagesBySender(netId);
+    }
+
+    /**
+     * Gets a message from the database with the given id
+     *
+     * @param messageId
+     * @return
+     */
+    public Message getMessage(long messageId) {
+        if (!repo.existsById(messageId)) {
+            return null;
+        }
+        return repo.findById(messageId).get();
+    }
+
+    /**
+     * Deletes the message with the given id from the database
+     *
+     * @param messageId The id of the message to delete
+     */
+    public void deleteMessage(long messageId) {
+        this.repo.deleteById(messageId);
     }
 
 }

@@ -4,7 +4,11 @@ package event.foreigndomain.entitites;
 import event.domain.enums.Position;
 import event.foreigndomain.enums.MessageType;
 import event.models.EventJoinModel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
 
 

@@ -3,9 +3,12 @@ package event.api;
 import event.authentication.AuthManager;
 import event.domain.entities.Event;
 import event.domain.objects.Participant;
+import event.foreigndomain.entitites.Message;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.service.EventService;
+
+import java.net.ConnectException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -176,12 +179,57 @@ public class EventController {
                         .body("This position is already filled");
             }
 
-            if (!messageService.sendJoinMessage(token, request, netId, event.getAdmin())) {
+            HttpStatus status;
+            try {
+                status = messageService.sendJoinMessage(token, request, netId, event.getAdmin());
+            } catch (ConnectException e) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+            }
+            if (status.value() != 200) {
+                return new ResponseEntity<>(status);
             }
 
             return ResponseEntity.ok("You have sent a request to join event: " + event.getEventId()
                     + " made by " + event.getAdmin());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * API endpoint used for adding users to events only by the admin after
+     * they accepted a join-request.
+     *
+     * @param request The message holding the join request
+     * @return 200 if the user is successfully added to the even
+     *         400 if the user is already participating or there is no place left
+     *         404 if the event is not found
+     */
+    @PostMapping({"/event/add"})
+    public ResponseEntity<String> joinByAdmin(@RequestBody Message request) {
+        try {
+            Event event = eventService.getEvent(request.getEventId());
+            if (event.getParticipants()
+                    .stream()
+                    .map(Participant::getNetId)
+                    .collect(Collectors.toList())
+                    .contains(request.getSender())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User is already participating in this event");
+            }
+
+            List<Participant> participants = event.getParticipants()
+                    .stream()
+                    .filter(x -> x.getPosition() == request.getPosition() && x.getNetId() == null)
+                    .collect(Collectors.toList());
+            if (participants.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("This position is already filled");
+            }
+
+            participants.get(0).setNetId(request.getSender());
+            eventService.updateEvent(event);
+            return ResponseEntity.ok("You have added " + request.getSender() + " to your event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -217,8 +265,14 @@ public class EventController {
                         .body("You are not participating in this event!");
             }
 
-            if (!messageService.sendLeaveMessage(token, request, netId, event.getAdmin())) {
+            HttpStatus status;
+            try {
+                status = messageService.sendLeaveMessage(token, request, netId, event.getAdmin());
+            } catch (ConnectException e) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+            }
+            if (status.value() != 200) {
+                return new ResponseEntity<>(status);
             }
 
             participant.get(0).setNetId(null);
