@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CERTIFICATES")
+@Table(name = "CertificateHash")
 public class Certificate {
 
     @Id

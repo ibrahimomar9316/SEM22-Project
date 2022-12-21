@@ -5,7 +5,9 @@ import certificate.datatransferobjects.RuleDto;
 import certificate.datatransferobjects.UserCertificateDto;
 import certificate.domain.entities.Certificate;
 import certificate.domain.entities.Rule;
-import certificate.service.CertificateRulesService;
+import certificate.service.CertificateService;
+import certificate.service.CommonService;
+import certificate.service.RuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +29,9 @@ public class CertificateController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private transient CertificateRulesService certificateRulesService;
+    private transient CertificateService certificateService;
+    private transient RuleService ruleService;
+    private transient CommonService common;
 
     // This is used and initiated to check if the token is
     // valid and to get the netID
@@ -36,12 +40,17 @@ public class CertificateController {
     /**
      * Instantiates a new Certificate controller.
      *
-     * @param certificateRulesService the certificate service
+     * @param certificateService the certificate service
      * @param auth               the auth
      */
     @Autowired
-    public CertificateController(CertificateRulesService certificateRulesService, AuthManager auth) {
-        this.certificateRulesService = certificateRulesService;
+    public CertificateController(CertificateService certificateService,
+                                 RuleService ruleService,
+                                 CommonService common,
+                                 AuthManager auth) {
+        this.certificateService = certificateService;
+        this.ruleService = ruleService;
+        this.common = common;
         this.auth = auth;
     }
 
@@ -63,12 +72,12 @@ public class CertificateController {
      */
     @PostMapping("/certificate/filter")
     public ResponseEntity<Integer> filter(@RequestBody UserCertificateDto ucd) {
-        int id = certificateRulesService.generateId(ucd.isMale(),
+        int id = common.generateId(ucd.isMale(),
                 ucd.isCompetitive(),
                 ucd.getPosition(),
                 ucd.getCertificate());
         try {
-            certificateRulesService.saveCertificate(new Certificate(auth.getNetId(), id));
+            certificateService.save(new Certificate(auth.getNetId(), id));
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(404);
@@ -83,12 +92,12 @@ public class CertificateController {
      */
     @PostMapping("/certificate/getRuleIndex")
     public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
-        int id = certificateRulesService.generateId(rules.isGendered(),
+        int id = common.generateId(rules.isGendered(),
                 rules.isPro(),
                 "COX",
                 rules.getCertificate());
         try {
-            certificateRulesService.saveRule(new Rule(rules.getEventId(), id));
+            ruleService.save(new Rule(rules.getEventId(), id));
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(404);

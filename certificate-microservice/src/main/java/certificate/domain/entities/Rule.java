@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "RULEs")
+@Table(name = "RuleHash")
 public class Rule {
 
     @Id
