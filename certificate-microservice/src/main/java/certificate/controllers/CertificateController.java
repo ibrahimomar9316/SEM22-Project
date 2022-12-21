@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -101,6 +98,23 @@ public class CertificateController {
             return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(404);
+        }
+    }
+
+    /**
+     * Gets all of the users with their hashed preferences
+     *
+     * @return a string containing all the users with their hashed preferences
+     */
+    @GetMapping({"/certificate/getAllUsersHash"})
+    public ResponseEntity<String> getAllCertificates() {
+        // checks if the database is not empty
+        if (certificateService.getAllCertificates().size() != 0) {
+            return ResponseEntity.ok(certificateService.getAllCertificates().toString());
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("No user has put their preferences!");
         }
     }
 }
