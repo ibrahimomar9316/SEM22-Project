@@ -18,6 +18,7 @@ import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
 import user.service.UserService;
 
+
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
@@ -60,5 +61,4 @@ public class UserControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(userDto, result);
     }
-
 }
