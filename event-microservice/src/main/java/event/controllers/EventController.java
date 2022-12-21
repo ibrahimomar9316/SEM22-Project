@@ -272,18 +272,29 @@ public class EventController {
     }
 
     /**
-     * Sets rules.
+     * Endpoint for setting the rules of the event. Only admins of their own events
+     * are able to set their rules, no one else can. If the authorised user is the admin,
+     * then they can specify some rules of the event, like if they want the event to only be
+     * for professional rowers. After specifying these rules, they get sent to the Certificate
+     * Microservice, where an index is calculated and sent back to event/update so that it is
+     * store in EventRepo.
      *
-     * @param token the token
-     * @param rules the rules
-     * @return the rules
-     * @throws NotFoundException       the not found exception
-     * @throws JsonProcessingException the json processing exception
+     * @param token the token containing the netID of the admin
+     * @param rules an EventRulesModel that contains rules about gender selection,
+     *              professional players only and about what certificate te cox needs.
+     * @return a string response stating if the event has been correctly updated to contain
+     *         the rule index.
+     * @throws NotFoundException    this is thrown if the event specified cannot be found
      */
     @PostMapping({"/event/setRules"})
     public ResponseEntity<String> setRules(@RequestHeader("Authorization") String token,
                                            @RequestBody EventRulesModel rules)
                                             throws NotFoundException, JsonProcessingException {
+        Event event = eventService.getEvent(rules.getEventId());
+        if (!event.getAdmin().equals(auth.getNetId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You are not the admin of this event!");
+        }
         RuleDto dto = new RuleDto(rules.getEventId(), rules.isSameGender(),
                 rules.isProfessional(), rules.getCertificate().toString());
         HttpHeaders headers = new HttpHeaders();
@@ -291,14 +302,17 @@ public class EventController {
         headers.setBearerAuth(token.split(" ")[1]);
         String json = new ObjectMapper().writeValueAsString(dto);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        // here we get an hashedIndex of the rules of the event.
         ResponseEntity<Integer> hashedIndex = new RestTemplate()
                 .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
+        // hashedIndex returns 404 if an error getting the index occurs
         if (hashedIndex.getBody() == 404) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error in generating index!");
         }
         if (hashedIndex.getStatusCode().is2xxSuccessful()) {
-            Event event = eventService.getEvent(rules.getEventId());
+            // if the hashIndex is succesfuly found, we put it in
+            // the Event table and send the event to be updated
             event.setRuleIndex(hashedIndex.getBody());
             HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
             return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);

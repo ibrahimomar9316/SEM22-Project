@@ -3,7 +3,8 @@ package event.datatransferobjects;
 import lombok.Data;
 
 /**
- * Class used to pass data from a microservice to another.
+ * Class used for data transfer, being a dataTransferObject.
+ * It is used to pass data from event-microservice to certificate-microservice, passing data that we want to hash.
  */
 @Data
 public class RuleDto {
@@ -13,20 +14,14 @@ public class RuleDto {
     private transient String certificate;
 
 
-    /**
-     * Instantiates a new Rule dto.
-     */
-    public RuleDto() {
-
-    }
 
     /**
-     * Instantiates a new Rule dto.
+     * Instantiates a new Rule dataTransferObject.
      *
-     * @param eventId     the event id
-     * @param gendered    the gendered
-     * @param pro         the pro
-     * @param certificate the certificate
+     * @param eventId     long value representing the ID of the event we are hashing the rules for
+     * @param gendered    boolean representing the gender restrictions
+     * @param pro         boolean representing if the event requires only professionals or not
+     * @param certificate string representing the minimum certificates required to participate in the event
      */
     public RuleDto(long eventId, boolean gendered, boolean pro, String certificate) {
         this.eventId = eventId;
@@ -36,45 +31,45 @@ public class RuleDto {
     }
 
     /**
-     * Gets certificate.
+     * Getter function used to retrieve the certificate from the DTO.
      *
-     * @return the certificate
+     * @return A string representing the certificate requirements stored in the DTO
      */
     public String getCertificate() {
         return certificate;
     }
 
     /**
-     * Gets event id.
+     * Getter function used to retrieve the id of an event from the DTO.
      *
-     * @return the event id
+     * @return A long value representing the id of the event stored in the DTO
      */
     public long getEventId() {
         return eventId;
     }
 
     /**
-     * Sets certificate.
+     * Setter function used to set the certificate from the DTO.
      *
-     * @param certificate the certificate
+     * @param certificate the certificate we want to store in the DTO
      */
     public void setCertificate(String certificate) {
         this.certificate = certificate;
     }
 
     /**
-     * Sets gendered.
+     * Setter function used to set the certificate from the DTO.
      *
-     * @param gendered the gendered
+     * @param gendered the certificate we want to store in the DTO
      */
     public void setGendered(boolean gendered) {
         this.gendered = gendered;
     }
 
     /**
-     * Sets pro.
+     * Setter function used to set the rpo from the DTO.
      *
-     * @param pro the pro
+     * @param pro the pro we want to store in the DTO
      */
     public void setPro(boolean pro) {
         this.pro = pro;
