@@ -2,17 +2,19 @@ package user.domain.entities;
 
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Test;
-import user.domain.enums.Certificate;
-import user.domain.enums.Gender;
-import user.domain.enums.Position;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.Test;
+import user.domain.enums.Certificate;
+import user.domain.enums.Gender;
+import user.domain.enums.Position;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class AppUserTest {
     @Test

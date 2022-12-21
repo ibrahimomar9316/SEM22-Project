@@ -15,7 +15,12 @@ public class UserDetailsModel {
     private Certificate certificate;
     private List<LocalDateTime> avDates;
 
-    public UserDetailsModel(Gender gender, Position prefPosition, boolean competitive, Certificate certificate, List<LocalDateTime> avDates) {
+    /**
+     * Constructor for the UserDetailsModel.
+     */
+    public UserDetailsModel(Gender gender, Position prefPosition,
+                            boolean competitive, Certificate certificate,
+                            List<LocalDateTime> avDates) {
         this.gender = gender;
         this.prefPosition = prefPosition;
         this.competitive = competitive;

@@ -66,9 +66,9 @@ public class UserController {
     @PostMapping("/user/save")
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto gotUser) throws NotFoundException {
         AppUser savedUser = new AppUser(gotUser.getUsername());
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
+        //URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         appUserService.saveAppUser(savedUser);
-        return ResponseEntity.created(uri).body(gotUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(gotUser);
     }
 
     /**

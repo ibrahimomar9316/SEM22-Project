@@ -1,7 +1,14 @@
 package user.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import javassist.NotFoundException;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,15 +20,6 @@ import user.domain.entities.AppUser;
 import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
 import user.domain.enums.Position;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -151,7 +149,6 @@ public class UserServiceTest {
 
     @Test
     public void testUpdateUserNetId() {
-        String netId = "test123";
         String newNetId = "test456";
         Gender gender = Gender.MALE;
         Position prefPosition = Position.COX;
@@ -166,6 +163,7 @@ public class UserServiceTest {
         appUser.setCertificate(certificate);
         appUser.setAvDates(avDates);
 
+        String netId = "test123";
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
 
