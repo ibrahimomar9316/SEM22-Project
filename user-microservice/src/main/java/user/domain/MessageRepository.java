@@ -1,7 +1,7 @@
-package nl.tudelft.sem.template.user.domain;
+package user.domain;
 
 import java.util.List;
-import nl.tudelft.sem.template.user.domain.entities.Message;
+import user.domain.entities.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

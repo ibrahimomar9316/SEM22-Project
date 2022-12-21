@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.user.domain.enums;
+package user.domain.enums;
 
 /**
  * ENUM types that describe the purpose of a message.

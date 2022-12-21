@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.user.foreigndomain.enums;
+package user.foreigndomain.enums;
 
 /**
  * ENUM types that describe the position used in a message.

@@ -1,13 +1,13 @@
-package nl.tudelft.sem.template.user.api;
+package user.controllers;
 
 import java.net.ConnectException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nl.tudelft.sem.template.user.authentication.AuthManager;
-import nl.tudelft.sem.template.user.domain.entities.Message;
-import nl.tudelft.sem.template.user.domain.enums.MessageType;
-import nl.tudelft.sem.template.user.service.EventService;
-import nl.tudelft.sem.template.user.service.MessageService;
+import user.authentication.AuthManager;
+import user.domain.entities.Message;
+import user.domain.enums.MessageType;
+import user.service.EventService;
+import user.service.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

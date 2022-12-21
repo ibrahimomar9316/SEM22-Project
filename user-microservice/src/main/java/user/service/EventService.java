@@ -1,7 +1,7 @@
-package nl.tudelft.sem.template.user.service;
+package user.service;
 
 import java.net.ConnectException;
-import nl.tudelft.sem.template.user.domain.entities.Message;
+import user.domain.entities.Message;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

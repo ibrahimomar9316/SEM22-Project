@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.user.domain.entities;
+package user.domain.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.tudelft.sem.template.user.domain.enums.MessageType;
-import nl.tudelft.sem.template.user.foreigndomain.enums.Position;
+import user.domain.enums.MessageType;
+import user.foreigndomain.enums.Position;
 
 
 @Entity
