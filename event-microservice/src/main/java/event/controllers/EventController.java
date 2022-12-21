@@ -292,7 +292,7 @@ public class EventController {
         String json = new ObjectMapper().writeValueAsString(dto);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         ResponseEntity<Integer> hashedIndex = new RestTemplate()
-                .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
+                .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
         if (hashedIndex.getBody() == 404) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error in generating index!");
@@ -300,8 +300,7 @@ public class EventController {
         if (hashedIndex.getStatusCode().is2xxSuccessful()) {
             Event event = eventService.getEvent(rules.getEventId());
             event.setRuleIndex(hashedIndex.getBody());
-            String json2 = new ObjectMapper().writeValueAsString(event);
-            HttpEntity<String> entity2 = new HttpEntity<>(json2, headers);
+            HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
             return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
         } else {
             throw new NotFoundException("Incorrectly updated rules!");
