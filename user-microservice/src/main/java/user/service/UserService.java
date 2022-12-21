@@ -77,6 +77,7 @@ public class UserService {
         currentUser.setCertificate(appUser.getCertificate());
         currentUser.setCompetitive(appUser.isCompetitive());
         currentUser.setPrefPosition(appUser.getPrefPosition());
+        currentUser.setAvDates(appUser.getAvDates());
         appUserRepository.save(currentUser);
         return appUser;
     }
