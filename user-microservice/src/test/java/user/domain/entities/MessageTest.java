@@ -1,10 +1,10 @@
 package user.domain.entities;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.Test;
 import user.domain.enums.MessageType;
 import user.foreigndomain.enums.Position;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MessageTest {
 
