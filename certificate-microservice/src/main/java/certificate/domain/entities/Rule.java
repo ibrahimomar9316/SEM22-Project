@@ -8,18 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CERTIFICATES")
-public class Certificate {
+@Table(name = "RULEs")
+public class Rule {
 
     @Id
-    @Column(name = "netId", nullable = false, unique = true)
-    private String netId;
+    @Column(name = "eventId", nullable = false, unique = true)
+    private long eventId;
 
-    @Column(name = "certificateIndex")
-    private int certificateIndex;
+    @Column(name = "ruleIndex")
+    private int ruleIndex;
 }

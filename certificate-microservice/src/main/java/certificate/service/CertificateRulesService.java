@@ -1,7 +1,9 @@
 package certificate.service;
 
 import certificate.domain.CertificateRepository;
+import certificate.domain.RuleRepository;
 import certificate.domain.entities.Certificate;
+import certificate.domain.entities.Rule;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +17,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class CertificateService {
+public class CertificateRulesService {
     private final CertificateRepository certificateRepository;
+    private final RuleRepository ruleRepository;
 
     /**
      * Generate id int.
@@ -66,6 +69,16 @@ public class CertificateService {
     public void saveCertificate(Certificate certificate) {
         certificateRepository.save(certificate);
     }
+
+    /**
+     * Save rule.
+     *
+     * @param rule the rule
+     */
+    public void saveRule(Rule rule) {
+        ruleRepository.save(rule);
+    }
+
 
     /**
      * Gets all certificates.

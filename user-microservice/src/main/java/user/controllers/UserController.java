@@ -1,6 +1,5 @@
 package user.controllers;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +31,7 @@ import user.service.UserService;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@SuppressWarnings("PMD")
 public class UserController {
 
     private final UserService appUserService;
@@ -82,7 +81,7 @@ public class UserController {
      * @param request new user body with updates
      * @return saved user
      */
-    @PutMapping("/user/edit")
+    @PostMapping("/user/edit")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
                                              @RequestBody UserDetailsModel request) throws Exception {
         AppUser currentUser = new AppUser(auth.getNetId());
@@ -106,6 +105,10 @@ public class UserController {
 
         ResponseEntity<Integer> hashedIndex = new RestTemplate()
             .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
+        if (hashedIndex.getBody() == 404) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error in generating index!");
+        }
         if (hashedIndex.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Successfully updated user:\n" + currentUser

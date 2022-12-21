@@ -40,6 +40,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @RestController
 @RequestMapping({"/api"})
+@SuppressWarnings("PMD")
 public class EventController {
 
     @Autowired
@@ -292,17 +293,18 @@ public class EventController {
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         ResponseEntity<Integer> hashedIndex = new RestTemplate()
                 .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
+        if (hashedIndex.getBody() == 404) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error in generating index!");
+        }
         if (hashedIndex.getStatusCode().is2xxSuccessful()) {
             Event event = eventService.getEvent(rules.getEventId());
             event.setRuleIndex(hashedIndex.getBody());
-            HttpHeaders headers2 = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(token.split(" ")[1]);
             String json2 = new ObjectMapper().writeValueAsString(event);
-            HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+            HttpEntity<String> entity2 = new HttpEntity<>(json2, headers);
             return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
         } else {
-            throw new NotFoundException("Incorrectly uptdatet rules!");
+            throw new NotFoundException("Incorrectly updated rules!");
         }
     }
 

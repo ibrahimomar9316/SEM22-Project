@@ -4,7 +4,8 @@ import certificate.authentication.AuthManager;
 import certificate.datatransferobjects.RuleDto;
 import certificate.datatransferobjects.UserCertificateDto;
 import certificate.domain.entities.Certificate;
-import certificate.service.CertificateService;
+import certificate.domain.entities.Rule;
+import certificate.service.CertificateRulesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,7 @@ public class CertificateController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private transient CertificateService certificateService;
+    private transient CertificateRulesService certificateRulesService;
 
     // This is used and initiated to check if the token is
     // valid and to get the netID
@@ -35,12 +36,12 @@ public class CertificateController {
     /**
      * Instantiates a new Certificate controller.
      *
-     * @param certificateService the certificate service
+     * @param certificateRulesService the certificate service
      * @param auth               the auth
      */
     @Autowired
-    public CertificateController(CertificateService certificateService, AuthManager auth) {
-        this.certificateService = certificateService;
+    public CertificateController(CertificateRulesService certificateRulesService, AuthManager auth) {
+        this.certificateRulesService = certificateRulesService;
         this.auth = auth;
     }
 
@@ -62,11 +63,16 @@ public class CertificateController {
      */
     @PostMapping("/certificate/filter")
     public ResponseEntity<Integer> filter(@RequestBody UserCertificateDto ucd) {
-        int id = certificateService.generateId(ucd.isMale(),
-                ucd.isCompetitive(), ucd.getPosition(), ucd.getCertificate());
-        Certificate certificate = new Certificate(auth.getNetId(), id);
-        certificateService.saveCertificate(certificate);
-        return ResponseEntity.status(HttpStatus.OK).body(id);
+        int id = certificateRulesService.generateId(ucd.isMale(),
+                ucd.isCompetitive(),
+                ucd.getPosition(),
+                ucd.getCertificate());
+        try {
+            certificateRulesService.saveCertificate(new Certificate(auth.getNetId(), id));
+            return ResponseEntity.status(HttpStatus.OK).body(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(404);
+        }
     }
 
     /**
@@ -77,11 +83,15 @@ public class CertificateController {
      */
     @PostMapping("/certificate/getRuleIndex")
     public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
-        int id = certificateService.generateId(rules.isGendered(),
+        int id = certificateRulesService.generateId(rules.isGendered(),
                 rules.isPro(),
                 "COX",
                 rules.getCertificate());
-        //TODO: create a second db that stores event id and rule index
-        return ResponseEntity.status(HttpStatus.OK).body(id);
+        try {
+            certificateRulesService.saveRule(new Rule(rules.getEventId(), id));
+            return ResponseEntity.status(HttpStatus.OK).body(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(404);
+        }
     }
 }
