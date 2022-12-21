@@ -18,6 +18,15 @@ public class UserDto {
     }
 
     /**
+     * Setter function for the username/netId String value.
+     *
+     * @param username the username that we want to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
      * Getter function for the username/netId String value.
      *
      * @return a string representing the username/netId of the user we want to pass along microservices

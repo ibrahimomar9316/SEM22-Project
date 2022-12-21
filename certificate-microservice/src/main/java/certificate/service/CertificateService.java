@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * The type Certificate service.
+ * The service used to operate on the hashed Preferences database.
  */
 @Service
 @RequiredArgsConstructor
@@ -19,18 +19,18 @@ public class CertificateService {
     private final CertificateRepository certificateRepository;
 
     /**
-     * Save certificate certificate.
+     * Function used to save the hashed preferences in the database.
      *
-     * @param certificate the certificate
+     * @param certificate the hashed preferences we want to store in the database
      */
     public void save(Certificate certificate) {
         certificateRepository.save(certificate);
     }
 
     /**
-     * Gets all certificates.
+     * Getter function to retrieve all hashed preferences for all users that selected their preferences.
      *
-     * @return the all certificates
+     * @return all users with their corresponding hashed preferences
      */
     public List<Certificate> getAllCertificates() {
         return certificateRepository.findAll();

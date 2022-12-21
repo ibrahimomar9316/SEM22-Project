@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * The type Rule service.
+ * The service used to operate on the hashed Rules database.
  */
 @Service
 @RequiredArgsConstructor
@@ -19,18 +19,18 @@ public class RuleService {
     private final RuleRepository ruleRepository;
 
     /**
-     * Save rule.
+     * Function used to save the hashed rules in the database.
      *
-     * @param rule the rule
+     * @param rule the hashed rule we want to store in the database
      */
     public void save(Rule rule) {
         ruleRepository.save(rule);
     }
 
     /**
-     * Gets all rules.
+     * Getter function to retrieve all hashed rules for all the events.
      *
-     * @return the all rules
+     * @return all events with their corresponding hashed rules
      */
     public List<Rule> getAllCertificates() {
         return ruleRepository.findAll();

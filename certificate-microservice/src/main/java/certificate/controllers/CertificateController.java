@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * The type Certificate controller.
+ * Controller for the certificate-microservice to manage the API endpoints.
  */
 @RestController
 @RequestMapping("/api")
@@ -39,10 +39,13 @@ public class CertificateController {
     private final transient AuthManager auth;
 
     /**
-     * Instantiates a new Certificate controller.
+     * Instantiates a new certificate controller using the services to process data in the databases and
+     * to hash the indexes.
      *
-     * @param certificateService the certificate service
-     * @param auth               the auth
+     * @param certificateService service used to operate on the database containing the hashed preferences for users
+     * @param ruleService service used to operate on the database containing the hashed rules for events
+     * @param common common service used to hash the values for the users and events
+     * @param auth the authentication manager that is used to automatically manage the Spring Security
      */
     @Autowired
     public CertificateController(CertificateService certificateService,
@@ -56,9 +59,9 @@ public class CertificateController {
     }
 
     /**
-     * Gets rest template.
+     * Getter function for the rest template used.
      *
-     * @return the rest template
+     * @return a RestTemplate object representing the rest template.
      */
     @Bean
     public RestTemplate getRestTemplate() {
@@ -66,10 +69,10 @@ public class CertificateController {
     }
 
     /**
-     * Filter response entity.
+     * API endpoint used to hash a user preferences, storing them afterwards in the database.
      *
-     * @param ucd the ucd
-     * @return the response entity
+     * @param ucd the dataTransferObject received from the user-microservice containing all the data to be hashed
+     * @return the response entity that we get after submitting the request
      */
     @PostMapping("/certificate/filter")
     public ResponseEntity<Integer> filter(@RequestBody UserCertificateDto ucd) {
@@ -86,10 +89,10 @@ public class CertificateController {
     }
 
     /**
-     * Gets rule index.
+     * API endpoint used to hash an event rules, storing them afterwards in the database.
      *
-     * @param rules the rules
-     * @return the rule index
+     * @param rules the dataTransferObject received from the event-microservice containing all the data to be hashed
+     * @return the response entity that we get after submitting the request
      */
     @PostMapping("/certificate/getRuleIndex")
     public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
@@ -106,7 +109,7 @@ public class CertificateController {
     }
 
     /**
-     * Gets all of the users with their hashed preferences.
+     * API endpoint used to get all users hashed preferences from the database.
      *
      * @return a string containing all the users with their hashed preferences
      */
@@ -123,7 +126,7 @@ public class CertificateController {
     }
 
     /**
-     * Gets all of the events with their hashed rules.
+     * API endpoint used to get all events hashed rules from the database.
      *
      * @return a string containing all the events with their hashed rules
      */

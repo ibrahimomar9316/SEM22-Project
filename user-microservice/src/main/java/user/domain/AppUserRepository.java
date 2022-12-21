@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import user.domain.entities.AppUser;
 
 /**
- * Repository for the app user entity.
+ * Repository for the app user entity extending the JpaRepository class.
  */
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {

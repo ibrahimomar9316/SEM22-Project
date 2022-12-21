@@ -12,8 +12,7 @@ import user.domain.enums.Position;
 
 /**
  * User entity consisting of an ID, gender, username, password, list of boats, list of certificates, list of roles.
- * This data is stored inside a DataBase and also uses the library lombok to autogenerate
- * the getters and constructors.
+ * This data is stored inside a DataBase and also uses the library lombok to autogenerate the getters and constructors.
  */
 @Entity
 @Data

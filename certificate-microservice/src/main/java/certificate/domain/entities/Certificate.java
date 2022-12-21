@@ -8,7 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * Certificate (Not to be confused with the certificate a user can have) entity consisting of the netId of the user
+ * and the index representing the hash of the preferences for that user.
+ * This data is stored inside a DataBase and also uses the library lombok to autogenerate the getters and constructors.
+ */
 @Entity
 @Data
 @NoArgsConstructor
