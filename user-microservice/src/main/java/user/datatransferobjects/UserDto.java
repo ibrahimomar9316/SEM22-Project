@@ -9,7 +9,8 @@ public class UserDto {
     private String username;
 
     /**
-     * Constructor used to create the DTO
+     * Constructor used to create the DTO.
+     *
      * @param username a string representing the username/netId of the user we want to store
      */
     public UserDto(String username) {
@@ -18,6 +19,7 @@ public class UserDto {
 
     /**
      * Getter function for the username/netId String value.
+     *
      * @return a string representing the username/netId of the user we want to pass along microservices
      */
     public String getUsername() {
