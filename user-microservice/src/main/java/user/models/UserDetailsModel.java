@@ -14,4 +14,12 @@ public class UserDetailsModel {
     private boolean competitive;
     private Certificate certificate;
     private List<LocalDateTime> avDates;
+
+    public UserDetailsModel(Gender gender, Position prefPosition, boolean competitive, Certificate certificate, List<LocalDateTime> avDates) {
+        this.gender = gender;
+        this.prefPosition = prefPosition;
+        this.competitive = competitive;
+        this.certificate = certificate;
+        this.avDates = avDates;
+    }
 }
