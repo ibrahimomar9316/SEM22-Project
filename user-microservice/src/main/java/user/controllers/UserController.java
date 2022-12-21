@@ -59,10 +59,11 @@ public class UserController {
     }
 
     /**
-     * Endpoint saving a user in the database.
+     * Endpoint used for saving a user in the database, endpoint that is called by the authentication microservice.
      *
-     * @param gotUser - user body to be saved
-     * @return - saved user
+     * @param gotUser  a body containing a dataTransferObject that holds information about a user we want to store in
+     *                 the DB
+     * @return  the saved user in the form of a DTO
      */
     @PostMapping("/user/save")
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto gotUser) throws NotFoundException {
@@ -77,9 +78,12 @@ public class UserController {
      * and certification list of the given using. The method has restriction on changing user's netId
      * and password.
      * While the netId is unchangeable, the user can change his password in another endpoint.
+     * Also in this endpoint and api from the certificate microservice is called such that the preferences that
+     * the user selects are updated and hashed into the certificate microservice using (api/certificate/filter).
      *
-     * @param request new user body with updates
-     * @return saved user
+     * @param token header of the request that holds the token used for security
+     * @param request body of the request holding the details to be updated for a user (stored as a dataTransferObject)
+     * @return The saved and updated user
      */
     @PostMapping("/user/edit")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
