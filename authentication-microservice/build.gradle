@@ -26,7 +26,7 @@ plugins {
 	id 'info.solidsoft.pitest' version '1.5.2'
 }
 
-group = 'nl.tudelft.cse.sem.template'
+group = 'authentication'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -65,7 +65,7 @@ test {
 	useJUnitPlatform()
 	jacoco {
 		enabled = true
-		includes = ['nl.tudelft.sem.template.*']
+		includes = ['authentication.*']
 		excludes = []
 	}
 }
@@ -80,7 +80,7 @@ jacocoTestCoverageVerification() {
 		rule {
 			enabled = true
 			element = 'CLASS'
-			includes = ['nl.tudelft.sem.template.*']
+			includes = ['authentication.*']
 
 			limit {
 				counter = 'BRANCH'

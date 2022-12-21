@@ -1,4 +1,4 @@
-package nl.tudelft.sem.template.authentication.profiles;
+package authentication.profiles;
 
 import authentication.domain.user.PasswordHashingService;
 import org.mockito.Mockito;
