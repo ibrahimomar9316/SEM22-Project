@@ -58,10 +58,10 @@ public class MessageService {
     }
 
     /**
-     * Gets a message from the database with the given id
+     * Gets a message from the database with the given id.
      *
-     * @param messageId
-     * @return
+     * @param messageId The id of the message to get from the repository
+     * @return null if not found, else the message that was found
      */
     public Message getMessage(long messageId) {
         if (!repo.existsById(messageId)) {
@@ -71,7 +71,7 @@ public class MessageService {
     }
 
     /**
-     * Deletes the message with the given id from the database
+     * Deletes the message with the given id from the database.
      *
      * @param messageId The id of the message to delete
      */

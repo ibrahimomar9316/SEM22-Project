@@ -1,11 +1,14 @@
 package nl.tudelft.sem.template.user.service;
 
+import java.net.ConnectException;
 import nl.tudelft.sem.template.user.domain.entities.Message;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.ConnectException;
 
 @Service
 public class EventService {

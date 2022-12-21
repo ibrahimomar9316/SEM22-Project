@@ -7,18 +7,22 @@ import event.foreigndomain.entitites.Message;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.service.EventService;
-
+import event.service.MessageService;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import event.service.MessageService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -46,6 +50,8 @@ public class EventController {
     // This is used and initiated to check if the token is
     // valid and to get the netID
     private final transient AuthManager auth;
+
+    private static final int OK = 200;
 
 
     /**
@@ -185,7 +191,7 @@ public class EventController {
             } catch (ConnectException e) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
             }
-            if (status.value() != 200) {
+            if (status.value() != OK) {
                 return new ResponseEntity<>(status);
             }
 
@@ -271,7 +277,7 @@ public class EventController {
             } catch (ConnectException e) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
             }
-            if (status.value() != 200) {
+            if (status.value() != OK) {
                 return new ResponseEntity<>(status);
             }
 
