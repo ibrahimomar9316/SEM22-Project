@@ -52,4 +52,16 @@ class AvDatesTest {
         assertThat(result.contains(", to: ")).isTrue();
         assertThat(result.contains("}")).isTrue();
     }
+
+    @Test
+    void setterAndGetterTest() {
+        LocalDateTime t1 = LocalDateTime.now();
+        LocalDateTime t2 = LocalDateTime.now().plusDays(1);
+        AvDates av = new AvDates();
+        av.setDateFrom(t1);
+        assertThat(t1).isEqualTo(av.getDateFrom());
+
+        av.setDateTo(t2);
+        assertThat(t2).isEqualTo(av.getDateTo());
+    }
 }

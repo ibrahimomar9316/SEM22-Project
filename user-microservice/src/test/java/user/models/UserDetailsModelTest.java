@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import user.domain.enums.Gender;
+import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 
@@ -22,7 +24,7 @@ class UserDetailsModelTest {
         Position prefPosition = Position.COX;
         boolean competitive = true;
         Certificate certificate = Certificate.C4;
-        List<LocalDateTime> avDates = Arrays.asList(LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        List<AvDates> avDates = new ArrayList<>();
 
         UserDetailsModel userDetailsModel = new UserDetailsModel(gender, prefPosition, competitive, certificate, avDates);
 

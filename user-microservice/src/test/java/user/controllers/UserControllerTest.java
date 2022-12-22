@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import user.authentication.AuthManager;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
+import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 import user.models.UserDetailsModel;
@@ -73,7 +74,7 @@ public class UserControllerTest {
     public void updateUserTest() throws Exception {
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
         userController.setRestTemplate(restTemplate);
-        List<LocalDateTime> list = new ArrayList<>();
+        List<AvDates> list = new ArrayList<>();
         UserDetailsModel request = new UserDetailsModel(Gender.MALE, Position.COX, true, Certificate.C4, list);
         when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(ResponseEntity.ok().body(200));
 
