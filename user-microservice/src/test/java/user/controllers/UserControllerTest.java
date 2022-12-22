@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import user.authentication.AuthManager;
-import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
 import user.foreigndomain.enums.Certificate;
@@ -36,14 +35,11 @@ public class UserControllerTest {
     @Mock
     private UserService appUserService;
 
-
     @Mock
     private AuthManager auth;
 
-
     @InjectMocks
     private UserController userController;
-
 
 
     @Test
@@ -63,15 +59,14 @@ public class UserControllerTest {
 
     @Test
     public void testSaveUser() {
-        UserDto userDto = new UserDto("test123");
-        AppUser savedUser = new AppUser(userDto.getUsername());
+        AppUser savedUser = new AppUser("user");
         when(appUserService.saveAppUser(savedUser)).thenReturn(savedUser);
+        when(auth.getNetId()).thenReturn("user");
 
-        ResponseEntity<UserDto> response = userController.saveUser(userDto);
-        UserDto result = response.getBody();
+        ResponseEntity<String> response = userController.saveUser();
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(userDto, result);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(response.getBody(), "user");
     }
 
     @Test
@@ -80,15 +75,23 @@ public class UserControllerTest {
         userController.setRestTemplate(restTemplate);
         List<LocalDateTime> list = new ArrayList<>();
         UserDetailsModel request = new UserDetailsModel(Gender.MALE, Position.COX, true, Certificate.C4, list);
-        when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(ResponseEntity.ok().body(200));
 
-        ResponseEntity<String> res = userController.updateUser(request);
+        ResponseEntity<String> res = userController.updateUser("token k", request);
         assertThat(res.getStatusCode().value()).isEqualTo(200);
         assertThat(Objects.requireNonNull(res.getBody()).contains("Successfully updated user:\n")).isTrue();
 
         UserDetailsModel request2 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, list);
-        when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        ResponseEntity<String> res2 = userController.updateUser(request2);
-        assertThat(res2.getStatusCode().value()).isEqualTo(404);
+        when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(ResponseEntity.ok().body(404));
+        ResponseEntity<String> res2 = userController.updateUser("token l", request2);
+        assertThat(res2.getStatusCode().value()).isEqualTo(400);
+        assertThat(res2.getBody()).isEqualTo("Error in generating index!");
+
+        UserDetailsModel request3 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, list);
+        when(restTemplate.postForEntity(anyString(), any(), any()))
+                .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(300));
+        ResponseEntity<String> res3 = userController.updateUser("token l", request3);
+        assertThat(res3.getStatusCode().value()).isEqualTo(404);
     }
+
 }
