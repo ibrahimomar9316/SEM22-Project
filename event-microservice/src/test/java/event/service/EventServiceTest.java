@@ -12,6 +12,7 @@ import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javassist.NotFoundException;
@@ -101,7 +102,7 @@ class EventServiceTest {
     void updateEventTest() {
         long eventId = 344322;
         EventType eventType = EventType.COMPETITION;
-        String admin = "ezi.boiul";
+        String admin = "ezi.boisul";
         LocalDateTime time = LocalDateTime.now();
         List<Participant> participantList = new ArrayList<>();
         Participant participant1 = new Participant();
@@ -124,6 +125,56 @@ class EventServiceTest {
 
         Event res = eventService.updateEvent(eventTest);
         assertEquals(res,eventTest);
+    }
+
+
+    @Test
+    void getAllEventsTest() {
+        long eventId = 344322;
+        EventType eventType = EventType.COMPETITION;
+        String admin = "ezi.boiul";
+        LocalDateTime time = LocalDateTime.now();
+        List<Participant> participantList = new ArrayList<>();
+        Participant participant1 = new Participant();
+        participantList.add(participant1);
+        Rule rule1 = Rule.MINIMUM_C4;
+        Rule rule2 = Rule.ONLY_PROFESSIONAL;
+        List<Rule> rules = new ArrayList<>();
+        rules.add(rule1);
+        rules.add(rule2);
+
+        Event eventTest1 = new Event();
+        eventTest1.setEventId(eventId);
+        eventTest1.setEventType(eventType);
+        eventTest1.setAdmin(admin);
+        eventTest1.setParticipants(participantList);
+        eventTest1.setRules(rules);
+        eventTest1.setTime(time);
+
+
+        long eventId2 = 342;
+        final String admin2 = "ezi.boi";
+        final List<Participant> participantList2 = new ArrayList<>();
+        final Participant participant12 = new Participant();
+        participantList.add(participant12);
+        final Rule rule12 = Rule.MALE_ONLY;
+        final List<Rule> rules2 = new ArrayList<>();
+        rules.add(rule12);
+
+        final Event eventTest2 = new Event();
+        eventTest2.setEventId(eventId2);
+        eventTest2.setEventType(EventType.COMPETITION);
+        eventTest2.setAdmin(admin2);
+        eventTest2.setParticipants(participantList2);
+        eventTest2.setRules(rules2);
+        eventTest2.setTime(LocalDateTime.now());
+
+        when(eventRepository.findAll()).thenReturn(Arrays.asList(eventTest1, eventTest2));
+
+        List<Event> res = eventService.getAllEvents();
+        assertEquals(2, res.size());
+        assertEquals(eventTest1, res.get(0));
+        assertEquals(eventTest2, res.get(1));
     }
 
 }

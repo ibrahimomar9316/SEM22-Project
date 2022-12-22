@@ -5,7 +5,6 @@ import event.domain.entities.Event;
 import event.domain.enums.EventType;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,18 +49,22 @@ public class EventService {
      * Used when new events are created or when we want to update a new one.
      *
      * @param event the event that we want to save into the repository
+     * @return
      */
-    public void saveEvent(Event event) {
+    public Event saveEvent(Event event) {
         eventRepository.save(event);
+        return event;
     }
 
     /**
      * Update event in the database.
      *
      * @param event the event to be updated
+     * @return
      */
-    public void updateEvent(Event event) {
+    public Event updateEvent(Event event) {
         eventRepository.saveAndFlush(event);
+        return event;
     }
 
     /**
