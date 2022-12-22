@@ -39,7 +39,8 @@ public class AppUser {
     @Column
     private Certificate certificate;
 
-    @ElementCollection
+    @Column
+    @ElementCollection(targetClass = LocalDateTime.class)
     private List<LocalDateTime> avDates;
 
     /**

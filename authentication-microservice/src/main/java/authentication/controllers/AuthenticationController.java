@@ -116,15 +116,11 @@ public class AuthenticationController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        //System.out.println(token.getBody().getToken().toString());
         headers.setBearerAuth(token.getBody().getToken().toString());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String json = new ObjectMapper().writeValueAsString(requestBody);
-        HttpEntity<String> entity = new HttpEntity<>(json, headers);
-        System.out.println(entity.getHeaders().toString());
-
-        ResponseEntity<UserDto> obj = new RestTemplate()
-                .postForEntity("http://localhost:8082/api/user/save", entity, UserDto.class);
+        ResponseEntity<String> obj = new RestTemplate()
+                .postForEntity("http://localhost:8082/api/user/save", entity, String.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.ok().build();
         } else {

@@ -61,16 +61,16 @@ public class UserController {
     /**
      * Endpoint used for saving a user in the database, endpoint that is called by the authentication microservice.
      *
-     * @param gotUser  a body containing a dataTransferObject that holds information about a user we want to store in
-     *                 the DB
+     * @param token  theToken
      * @return  the saved user in the form of a DTO
      */
     @PostMapping("/user/save")
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto gotUser) {
-        AppUser savedUser = new AppUser(gotUser.getUsername());
+    public ResponseEntity<String> saveUser(@RequestHeader("Authorization") String token) {
+        AppUser savedUser = new AppUser(auth.getNetId());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         appUserService.saveAppUser(savedUser);
-        return ResponseEntity.created(uri).body(gotUser);
+        String response = auth.getNetId();
+        return ResponseEntity.created(uri).body(response);
     }
 
     /**
