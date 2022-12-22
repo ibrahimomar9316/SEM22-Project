@@ -1,6 +1,7 @@
 package user.domain.entities;
 
-import java.time.LocalDateTime;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -9,9 +10,10 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
-import user.domain.enums.Position;
+import user.domain.objects.AvDates;
+import user.foreigndomain.enums.Certificate;
+import user.foreigndomain.enums.Position;
 
 /**
  * User entity consisting of an ID, gender, username, password, list of boats, list of certificates, list of roles.
@@ -40,8 +42,9 @@ public class AppUser {
     private Certificate certificate;
 
     @Column
-    @ElementCollection(targetClass = LocalDateTime.class)
-    private List<LocalDateTime> avDates;
+    @ElementCollection(targetClass = AvDates.class)
+    private List<AvDates> avDatesList;
+
 
     /**
      * Basic constructor for a new AppUser.
@@ -50,7 +53,9 @@ public class AppUser {
      */
     public AppUser(String netId) {
         this.netId = netId;
+        this.avDatesList = new ArrayList<>();
     }
+
 }
 
 
