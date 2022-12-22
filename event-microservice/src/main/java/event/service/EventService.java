@@ -50,20 +50,18 @@ public class EventService {
      * Used when new events are created or when we want to update a new one.
      *
      * @param event the event that we want to save into the repository
-     * @return the same event that we saved
      */
-    public Event saveEvent(Event event) {
-        return eventRepository.save(event);
+    public void saveEvent(Event event) {
+        eventRepository.save(event);
     }
 
     /**
      * Update event in the database.
      *
      * @param event the event to be updated
-     * @return the same event
      */
-    public Event updateEvent(Event event) {
-        return eventRepository.saveAndFlush(event);
+    public void updateEvent(Event event) {
+        eventRepository.saveAndFlush(event);
     }
 
     /**
