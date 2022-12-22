@@ -1,27 +1,24 @@
 package event.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import event.authentication.AuthManager;
 import event.domain.EventRepository;
 import event.domain.entities.Event;
 import event.domain.enums.EventType;
 import event.domain.enums.Rule;
 import event.domain.objects.Participant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import javassist.NotFoundException;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
@@ -39,28 +36,26 @@ class EventServiceTest {
     void getEventTest() throws NotFoundException {
 
         long eventId = 342;
-        EventType eventType = EventType.COMPETITION;
-        String admin = "ezi.boi";
-        LocalDateTime time = LocalDateTime.now();
-        List<Participant> participantList = new ArrayList<>();
-        Participant participant1 = new Participant();
+        final String admin = "ezi.boi";
+        final List<Participant> participantList = new ArrayList<>();
+        final Participant participant1 = new Participant();
         participantList.add(participant1);
-        Rule rule1 = Rule.MALE_ONLY;
-        List<Rule> rules = new ArrayList<>();
+        final Rule rule1 = Rule.MALE_ONLY;
+        final List<Rule> rules = new ArrayList<>();
         rules.add(rule1);
 
-        Event eventTest = new Event();
+        final Event eventTest = new Event();
         eventTest.setEventId(eventId);
-        eventTest.setEventType(eventType);
+        eventTest.setEventType(EventType.COMPETITION);
         eventTest.setAdmin(admin);
         eventTest.setParticipants(participantList);
         eventTest.setRules(rules);
-        eventTest.setTime(time);
+        eventTest.setTime(LocalDateTime.now());
 
         when(eventRepository.findById(eventId)).thenReturn(Optional.of(eventTest));
 
-        Event res = eventService.getEvent(eventId);
-        assertEquals(res,eventTest);
+        final Event res = eventService.getEvent(eventId);
+        assertEquals(res, eventTest);
     }
 
     @Test

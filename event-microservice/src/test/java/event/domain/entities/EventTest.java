@@ -54,6 +54,7 @@ public class EventTest {
         String expectedString = "You have updated event " + event.getEventId();
         assertEquals(expectedString, event.toStringUpdate());
     }
+
     @Test
     public void testGetEventId() {
         Event event = new Event(EventType.TRAINING, "admin", LocalDateTime.now(),
@@ -125,6 +126,7 @@ public class EventTest {
         event.setTime(newTime);
         assertEquals(newTime, event.getTime());
     }
+
     @Test
     public void testSetParticipants() {
         List<Participant> participants = Arrays.asList(new Participant(Position.COACH),
