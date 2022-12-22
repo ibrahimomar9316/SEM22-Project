@@ -35,4 +35,9 @@ public class CertificateService {
     public List<Certificate> getAllCertificates() {
         return certificateRepository.findAll();
     }
+
+    public Certificate getCertificateBy(String netId) {
+        return certificateRepository.getCertificateBy(netId);
+    }
+
 }

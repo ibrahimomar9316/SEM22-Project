@@ -96,7 +96,7 @@ public class UserController {
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(
-            currentUser.getGender() == Gender.MALE,
+                currentUser.getGender(),
                 currentUser.isCompetitive(),
                 currentUser.getPrefPosition().toString(),
                 currentUser.getCertificate().toString());

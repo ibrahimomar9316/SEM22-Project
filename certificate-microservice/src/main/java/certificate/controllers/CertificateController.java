@@ -1,6 +1,7 @@
 package certificate.controllers;
 
 import certificate.authentication.AuthManager;
+import certificate.datatransferobjects.EventIdsDto;
 import certificate.datatransferobjects.RuleDto;
 import certificate.datatransferobjects.UserCertificateDto;
 import certificate.domain.entities.Certificate;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for the certificate-microservice to manage the API endpoints.
@@ -76,7 +80,7 @@ public class CertificateController {
      */
     @PostMapping("/certificate/filter")
     public ResponseEntity<Integer> filter(@RequestBody UserCertificateDto ucd) {
-        int id = common.generateId(ucd.isMale(),
+        int id = common.generateId(ucd.getGender(),
                 ucd.isCompetitive(),
                 ucd.getPosition(),
                 ucd.getCertificate());
@@ -96,7 +100,7 @@ public class CertificateController {
      */
     @PostMapping("/certificate/getRuleIndex")
     public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
-        int id = common.generateId(rules.isGendered(),
+        int id = common.generateId(rules.getGenderConstraint(),
                 rules.isPro(),
                 "COX",
                 rules.getCertificate());
@@ -141,4 +145,26 @@ public class CertificateController {
                 .body("No events has put their rules!");
         }
     }
+
+    /**
+     * API endpoint used to get all ids of matching events from hashed rules from the database.
+     *
+     * @return a string containing all the events with their hashed rules
+     */
+    @GetMapping({"/certificate/getAllMatchingRules"})
+    public ResponseEntity<EventIdsDto> getAllMatchingRules() {
+        // checks if the database is not empty
+        if (ruleService.getAllCertificates().size() != 0) {
+            String userNetId = auth.getNetId().toString();
+            Certificate certificate = certificateService.getCertificateBy(userNetId);
+            List<Long> eventIds = ruleService.getAllMatching(certificate);
+            EventIdsDto eventIdsDto = new EventIdsDto(eventIds);
+            return ResponseEntity.status(HttpStatus.OK).body(eventIdsDto);
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new EventIdsDto(new ArrayList<>()));
+        }
+    }
+
 }

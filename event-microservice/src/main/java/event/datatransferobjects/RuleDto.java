@@ -1,5 +1,6 @@
 package event.datatransferobjects;
 
+import event.foreigndomain.enums.Gender;
 import lombok.Data;
 
 /**
@@ -9,7 +10,7 @@ import lombok.Data;
 @Data
 public class RuleDto {
     private transient long eventId;
-    private transient boolean gendered;
+    private transient Gender genderConstraint;
     private transient boolean pro;
     private transient String certificate;
 
@@ -19,16 +20,17 @@ public class RuleDto {
      * Instantiates a new Rule dataTransferObject.
      *
      * @param eventId     long value representing the ID of the event we are hashing the rules for
-     * @param gendered    boolean representing the gender restrictions
+     * @param gendered    enum representing the gender restrictions
      * @param pro         boolean representing if the event requires only professionals or not
      * @param certificate string representing the minimum certificates required to participate in the event
      */
-    public RuleDto(long eventId, boolean gendered, boolean pro, String certificate) {
+    public RuleDto(long eventId, Gender gendered, boolean pro, String certificate) {
         this.eventId = eventId;
-        this.gendered = gendered;
+        this.genderConstraint = gendered;
         this.pro = pro;
         this.certificate = certificate;
     }
+
 
     /**
      * Getter function used to retrieve the certificate from the DTO.
@@ -60,11 +62,12 @@ public class RuleDto {
     /**
      * Setter function used to set the certificate from the DTO.
      *
-     * @param gendered the certificate we want to store in the DTO
+     * @param genderConstraint the certificate we want to store in the DTO
      */
-    public void setGendered(boolean gendered) {
-        this.gendered = gendered;
+    public void setGenderConstraint(Gender genderConstraint) {
+        this.genderConstraint = genderConstraint;
     }
+
 
     /**
      * Setter function used to set the rpo from the DTO.
