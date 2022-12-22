@@ -52,8 +52,7 @@ public class EventService {
      * @return
      */
     public Event saveEvent(Event event) {
-        eventRepository.save(event);
-        return event;
+        return eventRepository.save(event);
     }
 
     /**
@@ -63,8 +62,7 @@ public class EventService {
      * @return
      */
     public Event updateEvent(Event event) {
-        eventRepository.saveAndFlush(event);
-        return event;
+        return eventRepository.saveAndFlush(event);
     }
 
     /**

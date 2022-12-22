@@ -71,20 +71,20 @@ class EventServiceTest {
 
     @Test
     void saveEventTest() {
-        long eventId = 3442;
-        EventType eventType = EventType.TRAINING;
-        String admin = "ezi.boii";
-        LocalDateTime time = LocalDateTime.now();
-        List<Participant> participantList = new ArrayList<>();
-        Participant participant1 = new Participant();
+        final long eventId = 3442;
+        final EventType eventType = EventType.TRAINING;
+        final String admin = "ezi.boii";
+        final LocalDateTime time = LocalDateTime.now();
+        final List<Participant> participantList = new ArrayList<>();
+        final Participant participant1 = new Participant();
         participantList.add(participant1);
-        Rule rule1 = Rule.MINIMUM_C4;
-        Rule rule2 = Rule.ONLY_PROFESSIONAL;
-        List<Rule> rules = new ArrayList<>();
+        final Rule rule1 = Rule.MINIMUM_C4;
+        final Rule rule2 = Rule.ONLY_PROFESSIONAL;
+        final List<Rule> rules = new ArrayList<>();
         rules.add(rule1);
         rules.add(rule2);
 
-        Event eventTest = new Event();
+        final Event eventTest = new Event();
         eventTest.setEventId(eventId);
         eventTest.setEventType(eventType);
         eventTest.setAdmin(admin);
@@ -94,8 +94,8 @@ class EventServiceTest {
 
         when(eventRepository.save(eventTest)).thenReturn(eventTest);
 
-        Event res = eventService.saveEvent(eventTest);
-        assertEquals(res,eventTest);
+        final Event res = eventService.saveEvent(eventTest);
+        assertEquals(res, eventTest);
     }
 
     @Test
@@ -107,13 +107,13 @@ class EventServiceTest {
         List<Participant> participantList = new ArrayList<>();
         Participant participant1 = new Participant();
         participantList.add(participant1);
-        Rule rule1 = Rule.MINIMUM_C4;
-        Rule rule2 = Rule.ONLY_PROFESSIONAL;
-        List<Rule> rules = new ArrayList<>();
+        final Rule rule1 = Rule.MINIMUM_C4;
+        final Rule rule2 = Rule.ONLY_PROFESSIONAL;
+        final List<Rule> rules = new ArrayList<>();
         rules.add(rule1);
         rules.add(rule2);
 
-        Event eventTest = new Event();
+        final Event eventTest = new Event();
         eventTest.setEventId(eventId);
         eventTest.setEventType(eventType);
         eventTest.setAdmin(admin);
@@ -123,8 +123,8 @@ class EventServiceTest {
 
         when(eventRepository.saveAndFlush(eventTest)).thenReturn(eventTest);
 
-        Event res = eventService.updateEvent(eventTest);
-        assertEquals(res,eventTest);
+        final Event res = eventService.updateEvent(eventTest);
+        assertEquals(res, eventTest);
     }
 
 
