@@ -9,21 +9,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Certificate (Not to be confused with the certificate a user can have) entity consisting of the netId of the user
- * and the index representing the hash of the preferences for that user.
+ * Rule entity consisting of the eventId of the corresponding event and the index representing the hash of the rules
+ * for that event.
  * This data is stored inside a DataBase and also uses the library lombok to autogenerate the getters and constructors.
  */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CertificateHash")
-public class Certificate {
+@Table(name = "RuleHash")
+public class Rule {
 
     @Id
-    @Column(name = "netId", nullable = false, unique = true)
-    private String netId;
+    @Column(name = "eventId", nullable = false, unique = true)
+    private long eventId;
 
-    @Column(name = "certificateIndex")
-    private int certificateIndex;
+    @Column(name = "ruleIndex")
+    private int ruleIndex;
 }

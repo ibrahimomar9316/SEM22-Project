@@ -2,14 +2,12 @@ package authentication.controllers;
 
 import authentication.authentication.JwtTokenGenerator;
 import authentication.authentication.JwtUserDetailsService;
-import authentication.datatransferobjects.UserDto;
 import authentication.domain.user.NetId;
 import authentication.domain.user.Password;
 import authentication.domain.user.RegistrationService;
 import authentication.models.AuthenticationRequestModel;
 import authentication.models.AuthenticationResponseModel;
 import authentication.models.RegistrationRequestModel;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -93,7 +91,7 @@ public class AuthenticationController {
      * @throws Exception if a user with this netid already exists
      */
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegistrationRequestModel request) throws Exception {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequestModel request) throws Exception {
         NetId netId;
         Password password;
         try {
@@ -109,24 +107,16 @@ public class AuthenticationController {
         final String jwtToken = jwtTokenGenerator.generateToken(userDetails);
         ResponseEntity<AuthenticationResponseModel> token = ResponseEntity.ok(new AuthenticationResponseModel(jwtToken));
 
-        //DONE
-        UserDto requestBody = new UserDto(
-                netId.toString()
-        );
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        //System.out.println(token.getBody().getToken().toString());
-        headers.setBearerAuth(token.getBody().getToken().toString());
+        headers.setBearerAuth(token.getBody().getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String json = new ObjectMapper().writeValueAsString(requestBody);
-        HttpEntity<String> entity = new HttpEntity<>(json, headers);
-        System.out.println(entity.getHeaders().toString());
-
-        ResponseEntity<UserDto> obj = new RestTemplate()
-                .postForEntity("http://localhost:8082/api/user/save", entity, UserDto.class);
+        ResponseEntity<String> obj = new RestTemplate()
+                .postForEntity("http://localhost:8082/api/user/save", entity, String.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Successfully registered user: " + request.getNetId());
         } else {
             throw new NotFoundException("Incorrectly saved in user microservice");
         }

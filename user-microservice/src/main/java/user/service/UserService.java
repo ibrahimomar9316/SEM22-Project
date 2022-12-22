@@ -25,9 +25,9 @@ public class UserService {
     /**
      * Service layer method for getting the specific user by their ID.
      *
-     * @param appUserId - user ID
-     * @return - returns a found user.
-     * @throws NotFoundException - thrown when user not found
+     * @param appUserId user ID
+     * @return returns a found user.
+     * @throws NotFoundException thrown when user not found
      */
     public AppUser getAppUser(Long appUserId) throws NotFoundException {
         Optional<AppUser> appUserOptional = appUserRepository.findById(appUserId);
@@ -40,8 +40,8 @@ public class UserService {
     /**
      * Service layer method for saving an app user.
      *
-     * @param appUser - app user body
-     * @return - saved app user
+     * @param appUser app user body
+     * @return saved app user
      */
     public AppUser saveAppUser(AppUser appUser) {
         return appUserRepository.save(appUser);
