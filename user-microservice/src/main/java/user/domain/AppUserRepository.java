@@ -9,7 +9,7 @@ import user.domain.entities.AppUser;
  * Repository for the app user entity.
  */
 @Repository
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
+public interface AppUserRepository extends JpaRepository<AppUser, String> {
 
     @Query(value = "SELECT u FROM AppUser u WHERE u.netId = ?1")
     AppUser getAppUserById(String netId);
