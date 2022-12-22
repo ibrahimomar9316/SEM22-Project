@@ -96,4 +96,34 @@ class EventServiceTest {
         Event res = eventService.saveEvent(eventTest);
         assertEquals(res,eventTest);
     }
+
+    @Test
+    void updateEventTest() {
+        long eventId = 344322;
+        EventType eventType = EventType.COMPETITION;
+        String admin = "ezi.boiul";
+        LocalDateTime time = LocalDateTime.now();
+        List<Participant> participantList = new ArrayList<>();
+        Participant participant1 = new Participant();
+        participantList.add(participant1);
+        Rule rule1 = Rule.MINIMUM_C4;
+        Rule rule2 = Rule.ONLY_PROFESSIONAL;
+        List<Rule> rules = new ArrayList<>();
+        rules.add(rule1);
+        rules.add(rule2);
+
+        Event eventTest = new Event();
+        eventTest.setEventId(eventId);
+        eventTest.setEventType(eventType);
+        eventTest.setAdmin(admin);
+        eventTest.setParticipants(participantList);
+        eventTest.setRules(rules);
+        eventTest.setTime(time);
+
+        when(eventRepository.saveAndFlush(eventTest)).thenReturn(eventTest);
+
+        Event res = eventService.updateEvent(eventTest);
+        assertEquals(res,eventTest);
+    }
+
 }
