@@ -1,7 +1,6 @@
 package event.models;
 
 import event.domain.enums.EventType;
-import event.domain.enums.Rules;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,5 +21,4 @@ public class EventCreationModel {
     private EventType eventType;
     private LocalDateTime time;
     private List<Participant> participants;
-    private List<Rules> rules;
 }

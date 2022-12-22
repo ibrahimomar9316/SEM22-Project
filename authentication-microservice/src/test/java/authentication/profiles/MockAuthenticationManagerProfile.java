@@ -1,11 +1,11 @@
-package nl.tudelft.sem.template.authentication.profiles;
+package authentication.profiles;
 
-import authentication.authentication.JwtTokenGenerator;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
 
 /**
  * This is a configuration profile.
@@ -18,20 +18,20 @@ import org.springframework.context.annotation.Profile;
  * With the tag applied the profile will be inactive by default unless activated.
  * When the profile is active its bean will be used when looking for Beans to auto-inject.
  *.
- * A configuration profile to allow injection of a mock TokenGenerator.
+ * A configuration profile to allow injection of a mock AuthenticationManager.
  */
-@Profile("mockTokenGenerator")
+@Profile("mockAuthenticationManager")
 @Configuration
-public class MockTokenGeneratorProfile {
+public class MockAuthenticationManagerProfile {
 
     /**
-     * Mocks the TokenGenerator.
+     * Mocks the AuthenticationManager.
      *
-     * @return A mocked TokenGenerator.
+     * @return A mocked AuthenticationManager.
      */
     @Bean
-    @Primary  // marks this bean as the first bean to use when trying to inject a TokenGenerator
-    public JwtTokenGenerator getMockTokenGenerator() {
-        return Mockito.mock(JwtTokenGenerator.class);
+    @Primary  // marks this bean as the first bean to use when trying to inject an AuthenticationManager
+    public AuthenticationManager getMockAuthenticationManager() {
+        return Mockito.mock(AuthenticationManager.class);
     }
 }
