@@ -3,9 +3,9 @@ package user.models;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
-import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
-import user.domain.enums.Position;
+import user.foreigndomain.enums.Certificate;
+import user.foreigndomain.enums.Position;
 
 @Data
 public class UserDetailsModel {
