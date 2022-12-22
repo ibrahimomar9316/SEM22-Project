@@ -9,7 +9,7 @@ import user.domain.entities.AppUser;
  * Repository for the app user entity extending the JpaRepository class.
  */
 @Repository
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
+public interface AppUserRepository extends JpaRepository<AppUser, String> {
 
     /**
      * Query used to retrieve one user from the DataBase using the netId of that user.

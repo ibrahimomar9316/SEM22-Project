@@ -29,7 +29,7 @@ public class UserService {
      * @return returns a found user.
      * @throws NotFoundException thrown when user not found
      */
-    public AppUser getAppUser(Long appUserId) throws NotFoundException {
+    public AppUser getAppUser(String appUserId) throws NotFoundException {
         Optional<AppUser> appUserOptional = appUserRepository.findById(appUserId);
         if (appUserOptional.isEmpty()) {
             throw new NotFoundException("App user not found in the database.");
@@ -69,8 +69,7 @@ public class UserService {
         if (!currentUser.getNetId().equals(appUser.getNetId())) {
             throw new IllegalArgumentException("netId or password can not be update in this method");
         }
-        if (appUser.getGender() == null || appUser.getNetId() == null
-            || appUser.getCertificate() == null || appUser.getPrefPosition() == null) {
+        if (appUser.getGender() == null || appUser.getCertificate() == null || appUser.getPrefPosition() == null) {
             throw new IllegalArgumentException("One of the values to be updated was not specified!");
         }
         currentUser.setGender(appUser.getGender());
