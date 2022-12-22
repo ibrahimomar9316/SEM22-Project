@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import user.authentication.AuthManager;
+import user.datatransferobjects.AvailabilityDto;
 import user.domain.AppUserRepository;
 import user.domain.entities.AppUser;
 
@@ -81,5 +82,10 @@ public class UserService {
         currentUser.setAvailableTo(appUser.getAvailableTo());
         appUserRepository.save(currentUser);
         return appUser;
+    }
+
+    public AvailabilityDto getUserAvailability() {
+        AppUser user = appUserRepository.getAppUserById(authManager.getNetId());
+        return new AvailabilityDto(user.getAvailableFrom(), user.getAvailableTo());
     }
 }

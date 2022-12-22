@@ -3,6 +3,7 @@ package event.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
+import event.datatransferobjects.AvailabilityDto;
 import event.datatransferobjects.EventIdsDto;
 import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
@@ -462,12 +463,23 @@ public class EventController {
                     .exchange("http://localhost:8084/api/certificate/getValidEvents",
                             HttpMethod.GET, entity, EventIdsDto.class);
 
+            ResponseEntity<AvailabilityDto> userAvailability = restTemplate
+                    .exchange("http://localhost:8082/api/user/userAvailability",
+                            HttpMethod.GET, entity, AvailabilityDto.class);
+
+            AvailabilityDto availabilityDto = userAvailability.getBody();
+
+            if (availabilityDto == null || availabilityDto.getAvailableFrom() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("The user did not specify availability");
+            }
+
             if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("There are no events for you to join!");
             }
             Set<Long> setOfIds = new HashSet<>(eventIds.getBody().getIds());
-            List<Event> list = eventService.getMatchingEvents(setOfIds);
+            List<Event> list = eventService.getMatchingEvents(setOfIds, availabilityDto);
             // checks if the there are some available activities to join
             if (list.isEmpty())  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import user.authentication.AuthManager;
+import user.datatransferobjects.AvailabilityDto;
 import user.datatransferobjects.UserCertificateDto;
 import user.domain.entities.AppUser;
-import user.domain.enums.Gender;
 import user.models.UserDetailsModel;
 import user.service.UserService;
 
@@ -70,6 +70,16 @@ public class UserController {
         appUserService.saveAppUser(savedUser);
         String response = auth.getNetId();
         return ResponseEntity.created(uri).body(response);
+    }
+
+    /**
+     *Endpoint returning availability window of the user.
+     *
+     * @return AvailabilityDto containing dates
+     */
+    @GetMapping("/user/userAvailability")
+    public ResponseEntity<AvailabilityDto> getUserAvailability() {
+        return ResponseEntity.ok().body(appUserService.getUserAvailability());
     }
 
     /**
