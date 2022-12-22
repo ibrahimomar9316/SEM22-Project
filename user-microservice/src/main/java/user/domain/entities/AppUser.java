@@ -11,9 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import user.domain.enums.Gender;
+import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
-import user.domain.objects.AvDates;
 
 /**
  * User entity consisting of an ID, gender, username, password, list of boats, list of certificates, list of roles.
@@ -44,6 +44,8 @@ public class AppUser {
     @Column
     @ElementCollection(targetClass = AvDates.class)
     private List<AvDates> avDatesList;
+
+
     /**
      * Basic constructor for a new AppUser.
      *

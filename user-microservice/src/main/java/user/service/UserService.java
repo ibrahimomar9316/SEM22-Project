@@ -81,11 +81,23 @@ public class UserService {
         appUserRepository.save(currentUser);
         return appUser;
     }
+
+    /**
+     * Method for adding new available dates to an appUser.
+     *
+     * @param availability The available dates to add
+     */
     public void addNewAvDates(AvDatesDto availability) {
         AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
-        appUser.getAvDatesList().add(new AvDates(availability.getDateFrom(),availability.getDateTo()));
+        appUser.getAvDatesList().add(new AvDates(availability.getDateFrom(), availability.getDateTo()));
+        appUserRepository.saveAndFlush(appUser);
     }
 
+    /**
+     * Getter for the available dates of a specific user.
+     *
+     * @return The available dates of a user
+     */
     public List<AvDates> getAvDates() {
         AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
         return appUser.getAvDatesList();
