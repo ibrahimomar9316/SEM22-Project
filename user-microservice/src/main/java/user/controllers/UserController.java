@@ -19,7 +19,9 @@ import org.springframework.web.client.RestTemplate;
 import user.authentication.AuthManager;
 import user.datatransferobjects.UserCertificateDto;
 import user.domain.entities.AppUser;
-import user.domain.enums.Gender;
+import user.domain.entities.AppUserBuilder;
+import user.domain.entities.Builder;
+import user.domain.entities.Director;
 import user.models.UserDetailsModel;
 import user.service.UserService;
 
@@ -60,7 +62,10 @@ public class UserController {
      */
     @PostMapping("/user/save")
     public ResponseEntity<String> saveUser() {
-        AppUser savedUser = new AppUser(auth.getNetId());
+        Builder builder = new AppUserBuilder();
+        Director director = new Director();
+        director.createAppUser(builder, auth.getNetId());
+        AppUser savedUser = builder.build();
         appUserService.saveAppUser(savedUser);
         String response = auth.getNetId();
         return ResponseEntity.ok().body(response);
