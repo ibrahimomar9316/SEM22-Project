@@ -113,10 +113,9 @@ public class EventService {
      *
      * @return a list of events
      */
-    public List<Event> getMatchingEvents(List<Long> ids) {
+    public List<Event> getMatchingEvents(Set<Long> ids) {
         List<Event> list = eventRepository.findAll();
-        Set<Long> idSet = new HashSet<>(ids);
-        return list.stream().filter(x -> idSet.contains(x.getEventId())
+        return list.stream().filter(x -> ids.contains(x.getEventId())
                 && checkTimeConstraints(x))
                 .collect(Collectors.toList());
     }

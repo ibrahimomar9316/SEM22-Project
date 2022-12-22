@@ -65,10 +65,7 @@ public class RuleService {
         String ruleInd = String.valueOf(rule.getRuleIndex());
         String certificateInd = String.valueOf(certificate.getCertificateIndex());
         while (index < ruleInd.length() && index < certificateInd.length()) {
-            if (ruleInd.charAt(index) == '0') {
-                index++;
-                continue;
-            } else if (ruleInd.charAt(index) != certificateInd.charAt(index)) {
+            if (ruleInd.charAt(index) != '0' && ruleInd.charAt(index) != certificateInd.charAt(index))  {
                 return false;
             }
             index++;

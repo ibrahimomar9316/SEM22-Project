@@ -16,7 +16,9 @@ import event.service.EventService;
 import event.service.MessageService;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -464,8 +466,8 @@ public class EventController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("There are no events for you to join!");
             }
-
-            List<Event> list = eventService.getMatchingEvents(eventIds.getBody().getIds());
+            Set<Long> setOfIds = new HashSet<>(eventIds.getBody().getIds());
+            List<Event> list = eventService.getMatchingEvents(setOfIds);
             // checks if the there are some available activities to join
             if (list.isEmpty())  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
