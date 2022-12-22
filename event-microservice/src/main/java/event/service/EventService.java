@@ -5,6 +5,7 @@ import event.domain.entities.Event;
 import event.domain.enums.EventType;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -137,6 +138,5 @@ public class EventService {
             return minutes >= 24;
         }
     }
-
 
 }
