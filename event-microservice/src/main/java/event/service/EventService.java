@@ -51,8 +51,8 @@ public class EventService {
      *
      * @param event the event that we want to save into the repository
      */
-    public void saveEvent(Event event) {
-        eventRepository.save(event);
+    public Event saveEvent(Event event) {
+        return eventRepository.save(event);
     }
 
     /**
@@ -60,8 +60,8 @@ public class EventService {
      *
      * @param event the event to be updated
      */
-    public void updateEvent(Event event) {
-        eventRepository.saveAndFlush(event);
+    public Event updateEvent(Event event) {
+        return eventRepository.saveAndFlush(event);
     }
 
     /**
