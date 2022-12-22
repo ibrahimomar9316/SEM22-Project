@@ -82,7 +82,7 @@ public class UserService {
         appUserRepository.save(currentUser);
         return appUser;
     }
-    public void addNewAvDate(AvDatesDto availability) {
+    public void addNewAvDates(AvDatesDto availability) {
         AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
         appUser.getAvDatesList().add(new AvDates(availability.getDateFrom(),availability.getDateTo()));
     }
