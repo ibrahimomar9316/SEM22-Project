@@ -1,6 +1,7 @@
 package event.domain.entities;
 
 import event.domain.enums.EventType;
+import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +53,8 @@ public class Event {
     private List<Participant> participants;
 
     @Column
-    private int ruleIndex;
+    @ElementCollection(targetClass = Rule.class)
+    private List<Rule> rules;
 
     /**
      * Empty constructor for the Event class.

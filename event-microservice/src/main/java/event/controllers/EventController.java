@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
 import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
+import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
 import event.models.EventCreationModel;
@@ -13,6 +14,7 @@ import event.models.EventRulesModel;
 import event.service.EventService;
 import event.service.MessageService;
 import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
@@ -379,9 +381,29 @@ public class EventController {
                     .body("Error in generating index!");
         }
         if (hashedIndex.getStatusCode().is2xxSuccessful()) {
-            // if the hashIndex is succesfuly found, we put it in
+            // if the hashIndex is successfully found, we put it in
             // the Event table and send the event to be updated
-            event.setRuleIndex(hashedIndex.getBody());
+            List<Rule> rulesList = new ArrayList<>();
+            if (hashedIndex.getBody() / 100 == 1) {
+                rulesList.add(Rule.SAME_GENDER_TEAMS);
+            }
+            if (hashedIndex.getBody() / 10 % 10 == 1) {
+                rulesList.add(Rule.ONLY_PROFESSIONAL);
+            }
+            switch (hashedIndex.getBody() % 10) {
+                case 1:
+                    rulesList.add(Rule.MINIMUM_C4);
+                    break;
+                case 2:
+                    rulesList.add(Rule.MINIMUM_FOURPLUS);
+                    break;
+                case 3:
+                    rulesList.add(Rule.MINIMUM_EIGHTPLUS);
+                    break;
+                default:
+                    break;
+            }
+            event.setRules(rulesList);
             HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
             return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
         } else {
