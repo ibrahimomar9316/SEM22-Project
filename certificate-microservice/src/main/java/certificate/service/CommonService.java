@@ -1,5 +1,6 @@
 package certificate.service;
 
+import certificate.domain.enums.Gender;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,17 +19,17 @@ public class CommonService {
      * Function that generates the hash for the desired event/user based on multiple values.
      * Every digit of the generated hash represents the encoding of those rules/preferences.
      *
-     * @param isMale boolean representing the gender
+     * @param gender enum representing the gender
      * @param isCompetitive boolean representing if the event/user is competitive or not
      * @param position String stating the position in the boat
      * @param certificate String representing the certificates required/obtained
      * @return an int representing the hashed values of those events
      */
-    public int generateId(boolean isMale, boolean isCompetitive, String position, String certificate) {
+    public int generateId(Gender gender, boolean isCompetitive, String position, String certificate) {
         int id = 0;
-        if (isMale) {
+        if (gender.equals(Gender.MALE)) {
             id += 1;
-        } else {
+        } else if (gender.equals(Gender.FEMALE)) {
             id += 2;
         }
         id *= 10;
@@ -48,7 +49,7 @@ public class CommonService {
                     id += 3;
                     break;
                 default:
-                    id *= 0;
+                    id += 0;
                     break;
             }
         }

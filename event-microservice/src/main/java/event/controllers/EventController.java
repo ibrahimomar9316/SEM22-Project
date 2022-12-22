@@ -3,6 +3,7 @@ package event.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
+import event.datatransferobjects.EventIdsDto;
 import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
 import event.domain.enums.Rule;
@@ -15,13 +16,16 @@ import event.service.EventService;
 import event.service.MessageService;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -365,7 +369,7 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You are not the admin of this event!");
         }
-        RuleDto dto = new RuleDto(rules.getEventId(), rules.isSameGender(),
+        RuleDto dto = new RuleDto(rules.getEventId(), rules.getGenderConstraint(),
                 rules.isProfessional(), rules.getCertificate().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -438,15 +442,32 @@ public class EventController {
      * Endpoint for getting all valid the events in the database.
      * We create another Endpoint than getAll activities
      * so we can check if our filtering actually works by comparing two outputs
-     * TODO: Implement filtering according to Certificate and rules/requirements
+     *Function firstly send request to Certificate ms to obtain all events which match user preferences
+     * and next it check them based on the time constraints.
      *
      * @return The Events as a list of strings
      */
     @GetMapping({"/event/getEvents"})
-    public ResponseEntity<String> getEvents() {
+    public ResponseEntity<String> getEvents(@RequestHeader("Authorization") String token) {
         // checks if the database is not empty
         if (eventService.getAllEvents().size() != 0) {
-            List<Event> list = eventService.getMatchingEvents();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(token.split(" ")[1]);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            // here we get an indices of the matching event.
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<EventIdsDto> eventIds = restTemplate
+                    .exchange("http://localhost:8084/api/certificate/getValidEvents",
+                            HttpMethod.GET, entity, EventIdsDto.class);
+
+            if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("There are no events for you to join!");
+            }
+            Set<Long> setOfIds = new HashSet<>(eventIds.getBody().getIds());
+            List<Event> list = eventService.getMatchingEvents(setOfIds);
             // checks if the there are some available activities to join
             if (list.isEmpty())  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -460,3 +481,4 @@ public class EventController {
         }
     }
 }
+

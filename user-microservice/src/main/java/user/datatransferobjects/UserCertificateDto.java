@@ -1,6 +1,7 @@
 package user.datatransferobjects;
 
 import lombok.Data;
+import user.domain.enums.Gender;
 
 /**
  * Class used for data transfer, being a dataTransferObject.
@@ -8,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class UserCertificateDto {
-    private transient boolean male;
+    private transient Gender gender;
     private transient boolean competitive;
     private transient String position;
     private transient String certificate;
@@ -18,13 +19,13 @@ public class UserCertificateDto {
      * Constructor for the DTO used to send information to certificate-microservie
      * to generate the hash (for the preferences) for a specific user.
      *
-     * @param male boolean representing if it is a male (true) or a female (false)
+     * @param gender enum representing if it is a male (true) or a female (false)
      * @param competitive boolean representing if the user is competitive or not
      * @param position string representing the preferred position of the user
      * @param certificate string representing the certificate that the user has
      */
-    public UserCertificateDto(boolean male, boolean competitive, String position, String certificate) {
-        this.male = male;
+    public UserCertificateDto(Gender gender, boolean competitive, String position, String certificate) {
+        this.gender = gender;
         this.competitive = competitive;
         this.position = position;
         this.certificate = certificate;
@@ -35,9 +36,10 @@ public class UserCertificateDto {
      *
      * @return a boolean representing the gender of the corresponding user
      */
-    public boolean isMale() {
-        return male;
+    public Gender getGender() {
+        return gender;
     }
+
 
     /**
      * Getter function for user if it is competitive or not.

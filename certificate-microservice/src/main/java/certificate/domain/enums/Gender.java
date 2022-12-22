@@ -1,4 +1,4 @@
-package user.domain.enums;
+package certificate.domain.enums;
 
 /**
  * Enum type representing the gender of an user.
