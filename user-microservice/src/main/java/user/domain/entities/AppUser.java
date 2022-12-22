@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import user.domain.enums.Gender;
-import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 

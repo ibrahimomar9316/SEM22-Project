@@ -11,8 +11,6 @@ import user.authentication.AuthManager;
 import user.datatransferobjects.AvailabilityDto;
 import user.domain.AppUserRepository;
 import user.domain.entities.AppUser;
-import user.domain.objects.AvDates;
-import user.domain.objects.AvDatesDto;
 
 /**
  * App user service implementation of the required methods for the service layer.
