@@ -100,12 +100,12 @@ class EventServiceTest {
 
     @Test
     void updateEventTest() {
-        long eventId = 344322;
-        EventType eventType = EventType.COMPETITION;
-        String admin = "ezi.boisul";
-        LocalDateTime time = LocalDateTime.now();
-        List<Participant> participantList = new ArrayList<>();
-        Participant participant1 = new Participant();
+        final long eventId = 344322;
+        final EventType eventType = EventType.COMPETITION;
+        final String admin = "ezi.boisul";
+        final LocalDateTime time = LocalDateTime.now();
+        final List<Participant> participantList = new ArrayList<>();
+        final Participant participant1 = new Participant();
         participantList.add(participant1);
         final Rule rule1 = Rule.MINIMUM_C4;
         final Rule rule2 = Rule.ONLY_PROFESSIONAL;
@@ -130,20 +130,20 @@ class EventServiceTest {
 
     @Test
     void getAllEventsTest() {
-        long eventId = 344322;
-        EventType eventType = EventType.COMPETITION;
-        String admin = "ezi.boiul";
-        LocalDateTime time = LocalDateTime.now();
-        List<Participant> participantList = new ArrayList<>();
-        Participant participant1 = new Participant();
+        final long eventId = 344322;
+        final EventType eventType = EventType.COMPETITION;
+        final String admin = "ezi.boiul";
+        final LocalDateTime time = LocalDateTime.now();
+        final List<Participant> participantList = new ArrayList<>();
+        final Participant participant1 = new Participant();
         participantList.add(participant1);
-        Rule rule1 = Rule.MINIMUM_C4;
-        Rule rule2 = Rule.ONLY_PROFESSIONAL;
-        List<Rule> rules = new ArrayList<>();
+        final Rule rule1 = Rule.MINIMUM_C4;
+        final Rule rule2 = Rule.ONLY_PROFESSIONAL;
+        final List<Rule> rules = new ArrayList<>();
         rules.add(rule1);
         rules.add(rule2);
 
-        Event eventTest1 = new Event();
+        final Event eventTest1 = new Event();
         eventTest1.setEventId(eventId);
         eventTest1.setEventType(eventType);
         eventTest1.setAdmin(admin);
@@ -171,7 +171,7 @@ class EventServiceTest {
 
         when(eventRepository.findAll()).thenReturn(Arrays.asList(eventTest1, eventTest2));
 
-        List<Event> res = eventService.getAllEvents();
+        final List<Event> res = eventService.getAllEvents();
         assertEquals(2, res.size());
         assertEquals(eventTest1, res.get(0));
         assertEquals(eventTest2, res.get(1));
