@@ -150,7 +150,6 @@ class MessageTest {
     void testToStringTest() {
         Message m = new Message(33, 4L, MessageType.LEAVE, Position.COACH, "user1", "user2ss");
         String result = m.toString();
-        System.out.println(m);
         assertThat(result)
                 .contains("messageId=33");
         assertThat(result)
