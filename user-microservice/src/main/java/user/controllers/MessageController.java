@@ -41,8 +41,7 @@ public class MessageController {
      */
     @GetMapping("/all")
     public ResponseEntity<List<Message>> getAllMessages() {
-        List<Message> m = messageService.getAllMessages();
-        return ResponseEntity.ok().body(m);
+        return ResponseEntity.ok().body(messageService.getAllMessages());
     }
 
     /**
@@ -122,6 +121,7 @@ public class MessageController {
     /**
      * API endpoint for rejecting join requests.
      *
+     * @param token The bearer token for authentication
      * @param messageId The id of the message with the join request that is rejected
      * @return 200 if the rejection went successfully
      *         400 if the message is not a join request
@@ -130,7 +130,7 @@ public class MessageController {
      *         503 if the event server is not reachable
      */
     @PostMapping({"/reject"})
-    public ResponseEntity<String> denyRequest(@RequestBody long messageId) {
+    public ResponseEntity<String> denyRequest(@RequestHeader("Authorization") String token, @RequestBody long messageId) {
         Message message = messageService.getMessage(messageId);
         if (message == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -165,7 +165,7 @@ public class MessageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         String netId = auth.getNetId();
-        if (!message.getSender().equals(netId) && !message.getRecipient().equals(netId)) {
+        if (!message.getSender().equals(netId) || !message.getRecipient().equals(netId)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         messageService.deleteMessage(messageId);

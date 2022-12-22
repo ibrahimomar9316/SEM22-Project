@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import user.authentication.JwtTokenVerifier;
 
 /**
  * A configuration profile to allow injection of a mock TokenVerifier.
