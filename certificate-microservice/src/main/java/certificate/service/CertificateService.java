@@ -36,6 +36,13 @@ public class CertificateService {
         return certificateRepository.findAll();
     }
 
+    /**
+     * Getter function to retrieve hashed preferences of the given user.
+     *
+     * @param netId netId of the user.
+     *
+     * @return Hashed preferences of the user.
+     */
     public Certificate getCertificateBy(String netId) {
         return certificateRepository.getCertificateBy(netId);
     }

@@ -1,5 +1,6 @@
 package certificate.controllers;
 
+
 import certificate.authentication.AuthManager;
 import certificate.datatransferobjects.EventIdsDto;
 import certificate.datatransferobjects.RuleDto;
@@ -9,6 +10,8 @@ import certificate.domain.entities.Rule;
 import certificate.service.CertificateService;
 import certificate.service.CommonService;
 import certificate.service.RuleService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller for the certificate-microservice to manage the API endpoints.
@@ -149,7 +149,7 @@ public class CertificateController {
     /**
      * API endpoint used to get all ids of matching events from hashed rules from the database.
      *
-     * @return a string containing all the events with their hashed rules
+     * @return and Dto object which contains list of all event ids which match user qualifications/preferences
      */
     @GetMapping({"/certificate/getAllMatchingRules"})
     public ResponseEntity<EventIdsDto> getAllMatchingRules() {

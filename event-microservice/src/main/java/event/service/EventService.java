@@ -116,7 +116,9 @@ public class EventService {
     public List<Event> getMatchingEvents(List<Long> ids) {
         List<Event> list = eventRepository.findAll();
         Set<Long> idSet = new HashSet<>(ids);
-        return list.stream().filter(x -> idSet.contains(x.getEventId()) && checkTimeConstraints(x)).collect(Collectors.toList());
+        return list.stream().filter(x -> idSet.contains(x.getEventId())
+                && checkTimeConstraints(x))
+                .collect(Collectors.toList());
     }
 
 

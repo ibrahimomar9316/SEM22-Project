@@ -21,7 +21,12 @@ import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -435,7 +440,8 @@ public class EventController {
      * Endpoint for getting all valid the events in the database.
      * We create another Endpoint than getAll activities
      * so we can check if our filtering actually works by comparing two outputs
-     * TODO: Implement filtering according to Certificate and rules/requirements
+     *Function firstly send request to Certificate ms to obtain all events which match user preferences
+     * and next it check them based on the time constraints.
      *
      * @return The Events as a list of strings
      */
@@ -449,11 +455,10 @@ public class EventController {
             headers.setBearerAuth(token.split(" ")[1]);
             HttpEntity<String> entity = new HttpEntity<>(headers);
             // here we get an indices of the matching event.
-//            ResponseEntity<EventIdsDto> eventIds = new RestTemplate()
-//                    .getForEntity("http://localhost:8084/api/certificate/getAllMatchingRules", EventIdsDto.class, entity);
-
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<EventIdsDto> eventIds = restTemplate.exchange("http://localhost:8084/api/certificate/getAllMatchingRules", HttpMethod.GET, entity, EventIdsDto.class);
+            ResponseEntity<EventIdsDto> eventIds = restTemplate
+                    .exchange("http://localhost:8084/api/certificate/getAllMatchingRules",
+                            HttpMethod.GET, entity, EventIdsDto.class);
 
             if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

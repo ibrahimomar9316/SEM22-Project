@@ -38,12 +38,28 @@ public class RuleService {
         return ruleRepository.findAll();
     }
 
+    /**
+     * Function which filter all events based on the user preferences and event's rules.
+     * next the method convert List of rules to list of event ids.
+     *
+     * @param certificate (Container) hashed preferences of the user.
+     *
+     * @return List of event ids which match with the user.
+     */
     public List<Long> getAllMatching(Certificate certificate) {
         List<Rule> list = ruleRepository.findAll();
-        return  list.stream().filter(x -> checkConstraints(certificate,x))
+        return  list.stream().filter(x -> checkConstraints(certificate, x))
                 .map(Rule::getEventId).collect(Collectors.toList());
     }
 
+    /**
+     * Function to check if user hashed preferences match rules of the given event.
+     *
+     * @param certificate (Container) hashed preferences of the user
+     * @param rule (Container) hashed rules of an event otherwise false
+     *
+     * @return true if they match,
+     */
     private boolean checkConstraints(Certificate certificate, Rule rule) {
         int index = 0;
         String ruleInd = String.valueOf(rule.getRuleIndex());

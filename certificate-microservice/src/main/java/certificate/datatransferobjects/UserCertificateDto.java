@@ -31,14 +31,14 @@ public class UserCertificateDto {
         this.certificate = certificate;
     }
 
-        /**
-         * Getter function for the gender of the corresponding user.
-         *
-         * @return a boolean representing the gender of the corresponding user
-         */
-        public Gender getGender() {
-            return gender;
-        }
+    /**
+     * Getter function for the gender of the corresponding user.
+     *
+     * @return an enum, representing the gender of the corresponding user
+     */
+    public Gender getGender() {
+        return gender;
+    }
 
 
     /**
