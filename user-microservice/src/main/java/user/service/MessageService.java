@@ -76,9 +76,7 @@ public class MessageService {
      * @param messageId The id of the message to delete
      */
     public void deleteMessage(long messageId) {
-        if (repo.existsById(messageId)) {
-            this.repo.deleteById(messageId);
-        }
+        this.repo.deleteById(messageId);
     }
 
 }

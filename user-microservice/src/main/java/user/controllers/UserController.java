@@ -1,8 +1,11 @@
 package user.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
 import java.util.List;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import user.authentication.AuthManager;
 import user.datatransferobjects.UserCertificateDto;
 import user.domain.entities.AppUser;
@@ -26,6 +30,7 @@ import user.service.UserService;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@SuppressWarnings("PMD")
 public class UserController {
 
     private final UserService appUserService;
@@ -39,9 +44,8 @@ public class UserController {
         return new RestTemplate();
     }
 
-    private RestTemplate restTemplate = new RestTemplate();
-
-    private static final int BAD_REQUEST = 404;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * Endpoint returning all users in the database.
@@ -56,14 +60,16 @@ public class UserController {
     /**
      * Endpoint used for saving a user in the database, endpoint that is called by the authentication microservice.
      *
+     * @param token  theToken
      * @return  the saved user in the form of a DTO
      */
     @PostMapping("/user/save")
-    public ResponseEntity<String> saveUser() {
+    public ResponseEntity<String> saveUser(@RequestHeader("Authorization") String token) {
         AppUser savedUser = new AppUser(auth.getNetId());
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         appUserService.saveAppUser(savedUser);
         String response = auth.getNetId();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.created(uri).body(response);
     }
 
     /**
@@ -101,9 +107,9 @@ public class UserController {
         String json = new ObjectMapper().writeValueAsString(ucd);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
-        ResponseEntity<Integer> hashedIndex = this.restTemplate
+        ResponseEntity<Integer> hashedIndex = new RestTemplate()
             .postForEntity("http://localhost:8084/api/certificate/filter", entity, Integer.class);
-        if (hashedIndex.getBody() == BAD_REQUEST) {
+        if (hashedIndex.getBody() == 404) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error in generating index!");
         }
@@ -112,17 +118,8 @@ public class UserController {
                     .body("Successfully updated user:\n" + currentUser
                             + ", hashedIndex: " + hashedIndex.getBody());
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Incorrectly saved in user microservice");
         }
 
-    }
-
-    /**
-     * Setter for the restTemplate.
-     *
-     * @param restTemplate The new restTemplate to set
-     */
-    public void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
     }
 }

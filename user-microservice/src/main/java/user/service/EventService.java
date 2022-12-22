@@ -37,13 +37,4 @@ public class EventService {
         ResponseEntity<String> res = restTemplate.postForEntity(URL + "/add", entity, String.class);
         return res.getStatusCode();
     }
-
-    /**
-     * Setter for the restTemplate.
-     *
-     * @param restTemplate The new restTemplate to set
-     */
-    public void setRestTemplate(RestTemplate restTemplate) {
-        EventService.restTemplate = restTemplate;
-    }
 }
