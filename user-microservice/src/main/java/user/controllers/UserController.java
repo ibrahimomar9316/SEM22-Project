@@ -22,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import user.authentication.AuthManager;
 import user.datatransferobjects.UserCertificateDto;
-import user.datatransferobjects.UserDto;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
 import user.models.UserDetailsModel;
