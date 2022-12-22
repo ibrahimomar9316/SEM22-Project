@@ -36,15 +36,15 @@ class EventServiceTest {
     void getEventTest() throws NotFoundException {
 
         long eventId = 342;
-        String admin = "ezi.boi";
-        List<Participant> participantList = new ArrayList<>();
-        Participant participant1 = new Participant();
+        final String admin = "ezi.boi";
+        final List<Participant> participantList = new ArrayList<>();
+        final Participant participant1 = new Participant();
         participantList.add(participant1);
-        Rule rule1 = Rule.MALE_ONLY;
-        List<Rule> rules = new ArrayList<>();
+        final Rule rule1 = Rule.MALE_ONLY;
+        final List<Rule> rules = new ArrayList<>();
         rules.add(rule1);
 
-        Event eventTest = new Event();
+        final Event eventTest = new Event();
         eventTest.setEventId(eventId);
         eventTest.setEventType(EventType.COMPETITION);
         eventTest.setAdmin(admin);
@@ -54,8 +54,8 @@ class EventServiceTest {
 
         when(eventRepository.findById(eventId)).thenReturn(Optional.of(eventTest));
 
-        Event res = eventService.getEvent(eventId);
-        assertEquals(res,eventTest);
+        final Event res = eventService.getEvent(eventId);
+        assertEquals(res, eventTest);
     }
 
 }
