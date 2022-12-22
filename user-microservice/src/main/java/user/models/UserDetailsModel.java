@@ -1,7 +1,6 @@
 package user.models;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
@@ -16,5 +15,6 @@ public class UserDetailsModel {
     private transient Position prefPosition;
     private transient boolean competitive;
     private transient Certificate certificate;
-    private transient List<LocalDateTime> avDates;
+    private transient LocalDateTime availableFrom;
+    private transient LocalDateTime availableTo;
 }
