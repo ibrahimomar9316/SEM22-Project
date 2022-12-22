@@ -86,11 +86,10 @@ public class UserController {
         currentUser.setPrefPosition(request.getPrefPosition());
         currentUser.setCertificate(request.getCertificate());
         currentUser.setCompetitive(request.isCompetitive());
-        currentUser.setAvDates(request.getAvDates());
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(
-            currentUser.getGender() == Gender.MALE,
+                currentUser.getGender(),
                 currentUser.isCompetitive(),
                 currentUser.getPrefPosition().toString(),
                 currentUser.getCertificate().toString());

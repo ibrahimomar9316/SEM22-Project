@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import javax.transaction.Transactional;
@@ -111,10 +112,13 @@ public class EventService {
      *
      * @return a list of events
      */
-    public List<Event> getMatchingEvents() {
+    public List<Event> getMatchingEvents(Set<Long> ids) {
         List<Event> list = eventRepository.findAll();
-        return list.stream().filter(this::checkTimeConstraints).collect(Collectors.toList());
+        return list.stream().filter(x -> ids.contains(x.getEventId())
+                && checkTimeConstraints(x))
+                .collect(Collectors.toList());
     }
+
 
     /**
      * Helper method for checking if event meets out event time constrains:
@@ -133,5 +137,6 @@ public class EventService {
             return minutes >= 24;
         }
     }
+
 
 }

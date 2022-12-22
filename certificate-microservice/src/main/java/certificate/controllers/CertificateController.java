@@ -1,6 +1,8 @@
 package certificate.controllers;
 
+
 import certificate.authentication.AuthManager;
+import certificate.datatransferobjects.EventIdsDto;
 import certificate.datatransferobjects.RuleDto;
 import certificate.datatransferobjects.UserCertificateDto;
 import certificate.domain.entities.Certificate;
@@ -8,6 +10,8 @@ import certificate.domain.entities.Rule;
 import certificate.service.CertificateService;
 import certificate.service.CommonService;
 import certificate.service.RuleService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -76,7 +80,7 @@ public class CertificateController {
      */
     @PostMapping("/certificate/filter")
     public ResponseEntity<Integer> filter(@RequestBody UserCertificateDto ucd) {
-        int id = common.generateId(ucd.isMale(),
+        int id = common.generateId(ucd.getGender(),
                 ucd.isCompetitive(),
                 ucd.getPosition(),
                 ucd.getCertificate());
@@ -96,7 +100,7 @@ public class CertificateController {
      */
     @PostMapping("/certificate/getRuleIndex")
     public ResponseEntity<Integer> getRuleIndex(@RequestBody RuleDto rules) {
-        int id = common.generateId(rules.isGendered(),
+        int id = common.generateId(rules.getGenderConstraint(),
                 rules.isPro(),
                 "COX",
                 rules.getCertificate());
@@ -141,4 +145,29 @@ public class CertificateController {
                 .body("No events has put their rules!");
         }
     }
+
+    /**
+     * API endpoint used to get all ids of matching events from hashed rules from the database.
+     * if there are no hashed events in database we just return empty Dto object without further processing.
+     * Otherwise, we find the certificate of the user and compare his preferences to all events
+     * stored in Certificate database in order to find ones which are valid for him
+     *
+     * @return and Dto object which contains list of all event ids which match user qualifications/preferences
+     */
+    @GetMapping({"/certificate/getValidEvents"})
+    public ResponseEntity<EventIdsDto> getAllMatchingRules() {
+        // checks if the database is not empty
+        if (ruleService.getAllCertificates().size() != 0) {
+            String userNetId = auth.getNetId();
+            Certificate certificate = certificateService.getCertificateBy(userNetId);
+            List<Long> eventIds = ruleService.getAllMatching(certificate);
+            EventIdsDto eventIdsDto = new EventIdsDto(eventIds);
+            return ResponseEntity.status(HttpStatus.OK).body(eventIdsDto);
+        } else {
+            // else returns BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new EventIdsDto(new ArrayList<>()));
+        }
+    }
+
 }
