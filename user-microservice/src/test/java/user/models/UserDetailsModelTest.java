@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
-import user.domain.enums.Position;
+import user.foreigndomain.enums.Certificate;
+import user.foreigndomain.enums.Position;
 
 
 

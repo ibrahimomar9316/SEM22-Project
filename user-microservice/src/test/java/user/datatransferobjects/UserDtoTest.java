@@ -32,7 +32,8 @@ public class UserDtoTest {
         assertEquals(user1, user1);
         assertEquals(user2, user2);
 
-        assertNotEquals(user1, user2);
+        assertNotEquals(user1, null);
+        assertNotEquals(user1, 2);
         assertNotEquals(user2, user3);
     }
 

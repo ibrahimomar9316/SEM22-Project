@@ -17,9 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import user.authentication.AuthManager;
 import user.domain.AppUserRepository;
 import user.domain.entities.AppUser;
-import user.domain.enums.Certificate;
 import user.domain.enums.Gender;
-import user.domain.enums.Position;
+import user.foreigndomain.enums.Certificate;
+import user.foreigndomain.enums.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -142,7 +142,6 @@ public class UserServiceTest {
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
         when(appUserRepository.save(appUser)).thenReturn(appUser);
 
-
         AppUser result = userService.updateUser(appUser);
         assertEquals(appUser, result);
     }
@@ -186,6 +185,35 @@ public class UserServiceTest {
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
 
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser));
+
+        AppUser appUser1 = new AppUser(netId, null, null, true, null, null);
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser1));
+
+        AppUser appUser2 = new AppUser(netId, Gender.MALE, null, true, null, null);
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser2));
+
+        AppUser appUser3 = new AppUser(netId, Gender.MALE, null, true, Certificate.C4, null);
+        when(authManager.getNetId()).thenReturn(netId);
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser3));
+    }
+
+    @Test
+    public void testUpdateUserWrongId() {
+        String netId = "test123";
+        boolean competitive = true;
+
+        AppUser appUser = new AppUser(netId);
+        appUser.setGender(null);
+        appUser.setPrefPosition(null);
+        appUser.setCompetitive(competitive);
+        appUser.setCertificate(null);
+        appUser.setAvDates(null);
+
+        when(authManager.getNetId()).thenReturn(netId);
+        when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
+
+        AppUser appUser1 = new AppUser("wrong");
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser1));
     }
 }
 

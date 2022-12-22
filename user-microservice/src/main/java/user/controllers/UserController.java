@@ -44,8 +44,7 @@ public class UserController {
         return new RestTemplate();
     }
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     /**
      * Endpoint returning all users in the database.
@@ -101,14 +100,23 @@ public class UserController {
         String json = new ObjectMapper().writeValueAsString(ucd);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
 
-        ResponseEntity<UserCertificateDto> obj = new RestTemplate()
+        ResponseEntity<UserCertificateDto> obj = this.restTemplate
             .postForEntity("http://localhost:8084/api/certificate/filter", entity, UserCertificateDto.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Successfully updated user:\n" + currentUser);
         } else {
-            throw new NotFoundException("Incorrectly saved in user microservice");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    /**
+     * Setter for the restTemplate.
+     *
+     * @param restTemplate The new restTemplate to set
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 }
