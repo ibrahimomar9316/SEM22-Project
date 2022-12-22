@@ -51,7 +51,6 @@ public class AppUser {
      */
     public AppUser(String netId) {
         this.netId = netId;
-        this.avDatesList = new ArrayList<>();
     }
 
 }

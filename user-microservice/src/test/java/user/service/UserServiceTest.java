@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +19,6 @@ import user.authentication.AuthManager;
 import user.domain.AppUserRepository;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
-import user.domain.objects.AvDates;
-import user.domain.objects.AvDatesDto;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 
@@ -43,14 +40,17 @@ public class UserServiceTest {
         Position prefPosition = Position.COX;
         boolean competitive = true;
         Certificate certificate = Certificate.C4;
-        List<AvDates> avDates = new ArrayList<>();
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
+
 
         AppUser appUser = new AppUser(netId);
         appUser.setGender(gender);
         appUser.setPrefPosition(prefPosition);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(certificate);
-        appUser.setAvDatesList(avDates);
+        appUser.setAvailableFrom(from);
+        appUser.setAvailableTo(to);
 
         when(appUserRepository.findById(netId)).thenReturn(Optional.of(appUser));
 
@@ -73,14 +73,16 @@ public class UserServiceTest {
         Position prefPosition = Position.COX;
         boolean competitive = true;
         Certificate certificate = Certificate.FOURPLUS;
-        List<AvDates> avDates = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(netId);
         appUser.setGender(gender);
         appUser.setPrefPosition(prefPosition);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(certificate);
-        appUser.setAvDatesList(avDates);
+        appUser.setAvailableFrom(from);
+        appUser.setAvailableTo(to);
 
         when(appUserRepository.save(appUser)).thenReturn(appUser);
 
@@ -90,39 +92,43 @@ public class UserServiceTest {
 
     @Test
     public void testGetAppUsers() {
-        String netId1 = "test123";
-        Gender gender1 = Gender.MALE;
-        Position prefPosition1 = Position.COX;
-        boolean competitive1 = true;
-        Certificate certificate1 = Certificate.NONE;
-        List<AvDates> avDates1 = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        String netId = "test123";
+        Gender gender = Gender.MALE;
+        Position prefPosition = Position.COX;
+        boolean competitive = true;
+        Certificate certificate = Certificate.FOURPLUS;
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
-        AppUser appUser1 = new AppUser(netId1);
-        appUser1.setGender(gender1);
-        appUser1.setPrefPosition(prefPosition1);
-        appUser1.setCompetitive(competitive1);
-        appUser1.setCertificate(certificate1);
-        appUser1.setAvDatesList(avDates1);
+        AppUser appUser = new AppUser(netId);
+        appUser.setGender(gender);
+        appUser.setPrefPosition(prefPosition);
+        appUser.setCompetitive(competitive);
+        appUser.setCertificate(certificate);
+        appUser.setAvailableFrom(from);
+        appUser.setAvailableTo(to);
 
         String netId2 = "test456";
         Gender gender2 = Gender.FEMALE;
         Position prefPosition2 = Position.COACH;
         boolean competitive2 = false;
         Certificate certificate2 = Certificate.C4;
-        List<AvDates> avDates2 = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(2)));
+        LocalDateTime from2 = LocalDateTime.MIN;
+        LocalDateTime to2 = LocalDateTime.MAX;
 
         AppUser appUser2 = new AppUser(netId2);
         appUser2.setGender(gender2);
         appUser2.setPrefPosition(prefPosition2);
         appUser2.setCompetitive(competitive2);
         appUser2.setCertificate(certificate2);
-        appUser2.setAvDatesList(avDates2);
+        appUser2.setAvailableFrom(from2);
+        appUser2.setAvailableTo(to2);
 
-        when(appUserRepository.findAll()).thenReturn(Arrays.asList(appUser1, appUser2));
+        when(appUserRepository.findAll()).thenReturn(Arrays.asList(appUser, appUser2));
 
         List<AppUser> result = userService.getAppUsers();
         assertEquals(2, result.size());
-        assertEquals(appUser1, result.get(0));
+        assertEquals(appUser, result.get(0));
         assertEquals(appUser2, result.get(1));
     }
 
@@ -133,14 +139,16 @@ public class UserServiceTest {
         Position prefPosition = Position.COX;
         boolean competitive = true;
         Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(netId);
         appUser.setGender(gender);
         appUser.setPrefPosition(prefPosition);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(certificate);
-        appUser.setAvDatesList(avDates);
+        appUser.setAvailableFrom(from);
+        appUser.setAvailableTo(to);
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
@@ -157,14 +165,16 @@ public class UserServiceTest {
         Position prefPosition = Position.COX;
         boolean competitive = true;
         Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(newNetId);
         appUser.setGender(gender);
         appUser.setPrefPosition(prefPosition);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(certificate);
-        appUser.setAvDatesList(avDates);
+        appUser.setAvailableFrom(from);
+        appUser.setAvailableTo(to);
 
         String netId = "test123";
         when(authManager.getNetId()).thenReturn(netId);
@@ -183,20 +193,21 @@ public class UserServiceTest {
         appUser.setPrefPosition(null);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(null);
-        appUser.setAvDatesList(null);
+        appUser.setAvailableFrom(null);
+        appUser.setAvailableTo(null);
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
 
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser));
 
-        AppUser appUser1 = new AppUser(netId, null, null, true, null, null);
+        AppUser appUser1 = new AppUser(netId, null, null, true, null, null, null);
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser1));
 
-        AppUser appUser2 = new AppUser(netId, Gender.MALE, null, true, null, null);
+        AppUser appUser2 = new AppUser(netId, Gender.MALE, null, true, null, null, null);
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser2));
 
-        AppUser appUser3 = new AppUser(netId, Gender.MALE, null, true, Certificate.C4, null);
+        AppUser appUser3 = new AppUser(netId, Gender.MALE, null, true, Certificate.C4, null, null);
         when(authManager.getNetId()).thenReturn(netId);
         assertThrows(IllegalArgumentException.class, () -> userService.updateUser(appUser3));
     }
@@ -211,7 +222,8 @@ public class UserServiceTest {
         appUser.setPrefPosition(null);
         appUser.setCompetitive(competitive);
         appUser.setCertificate(null);
-        appUser.setAvDatesList(null);
+        appUser.setAvailableFrom(null);
+        appUser.setAvailableTo(null);
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
@@ -227,46 +239,24 @@ public class UserServiceTest {
         Position prefPosition = Position.COACH;
         boolean competitive = true;
         Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
         AppUser user = new AppUser(netId);
         user.setGender(gender);
         user.setPrefPosition(prefPosition);
         user.setCompetitive(competitive);
         user.setCertificate(certificate);
-        user.setAvDatesList(avDates);
+        user.setAvailableFrom(from);
+        user.setAvailableTo(to);
 
         when(authManager.getNetId()).thenReturn("user");
         when(appUserRepository.getAppUserById("user")).thenReturn(user);
 
-        assertThat(userService.getAvDates()).isEqualTo(avDates);
+        assertThat(userService.getUserAvailability().getAvailableFrom()).isEqualTo(from);
+        assertThat(userService.getUserAvailability().getAvailableTo()).isEqualTo(to);
     }
 
-    @Test
-    public void addNewAvDatesTest() {
-        String netId = "test123";
-        Gender gender = Gender.MALE;
-        Position prefPosition = Position.COACH;
-        boolean competitive = true;
-        Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = new ArrayList<>();
-
-        AppUser user = new AppUser(netId);
-        user.setGender(gender);
-        user.setPrefPosition(prefPosition);
-        user.setCompetitive(competitive);
-        user.setCertificate(certificate);
-        user.setAvDatesList(avDates);
-
-        when(authManager.getNetId()).thenReturn("user");
-        when(appUserRepository.getAppUserById("user")).thenReturn(user);
-
-        LocalDateTime time1 = LocalDateTime.now();
-        LocalDateTime time2 = LocalDateTime.now().plusDays(1);
-        userService.addNewAvDates(new AvDatesDto(time1, time2));
-        List<AvDates> check = List.of(new AvDates(time1, time2));
-        assertThat(user.getAvDatesList()).isEqualTo(check);
-    }
 }
 
 

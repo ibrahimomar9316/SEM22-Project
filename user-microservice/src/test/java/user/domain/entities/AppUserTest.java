@@ -7,11 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import user.domain.enums.Gender;
-import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 
@@ -24,21 +21,24 @@ public class AppUserTest {
         Position prefPosition = Position.COACH;
         boolean competitive = true;
         Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = List.of(new AvDates(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
 
         AppUser user = new AppUser(netId);
         user.setGender(gender);
         user.setPrefPosition(prefPosition);
         user.setCompetitive(competitive);
         user.setCertificate(certificate);
-        user.setAvDatesList(avDates);
+        user.setAvailableFrom(from);
+        user.setAvailableTo(to);
 
         assertEquals(netId, user.getNetId());
         assertEquals(gender, user.getGender());
         assertEquals(prefPosition, user.getPrefPosition());
         assertEquals(competitive, user.isCompetitive());
         assertEquals(certificate, user.getCertificate());
-        assertEquals(avDates, user.getAvDatesList());
+        assertEquals(from, user.getAvailableFrom());
+        assertEquals(to, user.getAvailableTo());
     }
 
     @Test
@@ -49,7 +49,8 @@ public class AppUserTest {
         assertNull(user.getPrefPosition());
         assertEquals(false, user.isCompetitive());
         assertNull(user.getCertificate());
-        assertNull(user.getAvDatesList());
+        assertNull(user.getAvailableFrom());
+        assertNull(user.getAvailableTo());
     }
 
 
@@ -60,9 +61,10 @@ public class AppUserTest {
         Position prefPosition = Position.COACH;
         boolean competitive = true;
         Certificate certificate = Certificate.NONE;
-        List<AvDates> avDates = new ArrayList<>();
-        AppUser user1 = new AppUser(netId, gender, prefPosition, competitive, certificate, avDates);
-        AppUser user2 = new AppUser(netId, gender, prefPosition, competitive, certificate, avDates);
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
+        AppUser user1 = new AppUser(netId, gender, prefPosition, competitive, certificate, from, to);
+        AppUser user2 = new AppUser(netId, gender, prefPosition, competitive, certificate, from, to);
 
         // user1 and user2 should be equal
         assertEquals(user1, user2);
