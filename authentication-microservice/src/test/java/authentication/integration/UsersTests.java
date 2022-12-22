@@ -1,4 +1,4 @@
-//package nl.tudelft.sem.template.authentication.integration;
+//package authentication.integration;
 //
 //import authentication.authentication.JwtTokenGenerator;
 //import authentication.domain.user.AppUser;

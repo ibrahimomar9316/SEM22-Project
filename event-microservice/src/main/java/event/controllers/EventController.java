@@ -1,20 +1,33 @@
 package event.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
+import event.datatransferobjects.EventIdsDto;
+import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
+import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
+import event.models.EventRulesModel;
 import event.service.EventService;
 import event.service.MessageService;
 import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +49,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @RestController
 @RequestMapping({"/api"})
+@SuppressWarnings("PMD")
 public class EventController {
 
     @Autowired
@@ -110,15 +124,15 @@ public class EventController {
             @RequestBody EventCreationModel request) {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
-        if (request.getEventType() == null) {
+        if (request.getEventType() == null || request.getTime() == null
+                || request.getParticipants() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid JSON or event type!");
         }
         Event savedEvent = new Event(request.getEventType(),
                 auth.getNetId(),
                 request.getTime(),
-                request.getParticipants(),
-                request.getRules());
+                request.getParticipants());
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
@@ -177,7 +191,8 @@ public class EventController {
 
             List<Participant> participants = event.getParticipants()
                     .stream()
-                    .filter(x -> x.getPosition() == request.getPosition() && x.getNetId() == null)
+                    .filter(x -> x.getPosition() == request.getPosition()
+                            && x.getNetId() == null)
                     .collect(Collectors.toList());
             if (participants.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -331,6 +346,76 @@ public class EventController {
     }
 
     /**
+     * Endpoint for setting the rules of the event. Only admins of their own events
+     * are able to set their rules, no one else can. If the authorised user is the admin,
+     * then they can specify some rules of the event, like if they want the event to only be
+     * for professional rowers. After specifying these rules, they get sent to the Certificate
+     * Microservice, where an index is calculated and sent back to event/update so that it is
+     * store in EventRepo.
+     *
+     * @param token the token containing the netID of the admin
+     * @param rules an EventRulesModel that contains rules about gender selection,
+     *              professional players only and about what certificate te cox needs.
+     * @return a string response stating if the event has been correctly updated to contain
+     *         the rule index.
+     * @throws NotFoundException    this is thrown if the event specified cannot be found
+     */
+    @PostMapping({"/event/setRules"})
+    public ResponseEntity<String> setRules(@RequestHeader("Authorization") String token,
+                                           @RequestBody EventRulesModel rules)
+                                            throws NotFoundException, JsonProcessingException {
+        Event event = eventService.getEvent(rules.getEventId());
+        if (!event.getAdmin().equals(auth.getNetId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You are not the admin of this event!");
+        }
+        RuleDto dto = new RuleDto(rules.getEventId(), rules.getGenderConstraint(),
+                rules.isProfessional(), rules.getCertificate().toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.split(" ")[1]);
+        String json = new ObjectMapper().writeValueAsString(dto);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        // here we get an hashedIndex of the rules of the event.
+        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+                .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
+        // hashedIndex returns 404 if an error getting the index occurs
+        if (hashedIndex.getBody() == 404) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error in generating index!");
+        }
+        if (hashedIndex.getStatusCode().is2xxSuccessful()) {
+            // if the hashIndex is successfully found, we put it in
+            // the Event table and send the event to be updated
+            List<Rule> rulesList = new ArrayList<>();
+            if (hashedIndex.getBody() / 100 == 1) {
+                rulesList.add(Rule.SAME_GENDER_TEAMS);
+            }
+            if (hashedIndex.getBody() / 10 % 10 == 1) {
+                rulesList.add(Rule.ONLY_PROFESSIONAL);
+            }
+            switch (hashedIndex.getBody() % 10) {
+                case 1:
+                    rulesList.add(Rule.MINIMUM_C4);
+                    break;
+                case 2:
+                    rulesList.add(Rule.MINIMUM_FOURPLUS);
+                    break;
+                case 3:
+                    rulesList.add(Rule.MINIMUM_EIGHTPLUS);
+                    break;
+                default:
+                    break;
+            }
+            event.setRules(rulesList);
+            HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
+            return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
+        } else {
+            throw new NotFoundException("Incorrectly updated rules!");
+        }
+    }
+
+    /**
      * Endpoint for deleting events from the database.
      *
      * @param eventId The id of the event that has to be deleted
@@ -357,15 +442,32 @@ public class EventController {
      * Endpoint for getting all valid the events in the database.
      * We create another Endpoint than getAll activities
      * so we can check if our filtering actually works by comparing two outputs
-     * TODO: Implement filtering according to Certificate and rules/requirements
+     *Function firstly send request to Certificate ms to obtain all events which match user preferences
+     * and next it check them based on the time constraints.
      *
      * @return The Events as a list of strings
      */
     @GetMapping({"/event/getEvents"})
-    public ResponseEntity<String> getEvents() {
+    public ResponseEntity<String> getEvents(@RequestHeader("Authorization") String token) {
         // checks if the database is not empty
         if (eventService.getAllEvents().size() != 0) {
-            List<Event> list = eventService.getMatchingEvents();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(token.split(" ")[1]);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            // here we get an indices of the matching event.
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<EventIdsDto> eventIds = restTemplate
+                    .exchange("http://localhost:8084/api/certificate/getValidEvents",
+                            HttpMethod.GET, entity, EventIdsDto.class);
+
+            if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("There are no events for you to join!");
+            }
+            Set<Long> setOfIds = new HashSet<>(eventIds.getBody().getIds());
+            List<Event> list = eventService.getMatchingEvents(setOfIds);
             // checks if the there are some available activities to join
             if (list.isEmpty())  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -379,3 +481,4 @@ public class EventController {
         }
     }
 }
+

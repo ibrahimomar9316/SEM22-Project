@@ -8,26 +8,43 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * The service used to operate on the hashed Preferences database.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class CertificateService {
-    private CertificateRepository certificateRepository;
+    private final CertificateRepository certificateRepository;
 
-    public CertificateService(CertificateRepository certificateRepository) {
-        this.certificateRepository = certificateRepository;
+    /**
+     * Function used to save the hashed preferences in the database.
+     *
+     * @param certificate the hashed preferences we want to store in the database
+     */
+    public void save(Certificate certificate) {
+        certificateRepository.save(certificate);
     }
 
-    private int generateId(String netId, boolean isMale, boolean isCompetitive, String position, String certificate) {
-        return 0;
-    }
-
-    public Certificate saveCertificate(Certificate certificate) {
-        return certificateRepository.save(certificate);
-    }
-
+    /**
+     * Getter function to retrieve all hashed preferences for all users that selected their preferences.
+     *
+     * @return all users with their corresponding hashed preferences
+     */
     public List<Certificate> getAllCertificates() {
         return certificateRepository.findAll();
     }
+
+    /**
+     * Getter function to retrieve hashed preferences of the given user.
+     *
+     * @param netId netId of the user.
+     *
+     * @return Hashed preferences of the user.
+     */
+    public Certificate getCertificateBy(String netId) {
+        return certificateRepository.getCertificateBy(netId);
+    }
+
 }

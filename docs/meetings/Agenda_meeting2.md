@@ -19,7 +19,7 @@ Note taker:     Radu
 * Discuss if we need to move user stories in different categories
 
 ## (14:55 - 15:00) Draft CoC Feedback
-* Discuss the rules, and the format
+* Discuss the rule, and the format
 
 ## (15:00 - 15:10) Architecture 
 * Discuss implementation of microservices

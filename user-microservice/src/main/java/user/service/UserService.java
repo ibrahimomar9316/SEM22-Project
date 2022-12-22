@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import user.authentication.AuthManager;
 import user.domain.AppUserRepository;
 import user.domain.entities.AppUser;
+import user.domain.objects.AvDates;
+import user.domain.objects.AvDatesDto;
 
 /**
  * App user service implementation of the required methods for the service layer.
@@ -25,9 +27,9 @@ public class UserService {
     /**
      * Service layer method for getting the specific user by their ID.
      *
-     * @param appUserId - user ID
-     * @return - returns a found user.
-     * @throws NotFoundException - thrown when user not found
+     * @param appUserId user ID
+     * @return returns a found user.
+     * @throws NotFoundException thrown when user not found
      */
     public AppUser getAppUser(Long appUserId) throws NotFoundException {
         Optional<AppUser> appUserOptional = appUserRepository.findById(appUserId);
@@ -40,8 +42,8 @@ public class UserService {
     /**
      * Service layer method for saving an app user.
      *
-     * @param appUser - app user body
-     * @return - saved app user
+     * @param appUser app user body
+     * @return saved app user
      */
     public AppUser saveAppUser(AppUser appUser) {
         return appUserRepository.save(appUser);
@@ -77,8 +79,16 @@ public class UserService {
         currentUser.setCertificate(appUser.getCertificate());
         currentUser.setCompetitive(appUser.isCompetitive());
         currentUser.setPrefPosition(appUser.getPrefPosition());
-        currentUser.setAvDates(appUser.getAvDates());
         appUserRepository.save(currentUser);
         return appUser;
+    }
+    public void addNewAvDate(AvDatesDto availability) {
+        AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
+        appUser.getAvDatesList().add(new AvDates(availability.getDateFrom(),availability.getDateTo()));
+    }
+
+    public List<AvDates> getAvDates() {
+        AppUser appUser = appUserRepository.getAppUserById(authManager.getNetId());
+        return appUser.getAvDatesList();
     }
 }
