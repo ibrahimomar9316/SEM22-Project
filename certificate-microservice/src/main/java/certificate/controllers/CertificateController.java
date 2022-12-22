@@ -148,14 +148,17 @@ public class CertificateController {
 
     /**
      * API endpoint used to get all ids of matching events from hashed rules from the database.
+     * if there are no hashed events in database we just return empty Dto object without further processing.
+     * Otherwise, we find the certificate of the user and compare his preferences to all events
+     * stored in Certificate database in order to find ones which are valid for him
      *
      * @return and Dto object which contains list of all event ids which match user qualifications/preferences
      */
-    @GetMapping({"/certificate/getAllMatchingRules"})
+    @GetMapping({"/certificate/getValidEvents"})
     public ResponseEntity<EventIdsDto> getAllMatchingRules() {
         // checks if the database is not empty
         if (ruleService.getAllCertificates().size() != 0) {
-            String userNetId = auth.getNetId().toString();
+            String userNetId = auth.getNetId();
             Certificate certificate = certificateService.getCertificateBy(userNetId);
             List<Long> eventIds = ruleService.getAllMatching(certificate);
             EventIdsDto eventIdsDto = new EventIdsDto(eventIds);

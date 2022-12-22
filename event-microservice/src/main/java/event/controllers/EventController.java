@@ -459,7 +459,7 @@ public class EventController {
             // here we get an indices of the matching event.
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<EventIdsDto> eventIds = restTemplate
-                    .exchange("http://localhost:8084/api/certificate/getAllMatchingRules",
+                    .exchange("http://localhost:8084/api/certificate/getValidEvents",
                             HttpMethod.GET, entity, EventIdsDto.class);
 
             if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
