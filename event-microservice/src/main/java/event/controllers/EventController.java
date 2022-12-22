@@ -6,10 +6,13 @@ import event.authentication.AuthManager;
 import event.datatransferobjects.RuleDto;
 import event.domain.entities.Event;
 import event.domain.objects.Participant;
+import event.foreigndomain.entitites.Message;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.models.EventRulesModel;
 import event.service.EventService;
+import event.service.MessageService;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
@@ -50,25 +53,35 @@ public class EventController {
     // the H2 repo
     private transient EventService eventService;
 
+    private transient MessageService messageService;
+
     // This is used and initiated to check if the token is
     // valid and to get the netID
     private final transient AuthManager auth;
 
+    private static final int OK = 200;
+
+
     /**
      * Instantiates a new EventController.
      *
-     * @param eventService the event service
-     *                     This class controls the interaction
-     *                     between the Event repository and the
-     *                     JSON interface.
-     * @param auth         the auth manager
-     *                     This verifies the token and also gets
-     *                     the netID of the verified user from their
-     *                     token
+     * @param eventService   the event service
+     *                       This class controls the interaction
+     *                       between the Event repository and the
+     *                       JSON interface.
+     * @param messageService the messaging service.
+     *                       This class controls the messages that get sent
+     *                       when a user applies for a position or
+     *                       leaves an event
+     * @param auth           the auth manager
+     *                       This verifies the token and also gets
+     *                       the netID of the verified user from their
+     *                       token
      */
     @Autowired
-    public EventController(EventService eventService, AuthManager auth) {
+    public EventController(EventService eventService, MessageService messageService, AuthManager auth) {
         this.eventService = eventService;
+        this.messageService = messageService;
         this.auth = auth;
     }
 
@@ -154,10 +167,10 @@ public class EventController {
      * message conveying the error.</p>
      *
      * @param request a model containing the id of the event as a long
-     * @return one of three messages and either 200 or 400
+     * @return one of four messages and either 200, 400 or 500
      */
     @PostMapping({"/event/join"})
-    public ResponseEntity<String> join(@RequestBody EventJoinModel request) {
+    public ResponseEntity<String> join(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
             String netId = auth.getNetId();
@@ -169,6 +182,7 @@ public class EventController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are already participating in this event!");
             }
+
             List<Participant> participants = event.getParticipants()
                     .stream()
                     .filter(x -> x.getPosition() == request.getPosition()
@@ -178,11 +192,55 @@ public class EventController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("This position is already filled");
             }
-            participants.get(0).setNetId(netId);
 
-            eventService.updateEvent(event);
-            return ResponseEntity.ok("You have joined event " + event.getEventId()
+            HttpStatus status = messageService.sendJoinMessage(token, request, netId, event.getAdmin());
+            if (status.value() != OK) {
+                return new ResponseEntity<>(status);
+            }
+
+            return ResponseEntity.ok("You have sent a request to join event: " + event.getEventId()
                     + " made by " + event.getAdmin());
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ConnectException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+        }
+    }
+
+    /**
+     * API endpoint used for adding users to events only by the admin after
+     * they accepted a join-request.
+     *
+     * @param request The message holding the join request
+     * @return 200 if the user is successfully added to the even
+     *         400 if the user is already participating or there is no place left
+     *         404 if the event is not found
+     */
+    @PostMapping({"/event/add"})
+    public ResponseEntity<String> joinByAdmin(@RequestBody Message request) {
+        try {
+            Event event = eventService.getEvent(request.getEventId());
+            if (event.getParticipants()
+                    .stream()
+                    .map(Participant::getNetId)
+                    .collect(Collectors.toList())
+                    .contains(request.getSender())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User is already participating in this event");
+            }
+
+            List<Participant> participants = event.getParticipants()
+                    .stream()
+                    .filter(x -> x.getPosition() == request.getPosition() && x.getNetId() == null)
+                    .collect(Collectors.toList());
+            if (participants.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("This position is already filled");
+            }
+
+            participants.get(0).setNetId(request.getSender());
+            eventService.updateEvent(event);
+            return ResponseEntity.ok("You have added " + request.getSender() + " to your event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -199,11 +257,13 @@ public class EventController {
      * if the user has successfully removed from the event.</p>
      *
      * @param request a model containing the id of the event as a long
-     * @return 200 OK if successfull. 400 BAD_REQUEST if the user is not in the specified event
+     * @return 200 OK if successfull.
+     *         400 BAD_REQUEST if the user is not in the specified event
      *         404 NOT_FOUND if the event id ws not found in the database
+     *         503 SERVICE_UNAVAILABLE if the messageService could not be reached
      */
     @PostMapping({"/event/leave"})
-    public ResponseEntity<String> leave(@RequestBody EventJoinModel request) {
+    public ResponseEntity<String> leave(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
             List<Participant> participant = event.getParticipants()
@@ -214,12 +274,20 @@ public class EventController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are not participating in this event!");
             }
+
+            HttpStatus status = messageService.sendLeaveMessage(token, request, auth.getNetId(), event.getAdmin());
+            if (status.value() != OK) {
+                return new ResponseEntity<>(status);
+            }
+
             participant.get(0).setNetId(null);
             eventService.updateEvent(event);
             return ResponseEntity.ok("You have left event " + event.getEventId()
                     + " made by " + event.getAdmin());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ConnectException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
         }
     }
 
