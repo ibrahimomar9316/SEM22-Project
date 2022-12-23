@@ -98,6 +98,7 @@ class RuleDtoTest {
         RuleDto ruleDto2 = new RuleDto(eventId, genderConstraint, pro, certificate);
 
         assertEquals(ruleDto1, ruleDto2);
+        assertThat(ruleDto1.hashCode()).isEqualTo(ruleDto2.hashCode());
     }
 
     @Test
@@ -112,6 +113,7 @@ class RuleDtoTest {
         RuleDto ruleDto2 = new RuleDto(eventId2, genderConstraint, pro, certificate);
 
         assertThat(ruleDto1).isNotEqualTo(ruleDto2);
+        assertThat(ruleDto1.hashCode()).isNotEqualTo(ruleDto2.hashCode());
     }
 
     @Test
@@ -126,6 +128,7 @@ class RuleDtoTest {
         RuleDto ruleDto2 = new RuleDto(eventId, genderConstraint2, pro, certificate);
 
         assertThat(ruleDto1).isNotEqualTo(ruleDto2);
+        assertThat(ruleDto1.hashCode()).isNotEqualTo(ruleDto2.hashCode());
     }
 
     @Test
@@ -140,6 +143,7 @@ class RuleDtoTest {
         RuleDto ruleDto2 = new RuleDto(eventId, genderConstraint, pro2, certificate);
 
         assertThat(ruleDto1).isNotEqualTo(ruleDto2);
+        assertThat(ruleDto1.hashCode()).isNotEqualTo(ruleDto2.hashCode());
     }
 
     @Test
@@ -154,6 +158,34 @@ class RuleDtoTest {
         RuleDto ruleDto2 = new RuleDto(eventId, genderConstraint, pro, certificate2);
 
         assertThat(ruleDto1).isNotEqualTo(ruleDto2);
+        assertThat(ruleDto1.hashCode()).isNotEqualTo(ruleDto2.hashCode());
+    }
+
+    @Test
+    public void testNotEquals_null() {
+        long eventId = 12345L;
+        Gender genderConstraint = Gender.MALE;
+        boolean pro = false;
+        String certificate = "C4";
+
+        RuleDto ruleDto1 = new RuleDto(eventId, genderConstraint, pro, certificate);
+        RuleDto ruleDto2 = null;
+
+        assertThat(ruleDto1).isNotEqualTo(ruleDto2);
+        assertThat(ruleDto1).isNotEqualTo(null);
+    }
+
+    @Test
+    public void testHashCode() {
+        long eventId = 12345L;
+        Gender genderConstraint = Gender.MALE;
+        boolean pro = false;
+        String certificate = "C4";
+
+        RuleDto ruleDto1 = new RuleDto(eventId, genderConstraint, pro, certificate);
+        RuleDto ruleDto2 = new RuleDto(eventId, genderConstraint, pro, certificate);
+
+        assertThat(ruleDto1.hashCode()).isEqualTo(ruleDto2.hashCode());
     }
 }
 
