@@ -36,7 +36,7 @@ public class EventService {
      * @return the event that we wanted to get
      * @throws NotFoundException exception that is thrown when the event is not found
      */
-    public Event getEvent(Long eventId) throws NotFoundException {
+    public Event getEvent(Long eventId) throws NotFoundException, NullPointerException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new NotFoundException("Event not found in the database.");

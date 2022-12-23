@@ -102,6 +102,14 @@ public class EventController {
     }
 
     /**
+     * Sets rest template.
+     *
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    /**
      * Endpoint for creating a new event in the database.
      *
      * <p>This is used to create an event by inputting an EventCreationModel
@@ -347,6 +355,8 @@ public class EventController {
             return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -440,6 +450,8 @@ public class EventController {
             return ResponseEntity.ok("successfully deleted event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
