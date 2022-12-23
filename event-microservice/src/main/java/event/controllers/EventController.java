@@ -10,6 +10,8 @@ import event.domain.entities.Event;
 import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
+import event.foreigndomain.enums.Certificate;
+import event.foreigndomain.enums.Gender;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.models.EventRulesModel;
@@ -112,6 +114,9 @@ public class EventController {
      * <p>It creates an event with the given attributes and it attributes the admin
      * of the event to the netID in the token.</p>
      *
+     * <p>The event is created with default rules (that is no restrictions)
+     * which are send to the Certificate ms.</p>
+     *
      * <p>It returns a message conveying the new event, with HTTP.ok response.</p>
      *
      * <p>If an authorization header is not provided or is invalid, it returns
@@ -121,8 +126,8 @@ public class EventController {
      * @return HTTP.ok and a message if authorization header correct
      */
     @PostMapping({"/event/create"})
-    public ResponseEntity<String> create(
-            @RequestBody EventCreationModel request) {
+    public ResponseEntity<String> create(@RequestHeader("Authorization") String token,
+            @RequestBody EventCreationModel request) throws JsonProcessingException {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
         if (request.getEventType() == null || request.getTime() == null
@@ -137,6 +142,25 @@ public class EventController {
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
+
+        //Set default rules for the event and save them is Certificate ms
+        RuleDto dto = new RuleDto(savedEvent.getEventId(), Gender.NONE,
+                false, "NONE");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.split(" ")[1]);
+        String json = new ObjectMapper().writeValueAsString(dto);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        // here we get an hashedIndex of the rules of the event.
+        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+                .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
+        // hashedIndex returns 404 if an error getting the index occurs
+        if (hashedIndex.getBody() == 404) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error in generating index!");
+        }
+
         // returns OK and a string implemented in Event
         return ResponseEntity.ok(savedEvent.toString());
     }
