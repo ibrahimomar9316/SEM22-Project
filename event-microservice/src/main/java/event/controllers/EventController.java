@@ -179,6 +179,10 @@ public class EventController {
     public ResponseEntity<String> join(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
+            if (event == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Event not found!");
+            }
             String netId = auth.getNetId();
             if (event.getParticipants()
                     .stream()
@@ -209,7 +213,8 @@ public class EventController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ConnectException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Message service could not be reached");
         }
     }
 
