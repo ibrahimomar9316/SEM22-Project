@@ -57,7 +57,7 @@ import org.springframework.web.client.RestTemplate;
 @SuppressWarnings("PMD")
 public class EventController {
 
-    @Autowired
+
     private RestTemplate restTemplate;
 
     // This is used to set, get and check for events in
@@ -94,6 +94,7 @@ public class EventController {
         this.eventService = eventService;
         this.messageService = messageService;
         this.auth = auth;
+        this.restTemplate = new RestTemplate();
     }
 
     /**
