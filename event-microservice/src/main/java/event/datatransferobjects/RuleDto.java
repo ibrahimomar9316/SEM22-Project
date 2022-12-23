@@ -3,6 +3,8 @@ package event.datatransferobjects;
 import event.foreigndomain.enums.Gender;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * Class used for data transfer, being a dataTransferObject.
  * It is used to pass data from event-microservice to certificate-microservice, passing data that we want to hash.
@@ -76,5 +78,18 @@ public class RuleDto {
      */
     public void setPro(boolean pro) {
         this.pro = pro;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RuleDto ruleDto = (RuleDto) o;
+        return eventId == ruleDto.eventId && pro == ruleDto.pro && genderConstraint == ruleDto.genderConstraint && certificate.equals(ruleDto.certificate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, genderConstraint, pro, certificate);
     }
 }

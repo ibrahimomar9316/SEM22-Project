@@ -147,7 +147,7 @@ class EventServiceTest {
         rules.add(rule1);
         rules.add(rule2);
 
-        Event eventTest1 = new Event();
+        final Event eventTest1 = new Event();
         eventTest1.setEventId(eventId);
         eventTest1.setEventType(eventType);
         eventTest1.setAdmin(admin);
@@ -175,7 +175,7 @@ class EventServiceTest {
 
         when(eventRepository.findAll()).thenReturn(Arrays.asList(eventTest1, eventTest2));
 
-        List<Event> res = eventService.getAllEvents();
+        final List<Event> res = eventService.getAllEvents();
         assertEquals(2, res.size());
         assertEquals(eventTest1, res.get(0));
         assertEquals(eventTest2, res.get(1));
