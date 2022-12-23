@@ -1,5 +1,5 @@
 package event.foreigndomain.enums;
 
 public enum Gender {
-    MALE, FEMALE
+    MALE, FEMALE, NONE
 }

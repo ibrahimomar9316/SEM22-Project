@@ -30,7 +30,7 @@ class CommonServiceTest {
         assertThat(commonService.generateId(Gender.FEMALE, true, "COACH", "NONE"))
                 .isEqualTo(210);
         assertThat(commonService.generateId(Gender.NONE, true, "COACH", "NONE"))
-                .isEqualTo(10);
+                .isEqualTo(410);
         assertThat(commonService.generateId(Gender.MALE, false, "COACH", "NONE"))
                 .isEqualTo(100);
 
