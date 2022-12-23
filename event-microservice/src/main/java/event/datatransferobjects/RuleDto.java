@@ -1,9 +1,8 @@
 package event.datatransferobjects;
 
 import event.foreigndomain.enums.Gender;
-import lombok.Data;
-
 import java.util.Objects;
+import lombok.Data;
 
 /**
  * Class used for data transfer, being a dataTransferObject.
@@ -82,10 +81,15 @@ public class RuleDto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         RuleDto ruleDto = (RuleDto) o;
-        return eventId == ruleDto.eventId && pro == ruleDto.pro && genderConstraint == ruleDto.genderConstraint && certificate.equals(ruleDto.certificate);
+        return eventId == ruleDto.eventId && pro == ruleDto.pro && genderConstraint
+            == ruleDto.genderConstraint && certificate.equals(ruleDto.certificate);
     }
 
     @Override

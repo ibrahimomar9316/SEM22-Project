@@ -49,7 +49,7 @@ public class EventService {
      * Used when new events are created or when we want to update a new one.
      *
      * @param event the event that we want to save into the repository
-     * @return
+     * @return the event that was saved
      */
     public Event saveEvent(Event event) {
         return eventRepository.save(event);
@@ -59,7 +59,7 @@ public class EventService {
      * Update event in the database.
      *
      * @param event the event to be updated
-     * @return
+     * @return the event that was updated
      */
     public Event updateEvent(Event event) {
         return eventRepository.saveAndFlush(event);
