@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import user.authentication.AuthManager;
+import user.datatransferobjects.AvailabilityDto;
 import user.datatransferobjects.UserCertificateDto;
 import user.domain.entities.AppUser;
-import user.domain.enums.Gender;
 import user.models.UserDetailsModel;
 import user.service.UserService;
 
@@ -67,6 +67,16 @@ public class UserController {
     }
 
     /**
+     *Endpoint returning availability window of the user.
+     *
+     * @return AvailabilityDto containing dates
+     */
+    @GetMapping("/user/userAvailability")
+    public ResponseEntity<AvailabilityDto> getUserAvailability() {
+        return ResponseEntity.ok().body(appUserService.getUserAvailability());
+    }
+
+    /**
      * Endpoint for updating fields such as gender, boatPreferences
      * and certification list of the given using. The method has restriction on changing user's netId
      * and password.
@@ -86,7 +96,8 @@ public class UserController {
         currentUser.setPrefPosition(request.getPrefPosition());
         currentUser.setCertificate(request.getCertificate());
         currentUser.setCompetitive(request.isCompetitive());
-        currentUser.setAvDatesList(request.getAvDates());
+        currentUser.setAvailableFrom(request.getAvailableFrom());
+        currentUser.setAvailableTo(request.getAvailableTo());
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(

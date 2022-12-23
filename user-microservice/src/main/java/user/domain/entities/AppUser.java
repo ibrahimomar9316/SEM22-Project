@@ -1,17 +1,13 @@
 package user.domain.entities;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import user.domain.enums.Gender;
-import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 
@@ -42,9 +38,10 @@ public class AppUser {
     private Certificate certificate;
 
     @Column
-    @ElementCollection(targetClass = AvDates.class)
-    private List<AvDates> avDatesList;
+    private LocalDateTime availableFrom;
 
+    @Column
+    private LocalDateTime availableTo;
 
     /**
      * Basic constructor for a new AppUser.
@@ -53,7 +50,6 @@ public class AppUser {
      */
     public AppUser(String netId) {
         this.netId = netId;
-        this.avDatesList = new ArrayList<>();
     }
 
 }

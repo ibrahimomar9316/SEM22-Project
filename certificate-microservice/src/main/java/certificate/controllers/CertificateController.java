@@ -142,7 +142,7 @@ public class CertificateController {
         } else {
             // else returns BAD_REQUEST
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("No events has put their rules!");
+                .body("No events have put their rules!");
         }
     }
 

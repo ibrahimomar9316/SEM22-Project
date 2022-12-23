@@ -29,25 +29,22 @@ public class RegistrationServiceTests {
     @Autowired
     private transient UserRepository userRepository;
 
-    /*
-        @Test
-        public void createUser_withValidData_worksCorrectly() throws Exception {
-            // Arrange
-            final NetId testUser = new NetId("SomeUser");
-            final Password testPassword = new Password("password123");
-            final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
-            when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
 
-            // Act
-            registrationService.registerUser(testUser, testPassword);
+    @Test
+    public void createUser_withValidData_worksCorrectly() throws Exception {
+        // Arrange
+        final NetId testUser = new NetId("SomeUser");
+        final Password testPassword = new Password("password123");
+        final HashedPassword testHashedPassword = new HashedPassword("hashedTestPassword");
+        when(mockPasswordEncoder.hash(testPassword)).thenReturn(testHashedPassword);
+        // Act
+        registrationService.registerUser(testUser, testPassword);
+        // Assert
+        AppUser savedUser = userRepository.findByNetId(testUser).orElseThrow();
+        assertThat(savedUser.getNetId()).isEqualTo(testUser);
+        assertThat(savedUser.getPassword()).isEqualTo(testHashedPassword);
+    }
 
-            // Assert
-            AppUser savedUser = userRepository.findByNetId(testUser).orElseThrow();
-
-            assertThat(savedUser.getNetId()).isEqualTo(testUser);
-            assertThat(savedUser.getPassword()).isEqualTo(testHashedPassword);
-        }
-    */
 
     @Test
     public void createUser_withExistingUser_throwsException() {
