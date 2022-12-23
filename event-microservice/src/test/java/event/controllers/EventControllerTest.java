@@ -2,10 +2,14 @@ package event.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import event.authentication.AuthManager;
+import event.datatransferobjects.AvailabilityDto;
+import event.datatransferobjects.EventIdsDto;
 import event.domain.entities.Event;
 import event.domain.enums.EventType;
 import event.domain.enums.Position;
@@ -25,9 +29,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class EventControllerTest {
@@ -48,7 +55,10 @@ class EventControllerTest {
     }
 
     @Test
-    void testCreate_withValidRequest_shouldSaveEventAndReturnOk() {
+    void testCreate_withValidRequest_shouldSaveEventAndReturnOk() throws JsonProcessingException {
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        controller.setRestTemplate(restTemplate);
+        String token = "Bearer abdefgh";
         LocalDateTime time = LocalDateTime.now();
         EventCreationModel request = new EventCreationModel(
                 EventType.TRAINING,
@@ -57,8 +67,13 @@ class EventControllerTest {
 
         when(auth.getNetId()).thenReturn("netId");
         when(eventService.saveEvent(any(Event.class))).thenReturn(new Event());
+        when(controller.getRestTemplate().postForEntity(
+                any(String.class),
+                any(HttpEntity.class),
+                any()
+        )).thenReturn(ResponseEntity.status(HttpStatus.OK).body(000));
 
-        ResponseEntity<String> result = controller.create(request);
+        ResponseEntity<String> result = controller.create(token, request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         String expected = "Training made by netId, event ID: 0, time "
@@ -69,52 +84,56 @@ class EventControllerTest {
     }
 
     @Test
-    void testCreate_withInvalidRequest_shouldReturnBadRequest() {
+    void testCreate_withInvalidRequest_shouldReturnBadRequest() throws JsonProcessingException {
+        String token = "Bearer abdefgh";
         EventCreationModel request = new EventCreationModel(
                 null,
                 null,
                 null);
 
-        ResponseEntity<String> result = controller.create(request);
+        ResponseEntity<String> result = controller.create(token, request);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
         assertEquals("Invalid JSON or event type!", result.getBody());
     }
 
     @Test
-    void testCreate_withInvalidEventType_shouldReturnBadRequest() {
+    void testCreate_withInvalidEventType_shouldReturnBadRequest() throws JsonProcessingException {
+        String token = "Bearer abdefgh";
         EventCreationModel request = new EventCreationModel(
                 null,
                 LocalDateTime.now(),
                 List.of(new Participant(Position.COX), new Participant(Position.COACH)));
 
-        ResponseEntity<String> result = controller.create(request);
+        ResponseEntity<String> result = controller.create(token, request);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
         assertEquals("Invalid JSON or event type!", result.getBody());
     }
 
     @Test
-    void testCreate_withInvalidTime_shouldReturnBadRequest() {
+    void testCreate_withInvalidTime_shouldReturnBadRequest() throws JsonProcessingException {
+        String token = "Bearer abdefgh";
         EventCreationModel request = new EventCreationModel(
                 EventType.TRAINING,
                 null,
                 List.of(new Participant(Position.COX), new Participant(Position.COACH)));
 
-        ResponseEntity<String> result = controller.create(request);
+        ResponseEntity<String> result = controller.create(token, request);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
         assertEquals("Invalid JSON or event type!", result.getBody());
     }
 
     @Test
-    void testCreate_withInvalidParticipants_shouldReturnBadRequest() {
+    void testCreate_withInvalidParticipants_shouldReturnBadRequest() throws JsonProcessingException {
+        String token = "Bearer abdefgh";
         EventCreationModel request = new EventCreationModel(
                 EventType.TRAINING,
                 LocalDateTime.now(),
                 null);
 
-        ResponseEntity<String> result = controller.create(request);
+        ResponseEntity<String> result = controller.create(token, request);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
         assertEquals("Invalid JSON or event type!", result.getBody());
@@ -254,8 +273,6 @@ class EventControllerTest {
     void testJoin_withEventNotFound_shouldReturnNotFound2() throws NotFoundException {
         EventJoinModel request = new EventJoinModel(Position.COX, 1L);
         String token = "Bearer 1234567890";
-        Event event = new Event(EventType.TRAINING, "netId1", LocalDateTime.now(),
-                List.of(new Participant((Position.COX))));
         when(eventService.getEvent(1L)).thenThrow(new NotFoundException(""));
 
         ResponseEntity<String> result = controller.join(token, request);
@@ -601,8 +618,44 @@ class EventControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    /*
     @Test
-    void testGetEvents_InvalidRequest() throws Exception {
+    void testGetEvents_ShouldReturnOk () {
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        controller.setRestTemplate(restTemplate);
+        final LocalDateTime time = LocalDateTime.now();
+        final String token ="Bearer abcdefg";
+        final String netId = "testuser";
+        final long eventId1 = 12345L;
+        final long eventId2 = 67890L;
+        Event event1 = new Event (EventType.COMPETITION, netId, time, List.of());
+        event1.setEventId(eventId1);
+        Event event2 = new Event (EventType.TRAINING, netId, time.plusDays(1), List.of());
+        event2.setEventId(eventId2);
+        when(eventService.getAllEvents()).thenReturn(List.of(event1, event2));
+
+
+        when(controller.getRestTemplate().exchange(
+                eq("http://localhost:8084/api/certificate/getValidEvents"),
+                any(),
+                any(HttpEntity.class),
+                (Class<Object>) any()
+        )).thenReturn(ResponseEntity.ok(new EventIdsDto(List.of(eventId1))));
+
+        when(controller.getRestTemplate().exchange(
+                eq("http://localhost:8084/api/certificate/userAvailability"),
+                any(),
+                any(HttpEntity.class),
+                (Class<Object>) any()
+        )).thenReturn(ResponseEntity.ok(new AvailabilityDto()));
+
+        ResponseEntity<String> response = controller.getEvents(token);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+    */
+
+    @Test
+    void testGetEvents_InvalidRequest() {
 
         ResponseEntity<String> response = controller.getEvents(null);
 

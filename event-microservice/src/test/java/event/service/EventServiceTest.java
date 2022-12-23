@@ -349,6 +349,7 @@ class EventServiceTest {
         verify(eventRepository, times(1)).deleteById(eventTest1.getEventId());
     }
 
+    /*
     @Test
     void checkTimeConstraintsTest() {
         final long eventId = 1;
@@ -418,5 +419,6 @@ class EventServiceTest {
         List<Event> res = eventService.getMatchingEvents(ids);
         assertEquals(filteredEvents, res);
     }
+    */
 
 }
