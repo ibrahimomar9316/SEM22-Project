@@ -9,9 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,11 +27,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     public static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
     public static final String AUTHORIZATION_AUTH_SCHEME = "Bearer";
 
-    private final transient JwtTokenVerifier jwtTokenVerifier;
+    private transient Validator validator;
 
+    private transient JwtTokenValidator jwtTokenValidator;
+
+    /**
+     * Constructor for the requestFilter used for authorization.
+     *
+     * @param jwtTokenVerifier The jwtTokenVerifier to use for verifying
+     */
     @Autowired
     public JwtRequestFilter(JwtTokenVerifier jwtTokenVerifier) {
-        this.jwtTokenVerifier = jwtTokenVerifier;
+        this.validator = new HeaderValidator();
+        this.jwtTokenValidator = new JwtTokenValidator(jwtTokenVerifier);
+        this.validator.setNext(jwtTokenValidator);
     }
 
     /**
@@ -50,41 +56,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        // Set the request for the token validator
+        jwtTokenValidator.setRequest(request);
+
         // Get authorization header
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-        // Check if an authorization header is set
-        if (authorizationHeader != null) {
-            String[] directives = authorizationHeader.split(" ");
-
-            // Check for the correct auth scheme
-            if (directives.length == 2 && directives[0].equals(AUTHORIZATION_AUTH_SCHEME)) {
-                String token = directives[1];
-
-                try {
-                    if (jwtTokenVerifier.validateToken(token)) {
-                        String netId = jwtTokenVerifier.getNetIdFromToken(token);
-                        var authenticationToken = new UsernamePasswordAuthenticationToken(
-                                netId,
-                                null, List.of() // no credentials and no authorities
-                        );
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource()
-                                .buildDetails(request));
-
-                        // After setting the Authentication in the context, we specify
-                        // that the current user is authenticated. So it passes the
-                        // Spring Security Configurations successfully.
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    }
-
-                } catch (ExpiredJwtException e) {
-                    System.err.println("JWT token has expired.");
-                } catch (IllegalArgumentException | JwtException e) {
-                    System.err.println("Unable to parse JWT token");
-                }
-            } else {
-                System.err.println("Invalid authorization header");
-            }
+        try {
+            validator.validate(authorizationHeader);
+        } catch (ExpiredJwtException e) {
+            System.err.println("JWT token has expired.");
+        } catch (IllegalArgumentException | JwtException e) {
+            System.err.println("Unable to parse JWT token");
+        } catch (InvalidAuthorizationException e) {
+            System.err.println("Invalid authorization header");
         }
 
         filterChain.doFilter(request, response);
