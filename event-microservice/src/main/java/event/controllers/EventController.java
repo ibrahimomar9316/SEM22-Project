@@ -432,7 +432,8 @@ public class EventController {
             // if the hashIndex is successfully found, we put it in
             // the Event table and send the event to be updated
             List<Rule> rulesList = new ArrayList<>();
-            if (hashedIndex.getBody() / 100 == 1) {
+            int genderInd = hashedIndex.getBody() / 100;
+            if (genderInd == 1 || genderInd == 2) {
                 rulesList.add(Rule.SAME_GENDER_TEAMS);
             }
             if (hashedIndex.getBody() / 10 % 10 == 1) {
