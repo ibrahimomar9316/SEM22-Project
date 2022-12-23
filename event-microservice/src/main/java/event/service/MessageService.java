@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * The type Message service.
+ */
 @Service
 @Slf4j
 public class MessageService {
@@ -20,16 +23,38 @@ public class MessageService {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Gets rest template.
+     *
+     * @return the rest template
+     */
+    public static RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
+
+    /**
+     * Sets rest template.
+     *
+     * @param restTemplate the rest template
+     */
+    public static void setRestTemplate(RestTemplate restTemplate) {
+        MessageService.restTemplate = restTemplate;
+    }
+
+    /**
+     * Instantiates a new Message service.
+     */
     public MessageService() {}
 
     /**
      * Sends a join message to the admin of the event that the user wants to join.
      *
-     * @param token The bearer token for authentication
-     * @param model The joinModel which holds the position and eventId
-     * @param sender The sender of the message
+     * @param token     The bearer token for authentication
+     * @param model     The joinModel which holds the position and eventId
+     * @param sender    The sender of the message
      * @param recipient The recipient of the message
      * @return An HttpStatus indicating how the sending of the message went
+     * @throws ConnectException the connect exception
      */
     public HttpStatus sendJoinMessage(String token, EventJoinModel model, String sender, String recipient)
             throws ConnectException {
@@ -39,11 +64,12 @@ public class MessageService {
     /**
      * Sends a leave message to the admin of the event that the user left.
      *
-     * @param token The bearer token for authentication
-     * @param model The joinModel which holds the position and eventId
-     * @param sender The sender of the message
+     * @param token     The bearer token for authentication
+     * @param model     The joinModel which holds the position and eventId
+     * @param sender    The sender of the message
      * @param recipient The recipient of the message
      * @return An HttpStatus indicating how the sending of the message went
+     * @throws ConnectException the connect exception
      */
     public HttpStatus sendLeaveMessage(String token, EventJoinModel model, String sender, String recipient)
             throws ConnectException {
@@ -53,11 +79,11 @@ public class MessageService {
     /**
      * Method for sending messages to the message database.
      *
-     * @param token The bearer token for authentication
-     * @param model The joinModel which holds the position and eventId
-     * @param sender The sender of the message
+     * @param token     The bearer token for authentication
+     * @param model     The joinModel which holds the position and eventId
+     * @param sender    The sender of the message
      * @param recipient The recipient of the message
-     * @param type The type of the message specifying what purpose it has
+     * @param type      The type of the message specifying what purpose it has
      * @return An HttpStatus indicating how the sending of the message went
      */
     public HttpStatus sendMessage(String token, EventJoinModel model, String sender, String recipient, MessageType type) {

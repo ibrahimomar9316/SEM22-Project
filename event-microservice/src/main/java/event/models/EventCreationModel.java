@@ -4,6 +4,7 @@ import event.domain.enums.EventType;
 import event.domain.objects.Participant;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -17,6 +18,7 @@ import lombok.Data;
  * of a new event through the JSON body of the /create request.
  */
 @Data
+@AllArgsConstructor
 public class EventCreationModel {
     private EventType eventType;
     private LocalDateTime time;

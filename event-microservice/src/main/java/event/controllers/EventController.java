@@ -3,6 +3,7 @@ package event.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import event.authentication.AuthManager;
+import event.datatransferobjects.AvailabilityDto;
 import event.datatransferobjects.EventIdsDto;
 import event.datatransferobjects.RuleDto;
 import event.domain.entities.Builder;
@@ -12,6 +13,7 @@ import event.domain.entities.EventBuilder;
 import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
+import event.foreigndomain.enums.Gender;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
 import event.models.EventRulesModel;
@@ -101,7 +103,15 @@ public class EventController {
      */
     @Bean
     public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+        return this.restTemplate;
+    }
+
+    /**
+     * Sets rest template.
+     *
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -114,6 +124,9 @@ public class EventController {
      * <p>It creates an event with the given attributes and it attributes the admin
      * of the event to the netID in the token.</p>
      *
+     * <p>The event is created with default rules (that is no restrictions)
+     * which are send to the Certificate ms.</p>
+     *
      * <p>It returns a message conveying the new event, with HTTP.ok response.</p>
      *
      * <p>If an authorization header is not provided or is invalid, it returns
@@ -123,8 +136,8 @@ public class EventController {
      * @return HTTP.ok and a message if authorization header correct
      */
     @PostMapping({"/event/create"})
-    public ResponseEntity<String> create(
-            @RequestBody EventCreationModel request) {
+    public ResponseEntity<String> create(@RequestHeader("Authorization") String token,
+            @RequestBody EventCreationModel request) throws JsonProcessingException {
         // Creates new event from model event type and attributes it to the
         // netID in the token.
         if (request.getEventType() == null || request.getTime() == null
@@ -140,6 +153,25 @@ public class EventController {
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
+
+        //Set default rules for the event and save them is Certificate ms
+        RuleDto dto = new RuleDto(savedEvent.getEventId(), Gender.NONE,
+                false, "NONE");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.split(" ")[1]);
+        String json = new ObjectMapper().writeValueAsString(dto);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        // here we get an hashedIndex of the rules of the event.
+        ResponseEntity<Integer> hashedIndex = this.restTemplate
+                .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
+        // hashedIndex returns 404 if an error getting the index occurs
+        if (hashedIndex.getBody() == 404) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error in generating index!");
+        }
+
         // returns OK and a string implemented in Event
         return ResponseEntity.ok(savedEvent.toString());
     }
@@ -183,6 +215,10 @@ public class EventController {
     public ResponseEntity<String> join(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
+            if (event == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Event not found!");
+            }
             String netId = auth.getNetId();
             if (event.getParticipants()
                     .stream()
@@ -213,7 +249,8 @@ public class EventController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ConnectException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Message service could not be reached");
         }
     }
 
@@ -346,6 +383,8 @@ public class EventController {
             return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -381,7 +420,7 @@ public class EventController {
         String json = new ObjectMapper().writeValueAsString(dto);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         // here we get an hashedIndex of the rules of the event.
-        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+        ResponseEntity<Integer> hashedIndex = this.restTemplate
                 .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
         // hashedIndex returns 404 if an error getting the index occurs
         if (hashedIndex.getBody() == 404) {
@@ -413,7 +452,7 @@ public class EventController {
             }
             event.setRules(rulesList);
             HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
-            return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
+            return this.restTemplate.postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
         } else {
             throw new NotFoundException("Incorrectly updated rules!");
         }
@@ -439,6 +478,8 @@ public class EventController {
             return ResponseEntity.ok("successfully deleted event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -461,17 +502,28 @@ public class EventController {
             headers.setBearerAuth(token.split(" ")[1]);
             HttpEntity<String> entity = new HttpEntity<>(headers);
             // here we get an indices of the matching event.
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = this.restTemplate;
             ResponseEntity<EventIdsDto> eventIds = restTemplate
                     .exchange("http://localhost:8084/api/certificate/getValidEvents",
                             HttpMethod.GET, entity, EventIdsDto.class);
+
+            ResponseEntity<AvailabilityDto> userAvailability = restTemplate
+                    .exchange("http://localhost:8082/api/user/userAvailability",
+                            HttpMethod.GET, entity, AvailabilityDto.class);
+
+            AvailabilityDto availabilityDto = userAvailability.getBody();
+
+            if (availabilityDto == null || availabilityDto.getAvailableFrom() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("The user did not specify availability");
+            }
 
             if (eventIds.getStatusCode() == HttpStatus.BAD_REQUEST)  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("There are no events for you to join!");
             }
             Set<Long> setOfIds = new HashSet<>(eventIds.getBody().getIds());
-            List<Event> list = eventService.getMatchingEvents(setOfIds);
+            List<Event> list = eventService.getMatchingEvents(setOfIds, availabilityDto);
             // checks if the there are some available activities to join
             if (list.isEmpty())  {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

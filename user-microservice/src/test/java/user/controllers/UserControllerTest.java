@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import user.authentication.AuthManager;
 import user.domain.entities.AppUser;
 import user.domain.enums.Gender;
-import user.domain.objects.AvDates;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
 import user.models.UserDetailsModel;
@@ -74,21 +72,22 @@ public class UserControllerTest {
     public void updateUserTest() throws Exception {
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
         userController.setRestTemplate(restTemplate);
-        List<AvDates> list = new ArrayList<>();
-        UserDetailsModel request = new UserDetailsModel(Gender.MALE, Position.COX, true, Certificate.C4, list);
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX;
+        UserDetailsModel request = new UserDetailsModel(Gender.MALE, Position.COX, true, Certificate.C4, from, to);
         when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(ResponseEntity.ok().body(200));
 
         ResponseEntity<String> res = userController.updateUser("token k", request);
         assertThat(res.getStatusCode().value()).isEqualTo(200);
         assertThat(Objects.requireNonNull(res.getBody()).contains("Successfully updated user:\n")).isTrue();
 
-        UserDetailsModel request2 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, list);
+        UserDetailsModel request2 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, from, to);
         when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(ResponseEntity.ok().body(404));
         ResponseEntity<String> res2 = userController.updateUser("token l", request2);
         assertThat(res2.getStatusCode().value()).isEqualTo(400);
         assertThat(res2.getBody()).isEqualTo("Error in generating index!");
 
-        UserDetailsModel request3 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, list);
+        UserDetailsModel request3 = new UserDetailsModel(Gender.FEMALE, Position.COX, true, Certificate.C4, from, to);
         when(restTemplate.postForEntity(anyString(), any(), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(300));
         ResponseEntity<String> res3 = userController.updateUser("token l", request3);
