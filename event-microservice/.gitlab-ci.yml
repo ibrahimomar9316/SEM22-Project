@@ -27,9 +27,9 @@ PMD-event-microservice:
     gradle event-microservice:pmdMain
   allow_failure: true
 
-#test-event-microservice:
-#  stage: test
-#  script:
-#    - gradle event-microservice:test event-microservice:jacocoTestReport
-#    - cat event-microservice/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
-#  coverage: /([0-9]{1,3})%/
+test-event-microservice:
+  stage: test
+  script:
+    - gradle event-microservice:test event-microservice:jacocoTestReport
+    - cat event-microservice/build/reports/jacoco/test/html/index.html | grep -Po "Total.*?([0-9]{1,3})%"
+  coverage: /([0-9]{1,3})%/

@@ -39,7 +39,7 @@ public class EventService {
      * @return the event that we wanted to get
      * @throws NotFoundException exception that is thrown when the event is not found
      */
-    public Event getEvent(Long eventId) throws NotFoundException {
+    public Event getEvent(Long eventId) throws NotFoundException, NullPointerException {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isEmpty()) {
             throw new NotFoundException("Event not found in the database.");
@@ -52,7 +52,7 @@ public class EventService {
      * Used when new events are created or when we want to update a new one.
      *
      * @param event the event that we want to save into the repository
-     * @return the same event that we saved
+     * @return the event that was saved
      */
     public Event saveEvent(Event event) {
         return eventRepository.save(event);
@@ -62,7 +62,7 @@ public class EventService {
      * Update event in the database.
      *
      * @param event the event to be updated
-     * @return the same event
+     * @return the event that was updated
      */
     public Event updateEvent(Event event) {
         return eventRepository.saveAndFlush(event);

@@ -10,7 +10,6 @@ import event.domain.entities.Event;
 import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
-import event.foreigndomain.enums.Certificate;
 import event.foreigndomain.enums.Gender;
 import event.models.EventCreationModel;
 import event.models.EventJoinModel;
@@ -101,7 +100,15 @@ public class EventController {
      */
     @Bean
     public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+        return this.restTemplate;
+    }
+
+    /**
+     * Sets rest template.
+     *
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -153,7 +160,7 @@ public class EventController {
         String json = new ObjectMapper().writeValueAsString(dto);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         // here we get an hashedIndex of the rules of the event.
-        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+        ResponseEntity<Integer> hashedIndex = this.restTemplate
                 .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
         // hashedIndex returns 404 if an error getting the index occurs
         if (hashedIndex.getBody() == 404) {
@@ -204,6 +211,10 @@ public class EventController {
     public ResponseEntity<String> join(@RequestHeader("Authorization") String token, @RequestBody EventJoinModel request) {
         try {
             Event event = eventService.getEvent(request.getEventId());
+            if (event == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Event not found!");
+            }
             String netId = auth.getNetId();
             if (event.getParticipants()
                     .stream()
@@ -234,7 +245,8 @@ public class EventController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ConnectException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Message service could not be reached");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Message service could not be reached");
         }
     }
 
@@ -367,6 +379,8 @@ public class EventController {
             return ResponseEntity.ok(event.toStringUpdate());
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -402,7 +416,7 @@ public class EventController {
         String json = new ObjectMapper().writeValueAsString(dto);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
         // here we get an hashedIndex of the rules of the event.
-        ResponseEntity<Integer> hashedIndex = new RestTemplate()
+        ResponseEntity<Integer> hashedIndex = this.restTemplate
                 .postForEntity("http://localhost:8084/api/certificate/getRuleIndex", entity, Integer.class);
         // hashedIndex returns 404 if an error getting the index occurs
         if (hashedIndex.getBody() == 404) {
@@ -434,7 +448,7 @@ public class EventController {
             }
             event.setRules(rulesList);
             HttpEntity<Event> entity2 = new HttpEntity<>(event, headers);
-            return new RestTemplate().postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
+            return this.restTemplate.postForEntity("http://localhost:8083/api/event/update", entity2, String.class);
         } else {
             throw new NotFoundException("Incorrectly updated rules!");
         }
@@ -460,6 +474,8 @@ public class EventController {
             return ResponseEntity.ok("successfully deleted event");
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -482,7 +498,7 @@ public class EventController {
             headers.setBearerAuth(token.split(" ")[1]);
             HttpEntity<String> entity = new HttpEntity<>(headers);
             // here we get an indices of the matching event.
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = this.restTemplate;
             ResponseEntity<EventIdsDto> eventIds = restTemplate
                     .exchange("http://localhost:8084/api/certificate/getValidEvents",
                             HttpMethod.GET, entity, EventIdsDto.class);

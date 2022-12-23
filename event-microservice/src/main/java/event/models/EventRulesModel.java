@@ -2,6 +2,7 @@ package event.models;
 
 import event.foreigndomain.enums.Certificate;
 import event.foreigndomain.enums.Gender;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -15,6 +16,7 @@ import lombok.Data;
  * of a new event through the JSON body of the /setRules request.
  */
 @Data
+@AllArgsConstructor
 public class EventRulesModel {
     private transient  long eventId;
     private transient Gender genderConstraint;

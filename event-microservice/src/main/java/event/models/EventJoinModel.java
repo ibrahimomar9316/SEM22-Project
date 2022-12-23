@@ -1,6 +1,7 @@
 package event.models;
 
 import event.domain.enums.Position;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * request.
  */
 @Data
+@AllArgsConstructor
 public class EventJoinModel {
     private Position position;
     private long eventId;
