@@ -35,7 +35,10 @@ public class RegistrationService {
             HashedPassword hashedPassword = passwordHashingService.hash(password);
 
             // Create new account
-            AppUser user = new AppUser(netId, hashedPassword);
+            Builder builder = new AppUserBuilder();
+            Director director = new Director();
+            director.createAppUser(builder, netId, hashedPassword);
+            AppUser user = builder.build();
             userRepository.save(user);
 
             return user;

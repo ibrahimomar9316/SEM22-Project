@@ -6,7 +6,10 @@ import event.authentication.AuthManager;
 import event.datatransferobjects.AvailabilityDto;
 import event.datatransferobjects.EventIdsDto;
 import event.datatransferobjects.RuleDto;
+import event.domain.entities.Builder;
+import event.domain.entities.Director;
 import event.domain.entities.Event;
+import event.domain.entities.EventBuilder;
 import event.domain.enums.Rule;
 import event.domain.objects.Participant;
 import event.foreigndomain.entitites.Message;
@@ -54,7 +57,7 @@ import org.springframework.web.client.RestTemplate;
 @SuppressWarnings("PMD")
 public class EventController {
 
-    @Autowired
+
     private RestTemplate restTemplate;
 
     // This is used to set, get and check for events in
@@ -91,6 +94,7 @@ public class EventController {
         this.eventService = eventService;
         this.messageService = messageService;
         this.auth = auth;
+        this.restTemplate = new RestTemplate();
     }
 
     /**
@@ -142,10 +146,11 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid JSON or event type!");
         }
-        Event savedEvent = new Event(request.getEventType(),
-                auth.getNetId(),
-                request.getTime(),
-                request.getParticipants());
+        Builder builder = new EventBuilder();
+        Director director = new Director();
+        director.createEvent(builder, request.getEventType(), auth.getNetId(),
+                request.getTime(), request.getParticipants());
+        Event savedEvent = builder.build();
 
         // Saves event to database using eventService
         eventService.saveEvent(savedEvent);
