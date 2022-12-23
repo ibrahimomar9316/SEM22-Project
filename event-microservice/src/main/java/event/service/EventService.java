@@ -1,5 +1,6 @@
 package event.service;
 
+import event.datatransferobjects.AvailabilityDto;
 import event.domain.EventRepository;
 import event.domain.entities.Event;
 import event.domain.enums.EventType;
@@ -113,10 +114,10 @@ public class EventService {
      *
      * @return a list of events
      */
-    public List<Event> getMatchingEvents(Set<Long> ids) {
+    public List<Event> getMatchingEvents(Set<Long> ids, AvailabilityDto userAvailability) {
         List<Event> list = eventRepository.findAll();
         return list.stream().filter(x -> ids.contains(x.getEventId())
-                && checkTimeConstraints(x))
+                        && checkTimeConstraints(x, userAvailability))
                 .collect(Collectors.toList());
     }
 
@@ -126,17 +127,36 @@ public class EventService {
      * we cannot join a Training if it starts within half an hour.
      * we cannot join a Competition competitions that start within that day.
      */
-    private boolean checkTimeConstraints(Event event) {
+    private boolean checkTimeConstraints(Event event, AvailabilityDto userAvailability) {
         LocalDateTime now = LocalDateTime.now();
         if (event.getEventType().equals(EventType.TRAINING)) {
             Duration difference = Duration.between(now, event.getTime());
             long minutes = difference.toMinutes();
-            return minutes >= 30;
+            return minutes >= 30 && userAvailableForTheEvent(event, userAvailability);
         } else {
             Duration difference = Duration.between(now, event.getTime());
             long minutes = difference.toHours();
-            return minutes >= 24;
+            return minutes >= 24 && userAvailableForTheEvent(event, userAvailability);
         }
     }
+
+    /**
+     *Helper method for checking if event time is in the user availability window.
+     *
+     * @param event event start time
+     * @param userAvailability user availability
+     *
+     * @return true if time is valid for the user, otherwise return false.
+     */
+    private boolean userAvailableForTheEvent(Event event, AvailabilityDto userAvailability) {
+        LocalDateTime dateFrom = userAvailability.getAvailableFrom();
+        LocalDateTime dateTo = userAvailability.getAvailableTo();
+        Duration differenceFrom = Duration.between(dateFrom, event.getTime());
+        Duration differenceTo = Duration.between(dateTo, event.getTime());
+        long minutesFrom = differenceFrom.toMinutes();
+        long minutesTo = differenceTo.toMinutes();
+        return minutesFrom >= 0 && minutesTo <= 0;
+    }
+
 
 }
