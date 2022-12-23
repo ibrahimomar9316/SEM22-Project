@@ -55,6 +55,10 @@ public class AppUser extends HasEvents {
         return netId;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public HashedPassword getPassword() {
         return password;
     }

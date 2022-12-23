@@ -37,6 +37,8 @@ public class AuthenticationController {
 
     private final transient RegistrationService registrationService;
 
+    private transient RestTemplate restTemplate;
+
     /**
      * Instantiates a new UsersController.
      *
@@ -54,6 +56,7 @@ public class AuthenticationController {
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.registrationService = registrationService;
+        this.restTemplate = new RestTemplate();
     }
 
     /**
@@ -112,7 +115,7 @@ public class AuthenticationController {
         headers.setBearerAuth(token.getBody().getToken());
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> obj = new RestTemplate()
+        ResponseEntity<String> obj = this.restTemplate
                 .postForEntity("http://localhost:8082/api/user/save", entity, String.class);
         if (obj.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -121,5 +124,14 @@ public class AuthenticationController {
             throw new NotFoundException("Incorrectly saved in user microservice");
         }
         //return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Setter for the restTemplate.
+     *
+     * @param restTemplate The new restTemplate to set
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 }
