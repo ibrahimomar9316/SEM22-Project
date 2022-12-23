@@ -4,9 +4,10 @@ import event.datatransferobjects.AvailabilityDto;
 import event.domain.EventRepository;
 import event.domain.entities.Event;
 import event.domain.enums.EventType;
+import event.domain.objects.StartTimeStrategy;
+import event.domain.objects.ValidEvents;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -111,14 +112,19 @@ public class EventService {
     /**
      * Service layer method used to get all the matching events.
      * Right now only checks  time constrains but can be developed to check all others restrictions.
+     * We then apply the Strategy design pattern to show the user the events in a specific order.
+     * To do this, we create the class ValidEvents, which will take care of sorting events
      *
      * @return a list of events
      */
     public List<Event> getMatchingEvents(Set<Long> ids, AvailabilityDto userAvailability) {
         List<Event> list = eventRepository.findAll();
-        return list.stream().filter(x -> ids.contains(x.getEventId())
+        list = list.stream().filter(x -> ids.contains(x.getEventId())
                         && checkTimeConstraints(x, userAvailability))
                 .collect(Collectors.toList());
+
+        ValidEvents validEvents = new ValidEvents(new StartTimeStrategy(), list);
+        return validEvents.displayValidEvents();
     }
 
 
