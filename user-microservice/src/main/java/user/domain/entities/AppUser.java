@@ -5,7 +5,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
 import org.hibernate.Hibernate;
 import user.domain.enums.Gender;
 import user.foreigndomain.enums.Certificate;
@@ -178,7 +177,8 @@ public class AppUser {
 
     /**
      * Compares this user to the specified object.
-     * The result is true if and only if the argument is not null and is an AppUser object that contains the same netId as this object.
+     * The result is true if and only if the argument is not null and is an AppUser object that contains
+     * the same netId as this object.
      *
      * @param o the object to compare this AppUser against
      * @return true if the given object represents an AppUser with the same netId, false otherwise
@@ -208,12 +208,13 @@ public class AppUser {
     /**
      * Returns a string representation of the user.
      *
-     * @return a string representation of this AppUser, including the netId, gender, preferred position, competitive status, certificate, and available time range
+     * @return a string representation of this AppUser, including the netId, gender, preferred position, competitive
+     * status, certificate, and available time range
      */
     @Override
     public String toString() {
-        return "AppUser{" +
-                "netId='" + netId + '\''
+        return "AppUser{"
+                + "netId='" + netId + '\''
                 + ", gender=" + gender
                 + ", prefPosition=" + prefPosition
                 + ", competitive=" + competitive
