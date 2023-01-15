@@ -73,12 +73,16 @@ public class UserService {
         if (appUser.getGender() == null || appUser.getCertificate() == null || appUser.getPrefPosition() == null) {
             throw new IllegalArgumentException("One of the values to be updated was not specified!");
         }
-        currentUser.setGender(appUser.getGender());
-        currentUser.setCertificate(appUser.getCertificate());
-        currentUser.setCompetitive(appUser.isCompetitive());
-        currentUser.setPrefPosition(appUser.getPrefPosition());
-        currentUser.setAvailableFrom(appUser.getAvailableFrom());
-        currentUser.setAvailableTo(appUser.getAvailableTo());
+
+        currentUser.upDate(
+                appUser.getGender(),
+                appUser.getPrefPosition(),
+                appUser.isCompetitive(),
+                appUser.getCertificate(),
+                appUser.getAvailableFrom(),
+                appUser.getAvailableTo()
+        );
+
         appUserRepository.save(currentUser);
         return appUser;
     }

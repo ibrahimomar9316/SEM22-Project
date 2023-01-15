@@ -45,12 +45,14 @@ public class UserServiceTest {
 
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(gender);
-        appUser.setPrefPosition(prefPosition);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(certificate);
-        appUser.setAvailableFrom(from);
-        appUser.setAvailableTo(to);
+        appUser.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         when(appUserRepository.findById(netId)).thenReturn(Optional.of(appUser));
 
@@ -77,12 +79,14 @@ public class UserServiceTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(gender);
-        appUser.setPrefPosition(prefPosition);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(certificate);
-        appUser.setAvailableFrom(from);
-        appUser.setAvailableTo(to);
+        appUser.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         when(appUserRepository.save(appUser)).thenReturn(appUser);
 
@@ -101,12 +105,14 @@ public class UserServiceTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(gender);
-        appUser.setPrefPosition(prefPosition);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(certificate);
-        appUser.setAvailableFrom(from);
-        appUser.setAvailableTo(to);
+        appUser.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         String netId2 = "test456";
         Gender gender2 = Gender.FEMALE;
@@ -117,12 +123,14 @@ public class UserServiceTest {
         LocalDateTime to2 = LocalDateTime.MAX;
 
         AppUser appUser2 = new AppUser(netId2);
-        appUser2.setGender(gender2);
-        appUser2.setPrefPosition(prefPosition2);
-        appUser2.setCompetitive(competitive2);
-        appUser2.setCertificate(certificate2);
-        appUser2.setAvailableFrom(from2);
-        appUser2.setAvailableTo(to2);
+        appUser2.upDate(
+                gender2,
+                prefPosition2,
+                competitive2,
+                certificate2,
+                from2,
+                to2
+        );
 
         when(appUserRepository.findAll()).thenReturn(Arrays.asList(appUser, appUser2));
 
@@ -143,12 +151,14 @@ public class UserServiceTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(gender);
-        appUser.setPrefPosition(prefPosition);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(certificate);
-        appUser.setAvailableFrom(from);
-        appUser.setAvailableTo(to);
+        appUser.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
@@ -169,12 +179,14 @@ public class UserServiceTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser appUser = new AppUser(newNetId);
-        appUser.setGender(gender);
-        appUser.setPrefPosition(prefPosition);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(certificate);
-        appUser.setAvailableFrom(from);
-        appUser.setAvailableTo(to);
+        appUser.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         String netId = "test123";
         when(authManager.getNetId()).thenReturn(netId);
@@ -189,12 +201,14 @@ public class UserServiceTest {
         boolean competitive = true;
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(null);
-        appUser.setPrefPosition(null);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(null);
-        appUser.setAvailableFrom(null);
-        appUser.setAvailableTo(null);
+        appUser.upDate(
+                null,
+                null,
+                competitive,
+                null,
+                null,
+                null
+        );
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
@@ -218,12 +232,14 @@ public class UserServiceTest {
         boolean competitive = true;
 
         AppUser appUser = new AppUser(netId);
-        appUser.setGender(null);
-        appUser.setPrefPosition(null);
-        appUser.setCompetitive(competitive);
-        appUser.setCertificate(null);
-        appUser.setAvailableFrom(null);
-        appUser.setAvailableTo(null);
+        appUser.upDate(
+                null,
+                null,
+                competitive,
+                null,
+                null,
+                null
+        );
 
         when(authManager.getNetId()).thenReturn(netId);
         when(appUserRepository.getAppUserById(netId)).thenReturn(appUser);
@@ -243,12 +259,14 @@ public class UserServiceTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser user = new AppUser(netId);
-        user.setGender(gender);
-        user.setPrefPosition(prefPosition);
-        user.setCompetitive(competitive);
-        user.setCertificate(certificate);
-        user.setAvailableFrom(from);
-        user.setAvailableTo(to);
+        user.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         when(authManager.getNetId()).thenReturn("user");
         when(appUserRepository.getAppUserById("user")).thenReturn(user);

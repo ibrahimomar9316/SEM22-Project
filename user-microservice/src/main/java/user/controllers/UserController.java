@@ -97,13 +97,15 @@ public class UserController {
     @PostMapping("/user/edit")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
                                              @RequestBody UserDetailsModel request) throws Exception {
-        AppUser currentUser = new AppUser(auth.getNetId());
-        currentUser.setGender(request.getGender());
-        currentUser.setPrefPosition(request.getPrefPosition());
-        currentUser.setCertificate(request.getCertificate());
-        currentUser.setCompetitive(request.isCompetitive());
-        currentUser.setAvailableFrom(request.getAvailableFrom());
-        currentUser.setAvailableTo(request.getAvailableTo());
+        AppUser currentUser = new AppUser(
+                auth.getNetId(),
+                request.getGender(),
+                request.getPrefPosition(),
+                request.isCompetitive(),
+                request.getCertificate(),
+                request.getAvailableFrom(),
+                request.getAvailableTo()
+        );
         appUserService.updateUser(currentUser);
 
         UserCertificateDto ucd = new UserCertificateDto(

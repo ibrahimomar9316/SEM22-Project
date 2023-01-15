@@ -1,7 +1,5 @@
 package user.domain.entities;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import user.domain.enums.Gender;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
-
 
 public class AppUserTest {
     @Test
@@ -25,12 +22,14 @@ public class AppUserTest {
         LocalDateTime to = LocalDateTime.MAX;
 
         AppUser user = new AppUser(netId);
-        user.setGender(gender);
-        user.setPrefPosition(prefPosition);
-        user.setCompetitive(competitive);
-        user.setCertificate(certificate);
-        user.setAvailableFrom(from);
-        user.setAvailableTo(to);
+        user.upDate(
+                gender,
+                prefPosition,
+                competitive,
+                certificate,
+                from,
+                to
+        );
 
         assertEquals(netId, user.getNetId());
         assertEquals(gender, user.getGender());
