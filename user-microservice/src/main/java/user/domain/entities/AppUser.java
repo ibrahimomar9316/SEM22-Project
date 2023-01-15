@@ -22,22 +22,22 @@ public class AppUser {
     private String netId;
 
     @Column
-    private Gender gender;
+    private transient Gender gender;
 
     @Column
-    private Position prefPosition;
+    private transient Position prefPosition;
 
     @Column
-    private boolean competitive;
+    private transient boolean competitive;
 
     @Column
-    private Certificate certificate;
+    private transient Certificate certificate;
 
     @Column
-    private LocalDateTime availableFrom;
+    private transient LocalDateTime availableFrom;
 
     @Column
-    private LocalDateTime availableTo;
+    private transient LocalDateTime availableTo;
 
     /**
      * Basic constructor for a new AppUser.
@@ -192,7 +192,7 @@ public class AppUser {
             return false;
         }
         AppUser appUser = (AppUser) o;
-        return netId != null && Objects.equals(netId, appUser.netId);
+        return Objects.equals(netId, appUser.netId);
     }
 
     /**
