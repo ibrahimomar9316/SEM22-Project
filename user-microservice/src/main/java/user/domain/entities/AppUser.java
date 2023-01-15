@@ -205,12 +205,6 @@ public class AppUser {
         return getClass().hashCode();
     }
 
-    /**
-     * Returns a string representation of the user.
-     *
-     * @return a string representation of this AppUser, including the netId, gender, preferred position, competitive
-     * status, certificate, and available time range
-     */
     @Override
     public String toString() {
         return "AppUser{"
