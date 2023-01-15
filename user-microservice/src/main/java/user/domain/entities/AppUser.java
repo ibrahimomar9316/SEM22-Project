@@ -1,14 +1,15 @@
 package user.domain.entities;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.hibernate.Hibernate;
 import user.domain.enums.Gender;
 import user.foreigndomain.enums.Certificate;
 import user.foreigndomain.enums.Position;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * User entity consisting of an ID, gender, username, password, list of boats, list of certificates, list of roles.
@@ -56,7 +57,8 @@ public class AppUser {
     }
 
     /**
-     * Constructor for a new AppUser with specified netId, gender, preferred position, competitive status, certificate, and available time range.
+     * Constructor for a new AppUser with specified netId, gender, preferred position, competitive status, certificate,
+     * and available time range.
      *
      * @param netId         a string containing the netId of the user
      * @param gender        the gender of the user
@@ -66,7 +68,8 @@ public class AppUser {
      * @param availableFrom the starting time the user is available
      * @param availableTo   the ending time the user is available
      */
-    public AppUser(String netId, Gender gender, Position prefPosition, boolean competitive, Certificate certificate, LocalDateTime availableFrom, LocalDateTime availableTo) {
+    public AppUser(String netId, Gender gender, Position prefPosition, boolean competitive, Certificate certificate,
+                   LocalDateTime availableFrom, LocalDateTime availableTo) {
         this.netId = netId;
         this.gender = gender;
         this.prefPosition = prefPosition;
@@ -149,7 +152,8 @@ public class AppUser {
     }
 
     /**
-     * Updates the user's information, including gender, preferred position, competitive status, certificate, and available time range.
+     * Updates the user's information, including gender, preferred position, competitive status, certificate,
+     * and available time range.
      *
      * @param gender        the new gender of the user
      * @param prefPosition  the new preferred position of the user
@@ -181,8 +185,12 @@ public class AppUser {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         AppUser appUser = (AppUser) o;
         return netId != null && Objects.equals(netId, appUser.netId);
     }
@@ -205,14 +213,14 @@ public class AppUser {
     @Override
     public String toString() {
         return "AppUser{" +
-                "netId='" + netId + '\'' +
-                ", gender=" + gender +
-                ", prefPosition=" + prefPosition +
-                ", competitive=" + competitive +
-                ", certificate=" + certificate +
-                ", availableFrom=" + availableFrom +
-                ", availableTo=" + availableTo +
-                '}';
+                "netId='" + netId + '\''
+                + ", gender=" + gender
+                + ", prefPosition=" + prefPosition
+                + ", competitive=" + competitive
+                + ", certificate=" + certificate
+                + ", availableFrom=" + availableFrom
+                + ", availableTo=" + availableTo
+                + '}';
     }
 }
 
